@@ -1,0 +1,37 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+    align-items: stretch;
+
+    > .main {
+        @include center-of-row;
+        align-items: stretch;
+        width: 80%;
+
+        > .avatarContainer {
+            width: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            > img {
+                width: 30px;
+                aspect-ratio: 1 / 1;
+            }
+        }
+
+        > .contentContainer {
+            background-color: rgb(243, 243, 243);
+            box-sizing: border-box;
+            border-radius: 10px;
+            padding: 5px;
+            width: max-content;
+            max-width: calc(100% - 30px);
+
+            > .image {
+                max-width: 100%;
+            }
+        }
+    }
+}
