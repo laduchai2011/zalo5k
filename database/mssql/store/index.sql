@@ -1,0 +1,12 @@
+CREATE TABLE store (
+    id INT PRIMARY KEY,
+    name NVARCHAR(255) NOT NULL,
+    title NVARCHAR(255) NOT NULL,
+    address NVARCHAR(255) NOT NULL,
+    hotline NVARCHAR(20) NOT NULL,
+    note NVARCHAR(MAX) NOT NULL,
+    status NVARCHAR(255) NOT NULL,
+    updateTime DATETIMEOFFSET(7) NOT NULL,
+    createTime DATETIMEOFFSET(7) NOT NULL
+)
+GO

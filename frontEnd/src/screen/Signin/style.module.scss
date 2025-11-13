@@ -29,10 +29,11 @@
                 > .aInput {
                     @include center-of-row;
                     box-sizing: border-box;
-                    padding: 5px 0;
+                    padding: 5px;
 
                     > div {
                         width: 90px;
+                        font-size: 0.9rem;
                     }
 
                     > input {
@@ -40,6 +41,10 @@
                         padding: 3px;
                         flex: 1;
                         font-size: 1.1rem;
+                        border: none;
+                        outline: none;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                        border-radius: 10px;
                     }
                 }
             }

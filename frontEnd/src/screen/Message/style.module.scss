@@ -3,7 +3,7 @@
 .parent {
     background-color: #eee;
     @include center-of-column;
-    margin: 10px 0;
+    // margin: 10px 0;
 
     > .main {
         background-color: white;

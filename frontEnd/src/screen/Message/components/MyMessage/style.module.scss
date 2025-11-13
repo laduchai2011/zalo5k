@@ -12,7 +12,7 @@
         width: 80%;
 
         > .contentContainer {
-            background-color: blue;
+            background-color: rgb(210, 248, 255);
             box-sizing: border-box;
             border-radius: 10px;
             padding: 5px;
@@ -20,7 +20,6 @@
             max-width: 100%;
 
             > .text {
-                color: white;
                 @include center-of-row;
                 justify-content: flex-end;
 

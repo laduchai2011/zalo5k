@@ -1,10 +1,11 @@
-import { HOME, SIGNUP, SIGNIN, SIGNOUT, MESSAGE } from '@src/const/text';
+import { HOME, SIGNUP, SIGNIN, SIGNOUT, MESSAGE, MEMBERS } from '@src/const/text';
 
 const _HOME = HOME;
 const _SIGNUP = SIGNUP;
 const _SIGNIN = SIGNIN;
 const _SIGNOUT = SIGNOUT;
 const _MESSAGE = MESSAGE;
+const _MEMBERS = MEMBERS;
 
 export enum select_enum {
     HOME = _HOME,
@@ -12,13 +13,15 @@ export enum select_enum {
     SIGNIN = _SIGNIN,
     SIGNOUT = _SIGNOUT,
     MESSAGE = _MESSAGE,
+    MEMBERS = _MEMBERS,
 }
 export type selected_type =
     | select_enum.HOME
     | select_enum.SIGNUP
     | select_enum.SIGNIN
     | select_enum.SIGNOUT
-    | select_enum.MESSAGE;
+    | select_enum.MESSAGE
+    | select_enum.MEMBERS;
 
 export enum route_enum {
     HOME = '/',
@@ -26,10 +29,12 @@ export enum route_enum {
     SIGNIN = '/signin',
     SIGNOUT = '/signout',
     MESSAGE = '/message',
+    MEMBERS = '/members',
 }
 export type routed_type =
     | route_enum.HOME
     | route_enum.SIGNUP
     | route_enum.SIGNIN
     | route_enum.SIGNOUT
-    | route_enum.MESSAGE;
+    | route_enum.MESSAGE
+    | route_enum.MEMBERS;

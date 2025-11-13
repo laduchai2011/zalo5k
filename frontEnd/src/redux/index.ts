@@ -6,7 +6,7 @@ import { configureStore } from '@reduxjs/toolkit';
 // import CreateMedicationReducer from '@src/redux/slice/CreateMedication';
 // import DoctorsReducer from '@src/redux/slice/Doctors';
 // import VideoPlayBoxReducer from '@src/redux/slice/VideoPlayBox';
-// import { accountRTK } from './query/accountRTK';
+import { accountRTK } from './query/accountRTK';
 // import { medicationRTK } from './query/medicationRTK';
 // import { shoppingCartRTK } from './query/shoppingCartRTK';
 
@@ -20,12 +20,11 @@ export const store = configureStore({
         // CreateMedicationSlice: CreateMedicationReducer,
         // DoctorsSlice: DoctorsReducer,
         // VideoPlayBoxSlice: VideoPlayBoxReducer,
-        // [accountRTK.reducerPath]: accountRTK.reducer,
+        [accountRTK.reducerPath]: accountRTK.reducer,
         // [medicationRTK.reducerPath]: medicationRTK.reducer,
         // [shoppingCartRTK.reducerPath]: shoppingCartRTK.reducer,
     },
-    // middleware: (getDefaultMiddleware) =>
-    //     getDefaultMiddleware().concat(accountRTK.middleware, medicationRTK.middleware, shoppingCartRTK.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(accountRTK.middleware),
 });
 
 // Type hỗ trợ

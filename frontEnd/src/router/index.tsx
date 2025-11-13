@@ -4,6 +4,7 @@ import Signin from '@src/screen/Signin';
 import Signout from '@src/screen/Signout';
 import Home from '@src/screen/Home';
 import Message from '@src/screen/Message';
+import Members from '@src/screen/Members';
 import NotFoundPage from '@src/screen/NotFoundPage';
 import { route_enum } from './type';
 
@@ -14,6 +15,7 @@ const router = createBrowserRouter(
         { path: route_enum.SIGNOUT, element: <Signout /> },
         { path: route_enum.HOME, element: <Home /> },
         { path: route_enum.MESSAGE, element: <Message /> },
+        { path: route_enum.MEMBERS, element: <Members /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {
