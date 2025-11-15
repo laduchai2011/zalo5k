@@ -38,6 +38,10 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/api/hello', (req, res) => {
+    res.send('hello');
+});
+
 app.use('/api/service_image', service_image);
 app.use('/api/service_video', service_video);
 app.use('/api/service_account', service_account);

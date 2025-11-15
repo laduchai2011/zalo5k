@@ -1,10 +1,18 @@
 import { memo } from 'react';
 import style from './style.module.scss';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
+import { useNavigate } from 'react-router-dom';
+import { route_enum } from '@src/router/type';
 
 const MessageBox = () => {
+    const navigate = useNavigate();
+
+    const handleGoToMessage = () => {
+        navigate(route_enum.MESSAGE);
+    };
+
     return (
-        <div className={style.parent}>
+        <div className={style.parent} onClick={() => handleGoToMessage()}>
             <div className={style.avatarContainer}>
                 <img src={avatarnull} alt="avatar" />
             </div>
