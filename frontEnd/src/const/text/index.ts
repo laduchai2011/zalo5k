@@ -10,3 +10,4 @@ export const FIRST_NAME = 'Họ';
 export const LAST_NAME = 'Tên';
 export const MESSAGE = 'Tin nhắn';
 export const MEMBERS = 'Những thành viên';
+export const PROFILE = 'Trang cá nhân';

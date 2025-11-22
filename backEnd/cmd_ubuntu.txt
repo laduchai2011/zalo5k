@@ -1,0 +1,2 @@
+docker build -t nodeserver .
+docker run -dit --name nodeserver_container --network network_zalo_5kaquarium -p 4000:4000 nodeserver

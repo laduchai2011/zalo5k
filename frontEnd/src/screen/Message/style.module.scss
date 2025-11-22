@@ -8,10 +8,10 @@
     > .main {
         background-color: white;
         width: 350px;
-        min-height: 100vh;
-        height: auto;
+        height: 100vh;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
 
         > .header {
             box-sizing: border-box;
@@ -28,6 +28,10 @@
             width: 100%;
             flex: 1;
             padding: 0 5px;
+            overflow-y: scroll;
+            @include small-scroll-yy(3px);
+            display: flex;
+            flex-direction: column-reverse;
         }
     }
 }

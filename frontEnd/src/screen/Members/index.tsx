@@ -1,6 +1,8 @@
 import style from './style.module.scss';
 import MemberBox from './components/MemberBox';
 import { MEMBERS } from '@src/const/text';
+import Header from '../Header';
+import { select_enum } from '@src/router/type';
 
 const Members = () => {
     return (
@@ -48,6 +50,9 @@ const Members = () => {
                     <MemberBox />
                     <MemberBox />
                     <MemberBox />
+                </div>
+                <div className={style.headerTab}>
+                    <Header selected={select_enum.MEMBERS} />
                 </div>
             </div>
         </div>

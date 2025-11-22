@@ -1,7 +1,8 @@
+import { FC } from 'react';
 import style from './style.module.scss';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
 
-const YourMessage = () => {
+const YourMessage: FC<{ data: number }> = ({ data }) => {
     return (
         <div className={style.parent}>
             <div className={style.main}>
@@ -9,7 +10,7 @@ const YourMessage = () => {
                     <img src={avatarnull} alt="avatar" />
                 </div>
                 <div className={style.contentContainer}>
-                    <div className={style.text}>message</div>
+                    <div className={style.text}>{data}</div>
                     <img
                         className={style.image}
                         src="https://cdn-media.sforum.vn/storage/app/media/anh-dep-8.jpg"

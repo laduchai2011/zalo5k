@@ -1,0 +1,1 @@
+docker run -dit --name redis_container --network network_zalo_5kaquarium -p 6379:6379 -d redis

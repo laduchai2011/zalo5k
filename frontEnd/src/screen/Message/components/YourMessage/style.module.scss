@@ -3,6 +3,7 @@
 .parent {
     @include center-of-row;
     align-items: stretch;
+    margin: 10px 0;
 
     > .main {
         @include center-of-row;

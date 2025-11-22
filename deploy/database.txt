@@ -1,0 +1,1 @@
+docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=201195laducHai" -e "MSSQL_PID=Evaluation" --network network_zalo_5kaquarium -p 1433:1433  --name mssql_container --hostname mssql_container -d mcr.microsoft.com/mssql/server:2025-latest
