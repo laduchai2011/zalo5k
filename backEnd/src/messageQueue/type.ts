@@ -1,5 +1,7 @@
+import { HookDataField } from '@src/dataStruct/hookData';
+
 export interface MessageZaloField {
-    data: unknown;
+    data: HookDataField;
     isNewCustom: boolean;
     accountId: number;
 }

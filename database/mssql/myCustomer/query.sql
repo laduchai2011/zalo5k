@@ -51,15 +51,13 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetAMyCustomer
-	@senderId INT,
-    @accountId INT
+ALTER PROCEDURE GetAMyCustomer
+	@senderId NVARCHAR(255)
 AS
 BEGIN
 	SELECT * FROM dbo.myCustomer AS mc
 	WHERE 
 		status = 'normal' 
-		AND (@accountId IS NULL OR mc.accountId = @accountId) 
 		AND (@senderId IS NULL OR mc.senderId = @senderId) 
 END
 GO

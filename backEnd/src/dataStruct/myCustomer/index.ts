@@ -12,9 +12,8 @@ export interface CreateMyCustomerBodyField {
     accountId: number;
 }
 
-export interface IsMyCustomerBodyField {
+export interface AMyCustomerBodyField {
     senderId: string;
-    accountId: number;
 }
 
 export interface MyCustomerBodyField {

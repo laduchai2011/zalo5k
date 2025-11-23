@@ -1,5 +1,8 @@
 import express, { Express } from 'express';
 import dotenv from 'dotenv';
+import { checkMyCustommer } from './queue';
+
+checkMyCustommer();
 
 dotenv.config();
 

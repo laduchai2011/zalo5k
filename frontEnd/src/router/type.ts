@@ -34,6 +34,8 @@ export enum route_enum {
     MESSAGE = '/message',
     MEMBERS = '/members',
     PROFILE = '/profile',
+    MEMBER_RECEIVE_MESSAGE = '/member_receive_message',
+    MANAGE_MEMBERS = '/manage_members',
 }
 export type routed_type =
     | route_enum.HOME
@@ -41,4 +43,6 @@ export type routed_type =
     | route_enum.SIGNIN
     | route_enum.SIGNOUT
     | route_enum.MESSAGE
-    | route_enum.MEMBERS;
+    | route_enum.MEMBERS
+    | route_enum.MEMBER_RECEIVE_MESSAGE
+    | route_enum.MANAGE_MEMBERS;

@@ -2,7 +2,7 @@ CREATE TABLE myCustomer (
     id INT PRIMARY KEY,
     senderId NVARCHAR(255) NOT NULL,
     status NVARCHAR(255) NOT NULL,
-    accountId INT NOT NULL,
+    accountId INT,
     updateTime DATETIMEOFFSET(7) NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL,
     
