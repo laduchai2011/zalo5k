@@ -18,15 +18,3 @@ export interface MessageTextField {
 }
 
 type ZaloMessage = MessageTextField | Record<string, unknown>; // fallback
-
-export interface ZaloCustomerField {
-    data: {
-        user_id: string;
-        avatar: string;
-        display_name: string;
-        user_gender: string;
-        tags: [];
-    };
-    error: number;
-    message: string;
-}

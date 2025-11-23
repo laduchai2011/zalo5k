@@ -1,5 +1,5 @@
 CREATE TABLE myCustomer (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     senderId NVARCHAR(255) NOT NULL,
     status NVARCHAR(255) NOT NULL,
     accountId INT,

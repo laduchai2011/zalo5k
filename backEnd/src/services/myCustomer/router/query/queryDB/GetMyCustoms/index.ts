@@ -15,7 +15,7 @@ type MyCustomQueryResult = {
 
 class QueryDB_GetMyCustoms extends QueryDB {
     private _connectionPool: sql.ConnectionPool | undefined;
-    private _myCustomBody: MyCustomerBodyField | undefined;
+    private _myCustomerBody: MyCustomerBodyField | undefined;
 
     constructor() {
         super();
@@ -25,19 +25,19 @@ class QueryDB_GetMyCustoms extends QueryDB {
         this._connectionPool = connectionPool;
     }
 
-    setMyCustomerBody(myCustomBody: MyCustomerBodyField): void {
-        this._myCustomBody = myCustomBody;
+    setMyCustomerBody(myCustomerBody: MyCustomerBodyField): void {
+        this._myCustomerBody = myCustomerBody;
     }
 
     async run(): Promise<MyCustomQueryResult | void> {
-        if (this._connectionPool !== undefined && this._myCustomBody !== undefined) {
+        if (this._connectionPool !== undefined && this._myCustomerBody !== undefined) {
             try {
-                const accountId = this._myCustomBody.accountId ? this._myCustomBody.accountId : null;
+                const accountId = this._myCustomerBody.accountId ? this._myCustomerBody.accountId : null;
 
                 const result = await this._connectionPool
                     .request()
-                    .input('page', sql.Int, this._myCustomBody.page)
-                    .input('size', sql.Int, this._myCustomBody.size)
+                    .input('page', sql.Int, this._myCustomerBody.page)
+                    .input('size', sql.Int, this._myCustomerBody.size)
                     .input('accountId', sql.Int, accountId)
                     .execute('GetMyCustomers');
 

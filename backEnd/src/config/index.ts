@@ -45,7 +45,7 @@ const redis_config: my_interface['redis']['config'] = isProduct
           password: process.env.REDIS_SERVER_PASSWORD,
       }
     : {
-          host: '127.0.0.1',
+          host: '103.249.200.80',
           port: 6379,
           username: '',
           password: '',

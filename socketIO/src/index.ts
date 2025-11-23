@@ -10,28 +10,28 @@ const io = new Server(httpServer, {
     },
 });
 
-consumeMessage('test', (data) => {
-    console.log(1111111, data);
-});
-
 // Lắng nghe connection
 io.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
+    // console.log('User connected:', socket.id);
 
     // Tham gia phòng
     socket.on('joinRoom', (roomName: string) => {
         socket.join(roomName);
         console.log(`User ${socket.id} joined room ${roomName}`);
 
-        // // Thông báo cho tất cả trong phòng
+        consumeMessage('customerSend_sendToMember', (data) => {
+            console.log(222222, data);
+            io.to(data.accountId.toString()).emit('roomMessage', `server hello: ${data.data.message.text}`);
+        });
+        // Thông báo cho tất cả trong phòng
         // io.to(roomName).emit('systemMessage', `User ${socket.id} joined the room`);
     });
 
     // Gửi tin nhắn trong phòng
     socket.on('roomMessage', ({ roomName, message }) => {
-        console.log(1111, roomName, message);
-        socket.emit('roomMessage', { roomName: 'room1', message: 'server hello' });
-        io.to(roomName).emit('roomMessage', { user: socket.id, message });
+        //console.log(1111, roomName, message);
+        // socket.emit('roomMessage', { roomName: 'room1', message: 'server hello' });
+        io.to(roomName).emit('roomMessage', `server hello: ${message}`);
     });
 
     // Rời phòng

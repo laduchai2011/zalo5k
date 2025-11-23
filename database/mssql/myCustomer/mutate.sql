@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreateMyCustomer
+﻿ALTER PROCEDURE CreateMyCustomer
 	@senderId NVARCHAR(255),
 	@accountId INT
 AS
@@ -7,15 +7,15 @@ BEGIN
 
 	BEGIN TRY
         BEGIN TRANSACTION;
-		DECLARE @newMyCustomId INT;
+		DECLARE @newMyCustomerId INT;
 
 		-- Th�m medication
-        INSERT INTO medication (senderId, status, accountId, updateTime, createTime)
+        INSERT INTO dbo.myCustomer (senderId, status, accountId, updateTime, createTime)
         VALUES (@senderId, 'normal', @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
-		SET @newMyCustomId = SCOPE_IDENTITY();
+		SET @newMyCustomerId = SCOPE_IDENTITY();
 
-		SELECT * FROM dbo.myCustom WHERE id = @newMyCustomId;
+		SELECT * FROM dbo.myCustomer WHERE id = @newMyCustomerId;
 
 		COMMIT TRANSACTION;
 	END TRY

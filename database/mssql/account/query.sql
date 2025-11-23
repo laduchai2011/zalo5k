@@ -19,7 +19,6 @@ BEGIN
 	JOIN accountInformation ai ON ai.accountId = a.id
 	WHERE 
 		a.status = 'normal' 
-		AND  ai.accountType = 'member'
 		AND (@addedById IS NULL OR ai.addedById = @addedById) 
 END
 GO

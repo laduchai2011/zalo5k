@@ -5,8 +5,6 @@ import ServiceRedis from '@src/cache/cacheRedis';
 const serviceRedis = ServiceRedis.getInstance();
 
 class QueryDB_GetMemberReceiveMessage extends QueryDB {
-    private _member: AccountField | undefined;
-
     constructor() {
         super();
     }

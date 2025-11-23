@@ -14,7 +14,7 @@ class MutateDB_CreateMyCustom extends MutateDB {
         this._connectionPool = connectionPool;
     }
 
-    set_createMyCustomerBody(createMyCustomBody: CreateMyCustomerBodyField): void {
+    setCreateMyCustomerBody(createMyCustomBody: CreateMyCustomerBodyField): void {
         this._createMyCustomerBody = createMyCustomBody;
     }
 

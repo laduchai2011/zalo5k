@@ -1,11 +1,42 @@
-import { memo } from 'react';
+import { FC, memo, useEffect } from 'react';
 import style from './style.module.scss';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
 import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
+import { MyCustomerField } from '@src/dataStruct/myCustom';
+import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
 
-const MessageBox = () => {
+const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     const navigate = useNavigate();
+
+    const {
+        data: data_zaloInforCustomer,
+        // isFetching,
+        isLoading: isLoading_zaloInforCustomer,
+        isError: isError_zaloInforCustomer,
+        error: error_zaloInforCustomer,
+    } = useGetInforCustomerOnZaloQuery({ customerId: data.senderId });
+    useEffect(() => {
+        if (isError_zaloInforCustomer && error_zaloInforCustomer) {
+            console.error(error_zaloInforCustomer);
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.SUCCESS,
+            //         message: 'Lấy dữ liệu KHÔNG thành công !',
+            //     })
+            // );
+        }
+    }, [isError_zaloInforCustomer, error_zaloInforCustomer]);
+    useEffect(() => {
+        // setIsLoading(isLoading_medication);
+    }, [isLoading_zaloInforCustomer]);
+    useEffect(() => {
+        const resData = data_zaloInforCustomer;
+        console.log(11112222, resData);
+        // if (resData?.isSuccess && resData.data) {
+        //     setMyCustomers(resData.data.items);
+        // }
+    }, [data_zaloInforCustomer]);
 
     const handleGoToMessage = () => {
         navigate(route_enum.MESSAGE);
