@@ -10,3 +10,12 @@ export interface AccountField {
     updateTime: string;
     createTime: string;
 }
+
+export interface AddMemberBodyField {
+    userName: string;
+    password: string;
+    phone: string;
+    firstName: string;
+    lastName: string;
+    addedById: number;
+}

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AccountField } from '@src/dataStruct/account';
+import { AccountField, AddMemberBodyField } from '@src/dataStruct/account';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
 import { MyResponse } from '@src/dataStruct/response';
@@ -7,7 +7,7 @@ import { MyResponse } from '@src/dataStruct/response';
 export const accountRTK = createApi({
     reducerPath: 'accountRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['Account'],
+    tagTypes: ['Account', 'MemberList'],
     endpoints: (builder) => ({
         // Mutation (POST)
         signup: builder.mutation<router_res_type, AccountField>({
@@ -33,7 +33,15 @@ export const accountRTK = createApi({
             }),
             invalidatesTags: ['Account'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
+        addMember: builder.mutation<MyResponse<AccountField>, AddMemberBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.ADD_MEMBER,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['MemberList'], // dùng nếu muốn refetch danh sách sau khi thêm
+        }),
     }),
 });
 
-export const { useSignupMutation, useSigninMutation, useSignoutMutation } = accountRTK;
+export const { useSignupMutation, useSigninMutation, useSignoutMutation, useAddMemberMutation } = accountRTK;

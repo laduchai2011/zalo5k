@@ -18,3 +18,13 @@ GO
 GO
     CREATE NONCLUSTERED INDEX idx_phone ON account(phone);
 GO
+
+
+CREATE TABLE accountInformation (
+    addedById INT,
+    accountType NVARCHAR(255) NOT NULL,
+	accountId INT NOT NULL,
+
+	CONSTRAINT FK_accountInformation_Account FOREIGN KEY (accountId) REFERENCES account(id),
+	CONSTRAINT FK_accountInformation_AddedBy FOREIGN KEY (addedById) REFERENCES account(id)
+);

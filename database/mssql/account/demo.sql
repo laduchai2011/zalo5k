@@ -22,3 +22,17 @@ VALUES
         TODATETIMEOFFSET(SYSUTCDATETIME(), -5),
         TODATETIMEOFFSET(SYSUTCDATETIME(), -5)
     );
+
+
+INSERT INTO
+    accountInformation (
+        addedById,
+        accountType,
+        accountId
+    )
+VALUES
+    (
+        null,
+        'admin',
+        '1'
+    );
