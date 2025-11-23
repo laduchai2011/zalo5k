@@ -10,4 +10,5 @@ export const ACCOUNT_API = {
     ADD_MEMBER: `${BASE_URL}${apiString}/service_account/mutate/addMember`,
     GET_ALL_MEMBERS: `${BASE_URL}${apiString}/service_account/query/getAllMembers`,
     SET_MEMBER_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/setMemberReceiveMessage`,
+    GET_MEMBER_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/query/getMemberReceiveMessage`,
 };

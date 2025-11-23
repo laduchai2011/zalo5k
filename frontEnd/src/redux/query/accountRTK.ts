@@ -7,8 +7,12 @@ import { MyResponse } from '@src/dataStruct/response';
 export const accountRTK = createApi({
     reducerPath: 'accountRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['Account', 'MemberList'],
+    tagTypes: ['Account', 'MemberList', 'MemberReceiveMessage'],
     endpoints: (builder) => ({
+        getMemberReceiveMessage: builder.query<MyResponse<AccountField>, void>({
+            query: () => ACCOUNT_API.GET_MEMBER_RECEIVE_MESSAGE,
+            providesTags: ['MemberReceiveMessage'],
+        }),
         getAllMembers: builder.query<MyResponse<AccountField[]>, AllMembersBodyField>({
             query: (body) => ({
                 url: ACCOUNT_API.GET_ALL_MEMBERS,
@@ -55,11 +59,13 @@ export const accountRTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['MemberReceiveMessage'],
         }),
     }),
 });
 
 export const {
+    useGetMemberReceiveMessageQuery,
     useGetAllMembersQuery,
     useSignupMutation,
     useSigninMutation,

@@ -16,6 +16,6 @@ router_query_account.get('/isSignin', handle_isSignin.main);
 
 router_query_account.post('/getAllMembers', handle_getAllMembers.setup, handle_getAllMembers.main);
 
-router_query_account.post('/getMemberReceiveMessage', authentication, handle_getMemberReceiveMessage.main);
+router_query_account.get('/getMemberReceiveMessage', authentication, handle_getMemberReceiveMessage.main);
 
 export default router_query_account;

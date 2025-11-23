@@ -3,7 +3,11 @@ import style from './style.module.scss';
 import { MEMBER_RECEIVE_MESSAGE } from '@src/const/text';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
 import { AccountField } from '@src/dataStruct/account';
-import { useGetAllMembersQuery, useSetMemberReceiveMessageMutation } from '@src/redux/query/accountRTK';
+import {
+    useGetAllMembersQuery,
+    useSetMemberReceiveMessageMutation,
+    useGetMemberReceiveMessageQuery,
+} from '@src/redux/query/accountRTK';
 
 const MemberReceiveMessage = () => {
     const [allMembers, setAllMembers] = useState<AccountField[]>([]);
@@ -40,11 +44,38 @@ const MemberReceiveMessage = () => {
         }
     }, [data_allMembers]);
 
+    const {
+        data: data_memberReceiveMessage,
+        // isFetching,
+        isLoading: isLoading_memberReceiveMessage,
+        isError: isError_memberReceiveMessage,
+        error: error_memberReceiveMessage,
+    } = useGetMemberReceiveMessageQuery();
+    useEffect(() => {
+        if (isError_memberReceiveMessage && error_memberReceiveMessage) {
+            console.error(error_memberReceiveMessage);
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.SUCCESS,
+            //         message: 'Lấy dữ liệu KHÔNG thành công !',
+            //     })
+            // );
+        }
+    }, [isError_memberReceiveMessage, error_memberReceiveMessage]);
+    useEffect(() => {
+        // setIsLoading(isLoading_medication);
+    }, [isLoading_memberReceiveMessage]);
+    useEffect(() => {
+        const resData = data_memberReceiveMessage;
+        if (resData?.isSuccess && resData?.data) {
+            setSelectedMember(resData.data);
+        }
+    }, [data_memberReceiveMessage]);
+
     const handleSelectMemberReceiveMessage = (member: AccountField) => {
         setMemberReceiveMessage(member)
             .then((res) => {
                 const resData = res.data;
-                console.log(11111, resData);
                 if (resData?.isSuccess && resData?.data) {
                     setSelectedMember(resData.data);
                 }

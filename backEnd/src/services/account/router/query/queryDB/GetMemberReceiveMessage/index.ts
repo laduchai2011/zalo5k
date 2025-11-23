@@ -14,19 +14,15 @@ class QueryDB_GetMemberReceiveMessage extends QueryDB {
     async run(): Promise<AccountField | void> {
         const key = 'memberReceiveMessage';
 
-        if (this._member !== undefined) {
-            try {
-                await serviceRedis.init();
-                const result = await serviceRedis.getData<AccountField>(key);
+        try {
+            await serviceRedis.init();
+            const result = await serviceRedis.getData<AccountField>(key);
 
-                if (result) {
-                    return this._member;
-                }
-            } catch (error) {
-                console.error(error);
+            if (result) {
+                return result;
             }
-        } else {
-            console.log('MutateDB_SetMemberReceiveMessage: error method run()');
+        } catch (error) {
+            console.error(error);
         }
     }
 }
