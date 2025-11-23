@@ -1,14 +1,15 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { MANAGE_MEMBERS, ADD_MEMBER, ADD } from '@src/const/text';
-import { useAddMemberMutation } from '@src/redux/query/accountRTK';
-import { AddMemberBodyField } from '@src/dataStruct/account';
+import { useAddMemberMutation, useGetAllMembersQuery } from '@src/redux/query/accountRTK';
+import { AddMemberBodyField, AccountField } from '@src/dataStruct/account';
 import { member_enum, member_field_type } from './type';
 import { isSpace, isFirstNumber, containsSpecialCharacters, isValidPhoneNumber } from '@src/utility/string';
 
 const ManageMembers = () => {
     const inputContainer_element = useRef<HTMLDivElement>(null);
 
+    const [allMembers, setAllMembers] = useState<AccountField[]>([]);
     const [note, setNote] = useState('');
     const [addMemberBody, setAddMemberBody] = useState<AddMemberBodyField>({
         userName: '',
@@ -25,6 +26,35 @@ const ManageMembers = () => {
     const [lastNameWarn, setLastNameWarn] = useState<string>('');
 
     const [addMember] = useAddMemberMutation();
+
+    const {
+        data: data_allMembers,
+        // isFetching,
+        isLoading: isLoading_allMembers,
+        isError: isError_allMembers,
+        error: error_allMembers,
+    } = useGetAllMembersQuery({ addedById: -1 });
+    useEffect(() => {
+        if (isError_allMembers && error_allMembers) {
+            console.error(error_allMembers);
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.SUCCESS,
+            //         message: 'Lấy dữ liệu KHÔNG thành công !',
+            //     })
+            // );
+        }
+    }, [isError_allMembers, error_allMembers]);
+    useEffect(() => {
+        // setIsLoading(isLoading_medication);
+    }, [isLoading_allMembers]);
+    useEffect(() => {
+        const resData = data_allMembers;
+
+        if (resData?.isSuccess && resData?.data) {
+            setAllMembers(resData.data);
+        }
+    }, [data_allMembers]);
 
     const showInputContainer = () => {
         if (inputContainer_element.current) {
@@ -192,6 +222,12 @@ const ManageMembers = () => {
         }
     };
 
+    const list_members = allMembers.map((member, index) => (
+        <div key={index}>
+            {member.userName} - {member.firstName} {member.lastName} - {member.phone}
+        </div>
+    ));
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
@@ -236,12 +272,7 @@ const ManageMembers = () => {
                         </button>
                         <div>{note}</div>
                     </div>
-                    <div className={style.list}>
-                        <div>sdfsdf</div>
-                        <div>sdfsdf</div>
-                        <div>sdfsdf</div>
-                        <div>sdfsdf</div>
-                    </div>
+                    <div className={style.list}>{list_members}</div>
                 </div>
             </div>
         </div>

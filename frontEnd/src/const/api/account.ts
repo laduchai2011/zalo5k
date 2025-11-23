@@ -8,4 +8,6 @@ export const ACCOUNT_API = {
     SIGNIN: `${BASE_URL}${apiString}/service_account/mutate/signin`,
     SIGNOUT: `${BASE_URL}${apiString}/service_account/mutate/signout`,
     ADD_MEMBER: `${BASE_URL}${apiString}/service_account/mutate/addMember`,
+    GET_ALL_MEMBERS: `${BASE_URL}${apiString}/service_account/query/getAllMembers`,
+    SET_MEMBER_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/setMemberReceiveMessage`,
 };

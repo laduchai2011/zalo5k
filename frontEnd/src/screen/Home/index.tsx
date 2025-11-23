@@ -69,6 +69,7 @@ const Home = () => {
         const resData = data_myCustoms;
         console.log('myCustoms:', resData);
     }, [data_myCustoms]);
+
     return (
         <div className={style.parent}>
             <div className={style.main}>

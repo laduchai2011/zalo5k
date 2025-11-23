@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AccountField, AddMemberBodyField } from '@src/dataStruct/account';
+import { AccountField, AddMemberBodyField, AllMembersBodyField } from '@src/dataStruct/account';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
 import { MyResponse } from '@src/dataStruct/response';
@@ -9,6 +9,14 @@ export const accountRTK = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
     tagTypes: ['Account', 'MemberList'],
     endpoints: (builder) => ({
+        getAllMembers: builder.query<MyResponse<AccountField[]>, AllMembersBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.GET_ALL_MEMBERS,
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['MemberList'],
+        }),
         // Mutation (POST)
         signup: builder.mutation<router_res_type, AccountField>({
             query: (body) => ({
@@ -41,7 +49,21 @@ export const accountRTK = createApi({
             }),
             invalidatesTags: ['MemberList'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
+        setMemberReceiveMessage: builder.mutation<MyResponse<AccountField>, AccountField>({
+            query: (body) => ({
+                url: ACCOUNT_API.SET_MEMBER_RECEIVE_MESSAGE,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useSignupMutation, useSigninMutation, useSignoutMutation, useAddMemberMutation } = accountRTK;
+export const {
+    useGetAllMembersQuery,
+    useSignupMutation,
+    useSigninMutation,
+    useSignoutMutation,
+    useAddMemberMutation,
+    useSetMemberReceiveMessageMutation,
+} = accountRTK;

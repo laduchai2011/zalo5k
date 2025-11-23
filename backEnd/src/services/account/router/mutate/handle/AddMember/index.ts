@@ -78,16 +78,10 @@ class Handle_AddMember {
         }
     };
 
-    setup = async (
-        req: Request<Record<string, never>, unknown, AddMemberBodyField>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    setup = (req: Request<Record<string, never>, unknown, AddMemberBodyField>, res: Response, next: NextFunction) => {
         const myResponse: MyResponse<AccountField> = {
             isSuccess: false,
         };
-
-        await this._mssql_server.init();
 
         const addMemberBody = req.body;
         const { refreshToken } = req.cookies;
@@ -121,7 +115,6 @@ class Handle_AddMember {
     };
 
     main = async (_: Request, res: Response) => {
-        // const addMemberBody = req.body;
         const addMemberBody = res.locals.addMemberBody as AddMemberBodyField;
 
         const myResponse: MyResponse<AccountField> = {

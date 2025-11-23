@@ -28,3 +28,6 @@ CREATE TABLE accountInformation (
 	CONSTRAINT FK_accountInformation_Account FOREIGN KEY (accountId) REFERENCES account(id),
 	CONSTRAINT FK_accountInformation_AddedBy FOREIGN KEY (addedById) REFERENCES account(id)
 );
+GO
+    CREATE NONCLUSTERED INDEX idx_addedById ON accountInformation(addedById);
+GO

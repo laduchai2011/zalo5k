@@ -19,3 +19,7 @@ export interface AddMemberBodyField {
     lastName: string;
     addedById: number;
 }
+
+export interface AllMembersBodyField {
+    addedById: number;
+}
