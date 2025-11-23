@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const router_mutate_myCustom: Router = express.Router();
+const router_mutate_myCustomer: Router = express.Router();
 // const handle_createMedication = new Handle_CreateMedication();
 // const handle_createMedicationComment = new Handle_CreateMedicationComment();
 
@@ -24,4 +24,4 @@ const router_mutate_myCustom: Router = express.Router();
 //     handle_createMedicationComment.main
 // );
 
-export default router_mutate_myCustom;
+export default router_mutate_myCustomer;

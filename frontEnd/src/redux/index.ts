@@ -7,7 +7,7 @@ import { configureStore } from '@reduxjs/toolkit';
 // import DoctorsReducer from '@src/redux/slice/Doctors';
 // import VideoPlayBoxReducer from '@src/redux/slice/VideoPlayBox';
 import { accountRTK } from './query/accountRTK';
-import { myCustomRTK } from './query/myCustomRTK';
+import { myCustomerRTK } from './query/myCustomerRTK';
 // import { shoppingCartRTK } from './query/shoppingCartRTK';
 
 export const store = configureStore({
@@ -21,10 +21,11 @@ export const store = configureStore({
         // DoctorsSlice: DoctorsReducer,
         // VideoPlayBoxSlice: VideoPlayBoxReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
-        [myCustomRTK.reducerPath]: myCustomRTK.reducer,
+        [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         // [shoppingCartRTK.reducerPath]: shoppingCartRTK.reducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(accountRTK.middleware, myCustomRTK.middleware),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(accountRTK.middleware, myCustomerRTK.middleware),
 });
 
 // Type hỗ trợ

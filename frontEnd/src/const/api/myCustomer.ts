@@ -3,6 +3,6 @@ import { BASE_URL } from './baseUrl';
 const isProduct = process.env.NODE_ENV === 'production';
 const apiString = isProduct ? '' : '/api';
 
-export const MYCUSTOM_API = {
-    GET_MYCUSTOMS: `${BASE_URL}${apiString}/service_myCustom/query/getMyCustoms`,
+export const MYCUSTOMER_API = {
+    GET_MYCUSTOMERS: `${BASE_URL}${apiString}/service_myCustomer/query/getMyCustomers`,
 };

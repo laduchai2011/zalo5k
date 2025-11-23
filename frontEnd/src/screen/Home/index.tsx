@@ -1,32 +1,38 @@
 import { useEffect } from 'react';
 import style from './style.module.scss';
+import { useNavigate } from 'react-router-dom';
 import MessageBox from './components/MessageBox';
 import { HOME } from '@src/const/text';
-import { useGetMyCustomsQuery } from '@src/redux/query/myCustomRTK';
+import { useGetMyCustomersQuery } from '@src/redux/query/myCustomerRTK';
 import io from 'socket.io-client';
 import Header from '../Header';
 import { select_enum } from '@src/router/type';
-
-type SocketType = ReturnType<typeof io>;
+import { route_enum } from '@src/router/type';
+import { SOCKET_URL } from '@src/const/api/socketUrl';
+import { SocketType, MessageSoc } from '@src/dataStruct/socketIO';
 
 let socket: SocketType;
 
-type messageSoc = {
-    roomName: string;
-    message: string;
-};
-
 const Home = () => {
+    const navigate = useNavigate();
+    const myId = sessionStorage.getItem('myId');
+
+    useEffect(() => {
+        if (myId === null) {
+            navigate(route_enum.SIGNIN);
+        }
+    }, [navigate, myId]);
+
     useEffect(() => {
         // Kết nối server
-        socket = io('http://zalo5k.local.com:3005');
+        socket = io(SOCKET_URL || '');
 
         socket.on('connect', () => {
             console.log('Connected:', socket.id);
         });
 
         // Nhận message từ server
-        socket.on('roomMessage', (message: messageSoc) => {
+        socket.on('roomMessage', (message: MessageSoc) => {
             // setMessages((prev) => [...prev, data]);
             console.log(1111111, message);
         });
@@ -44,7 +50,7 @@ const Home = () => {
         isLoading: isLoading_myCustoms,
         isError: isError_myCustoms,
         error: error_myCustoms,
-    } = useGetMyCustomsQuery({ page: 0, size: 0, accountId: -1 });
+    } = useGetMyCustomersQuery({ page: 0, size: 1000, accountId: -1 });
     useEffect(() => {
         if (isError_myCustoms && error_myCustoms) {
             console.error(error_myCustoms);

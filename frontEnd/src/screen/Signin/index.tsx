@@ -49,6 +49,7 @@ const Signin = () => {
                 if (resData?.isSuccess) {
                     setNote('');
                     navigate(route_enum.HOME);
+                    window.location.reload();
                 } else {
                     setNote('Đăng nhập thất bại');
                 }

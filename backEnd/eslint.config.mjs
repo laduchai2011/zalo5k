@@ -42,6 +42,7 @@ export default [
         files: ['src/**/*.ts'],
         rules: {
             '@typescript-eslint/no-unused-vars': 'warn',
+            '@typescript-eslint/no-explicit-any': 'off',
             // 'no-console': 'warn',
             'import/no-unused-modules': [
                 'warn',

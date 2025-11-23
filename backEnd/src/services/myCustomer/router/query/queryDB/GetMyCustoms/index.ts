@@ -1,21 +1,21 @@
 import sql from 'mssql';
-import { QueryDB } from '@src/services/myCustom/interface';
-import { MyCustomField, MyCustomBodyField } from '@src/dataStruct/myCustom';
+import { QueryDB } from '@src/services/myCustomer/interface';
+import { MyCustomerField, MyCustomerBodyField } from '@src/dataStruct/myCustomer';
 
 interface TotalCountField {
     totalCount: number;
 }
 
 type MyCustomQueryResult = {
-    recordsets: [MyCustomField[], TotalCountField[]];
-    recordset: MyCustomField[]; // tập đầu tiên
+    recordsets: [MyCustomerField[], TotalCountField[]];
+    recordset: MyCustomerField[]; // tập đầu tiên
     rowsAffected: number[];
     output: Record<string, unknown>;
 };
 
 class QueryDB_GetMyCustoms extends QueryDB {
     private _connectionPool: sql.ConnectionPool | undefined;
-    private _myCustomBody: MyCustomBodyField | undefined;
+    private _myCustomBody: MyCustomerBodyField | undefined;
 
     constructor() {
         super();
@@ -25,7 +25,7 @@ class QueryDB_GetMyCustoms extends QueryDB {
         this._connectionPool = connectionPool;
     }
 
-    setMyCustomBody(myCustomBody: MyCustomBodyField): void {
+    setMyCustomerBody(myCustomBody: MyCustomerBodyField): void {
         this._myCustomBody = myCustomBody;
     }
 
@@ -39,7 +39,7 @@ class QueryDB_GetMyCustoms extends QueryDB {
                     .input('page', sql.Int, this._myCustomBody.page)
                     .input('size', sql.Int, this._myCustomBody.size)
                     .input('accountId', sql.Int, accountId)
-                    .execute('GetMyCustoms');
+                    .execute('GetMyCustomers');
 
                 return result as unknown as MyCustomQueryResult;
             } catch (error) {

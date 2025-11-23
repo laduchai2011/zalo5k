@@ -7,6 +7,16 @@ export interface MyCustomerField {
     createTime: string;
 }
 
+export interface CreateMyCustomerBodyField {
+    senderId: string;
+    accountId: number;
+}
+
+export interface IsMyCustomerBodyField {
+    senderId: string;
+    accountId: number;
+}
+
 export interface MyCustomerBodyField {
     page: number;
     size: number;
