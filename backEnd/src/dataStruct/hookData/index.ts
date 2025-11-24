@@ -1,7 +1,22 @@
+export enum zalo_event_name_enum {
+    user_send_text = 'user_send_text',
+    oa_send_text = 'oa_send_text',
+    user_received_message = 'user_received_message',
+    user_seen_message = 'user_seen_message',
+    i_sending = 'i_sending',
+}
+
+type zalo_event_name_type =
+    | zalo_event_name_enum.user_send_text
+    | zalo_event_name_enum.oa_send_text
+    | zalo_event_name_enum.user_received_message
+    | zalo_event_name_enum.user_seen_message
+    | zalo_event_name_enum.i_sending;
+
 export interface HookDataField<Tdata = ZaloMessage> {
     app_id: string;
     user_id_by_app: string;
-    event_name: string;
+    event_name: zalo_event_name_type;
     sender: {
         id: string;
     };
@@ -12,7 +27,7 @@ export interface HookDataField<Tdata = ZaloMessage> {
     timestamp: string;
 }
 
-export interface MessageTextField {
+interface MessageTextField {
     text: string;
     msg_id: string;
 }

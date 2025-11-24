@@ -4,11 +4,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import router_query_message from './router/query';
-// import router_mutate_myCustomer from './router/mutate';
+import router_mutate_message from './router/mutate';
 
 const service_message: Express = express();
 
-router_query_message.use(`/query`, router_query_message);
-// service_myCustomer.use(`/mutate`, router_mutate_myCustomer);
+service_message.use(`/query`, router_query_message);
+service_message.use(`/mutate`, router_mutate_message);
 
 export default service_message;

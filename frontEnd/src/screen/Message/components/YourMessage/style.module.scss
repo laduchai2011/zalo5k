@@ -23,15 +23,25 @@
         }
 
         > .contentContainer {
-            background-color: rgb(243, 243, 243);
-            box-sizing: border-box;
-            border-radius: 10px;
-            padding: 5px;
             width: max-content;
             max-width: calc(100% - 30px);
 
-            > .image {
-                max-width: 100%;
+            > .content {
+                background-color: rgb(243, 243, 243);
+                box-sizing: border-box;
+                border-radius: 10px;
+                padding: 5px;
+                width: max-content;
+                max-width: calc(100% - 30px);
+
+                > .image {
+                    max-width: 100%;
+                }
+            }
+
+            > .status {
+                font-size: 0.8rem;
+                color: gray;
             }
         }
     }

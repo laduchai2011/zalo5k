@@ -21,3 +21,12 @@ export interface PagedMessageField {
     items: MessageField[];
     totalCount: number;
 }
+
+export interface CreateMessageBodyField {
+    eventName: string;
+    senserId: string;
+    message: string;
+    timestamp: string;
+    messageStatus: string;
+    accountId: number;
+}

@@ -10,12 +10,15 @@ const YourMessage: FC<{ data: number }> = ({ data }) => {
                     <img src={avatarnull} alt="avatar" />
                 </div>
                 <div className={style.contentContainer}>
-                    <div className={style.text}>{data}</div>
-                    <img
-                        className={style.image}
-                        src="https://cdn-media.sforum.vn/storage/app/media/anh-dep-8.jpg"
-                        alt="img"
-                    />
+                    <div className={style.content}>
+                        <div className={style.text}>{data}</div>
+                        <img
+                            className={style.image}
+                            src="https://cdn-media.sforum.vn/storage/app/media/anh-dep-8.jpg"
+                            alt="img"
+                        />
+                    </div>
+                    <div className={style.status}>Đang gửi ...</div>
                 </div>
             </div>
         </div>

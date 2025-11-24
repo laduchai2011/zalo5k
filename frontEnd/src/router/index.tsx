@@ -17,7 +17,7 @@ const router = createBrowserRouter(
         { path: route_enum.SIGNIN, element: <Signin /> },
         { path: route_enum.SIGNOUT, element: <Signout /> },
         { path: route_enum.HOME, element: <Home /> },
-        { path: route_enum.MESSAGE, element: <Message /> },
+        { path: route_enum.MESSAGE + '/:id', element: <Message /> },
         { path: route_enum.MEMBERS, element: <Members /> },
         { path: route_enum.PROFILE, element: <Profile /> },
         { path: route_enum.MEMBER_RECEIVE_MESSAGE, element: <MemberReceiveMessage /> },

@@ -1,19 +1,61 @@
 import { useRef, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import style from './style.module.scss';
-import YourMessage from './components/YourMessage';
-// import MyMessage from './components/MyMessage';
+// import YourMessage from './components/YourMessage';
+import MyMessage from './components/MyMessage';
 import { MESSAGE } from '@src/const/text';
+import { MessageField, CreateMessageBodyField } from '@src/dataStruct/message';
 import { IoMdSend } from 'react-icons/io';
+import { zalo_event_name_enum } from '@src/dataStruct/hookData';
+import { useCreateMessageMutation } from '@src/redux/query/messageRTK';
+import io from 'socket.io-client';
+import { SocketType, MessageSoc } from '@src/dataStruct/socketIO';
+import { SOCKET_URL } from '@src/const/api/socketUrl';
+
+let socket: SocketType;
 
 const Message = () => {
+    const myId = sessionStorage.getItem('myId');
+    const { id } = useParams<{ id: string }>();
     const [hasMore, setHasMore] = useState(true);
     const contentContainer_element = useRef<HTMLDivElement | null>(null);
-    const [data, setData] = useState<number[]>([1, 2, 3, 4, 5, 6]);
+    const [data, setData] = useState<number[]>([1, 2]);
     const [index_mes, set_index_mes] = useState<number>(6);
+    const [newMessage, setNewMessage] = useState<string>('');
+
+    const [createMessage] = useCreateMessageMutation();
 
     useEffect(() => {
-        loadMore();
+        // loadMore();
     }, []);
+
+    useEffect(() => {
+        if (!myId) return;
+        if (!id) return;
+        const myRoom = myId + id;
+
+        // Kết nối server
+        socket = io(SOCKET_URL || '');
+
+        socket.on('connect', () => {
+            console.log('Connected:', socket.id);
+        });
+
+        // Nhận message từ server
+        socket.on('roomMessage', (message: MessageSoc) => {
+            // setMessages((prev) => [...prev, data]);
+            console.log('roomMessage', message);
+        });
+
+        socket.emit('joinRoom', myRoom);
+
+        // socket.emit('roomMessage', { roomName: myId, message: 'client hello' });
+
+        return () => {
+            socket.emit('leaveRoom', myId);
+            socket.disconnect();
+        };
+    }, [myId, id]);
 
     const handleScroll = () => {
         const contentContainerElement = contentContainer_element.current;
@@ -46,8 +88,34 @@ const Message = () => {
         });
     };
 
+    const handleNewMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setNewMessage(value);
+    };
+
+    const handleSend = () => {
+        const newMes = newMessage.trim();
+        if (newMes.length === 0) return;
+
+        const createMessageBody: CreateMessageBodyField = {
+            eventName: '',
+            senserId: '',
+            message: newMes,
+            timestamp: '',
+            messageStatus: zalo_event_name_enum.i_sending,
+            accountId: -1,
+        };
+
+        createMessage(createMessageBody)
+            .then((res) => {
+                const resData = res.data;
+                console.log('createMessage', resData);
+            })
+            .catch((err) => console.error(err));
+    };
+
     const list_mes = data.map((item, index) => {
-        return <YourMessage key={index} data={item} />;
+        return <MyMessage key={index} data={item} />;
     });
 
     return (
@@ -58,8 +126,8 @@ const Message = () => {
                     {list_mes}
                 </div>
                 <div className={style.inputContainer}>
-                    <input placeholder="Viết tin nhắn" />
-                    <IoMdSend size={30} color="blue" />
+                    <input value={newMessage} onChange={(e) => handleNewMessageChange(e)} placeholder="Viết tin nhắn" />
+                    <IoMdSend onClick={() => handleSend()} size={30} color="blue" />
                 </div>
             </div>
         </div>

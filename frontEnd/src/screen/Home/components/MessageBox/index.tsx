@@ -43,7 +43,7 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     }, [data_zaloInforCustomer]);
 
     const handleGoToMessage = () => {
-        navigate(route_enum.MESSAGE);
+        navigate(route_enum.MESSAGE + '/' + `${data.senderId}`);
     };
 
     return (

@@ -12,24 +12,34 @@
         width: 80%;
 
         > .contentContainer {
-            background-color: rgb(210, 248, 255);
-            box-sizing: border-box;
-            border-radius: 10px;
-            padding: 5px;
             width: max-content;
             max-width: 100%;
 
-            > .text {
-                @include center-of-row;
-                justify-content: flex-end;
+            > .content {
+                background-color: rgb(210, 248, 255);
+                box-sizing: border-box;
+                border-radius: 10px;
+                padding: 5px;
+                width: max-content;
+                max-width: 100%;
 
-                > div {
-                    width: max-content;
+                > .text {
+                    @include center-of-row;
+                    justify-content: flex-end;
+
+                    > div {
+                        width: max-content;
+                    }
+                }
+
+                > .image {
+                    max-width: 100%;
                 }
             }
 
-            > .image {
-                max-width: 100%;
+            > .status {
+                font-size: 0.8rem;
+                color: gray;
             }
         }
     }
