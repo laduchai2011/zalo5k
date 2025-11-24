@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { QueryDB } from '@src/services/myCustomer/interface';
 import { ZaloCustomerField } from '@src/dataStruct/hookData';
+import { refreshAccessTokenInfor, getAccessTokenInfor } from '@src/services/zalo_webhook/handle/TokenZaloOA';
 
 class QueryZalo_GetInforCustomerOnZalo extends QueryDB {
     private _customerId: string | undefined;
-    private _accessToken: string | undefined;
 
     constructor() {
         super();
@@ -14,14 +14,10 @@ class QueryZalo_GetInforCustomerOnZalo extends QueryDB {
         this._customerId = customerId;
     };
 
-    setAccessToken = (accessToken: string) => {
-        this._accessToken = accessToken;
-    };
-
     async run(): Promise<ZaloCustomerField | void> {
-        if (this._customerId !== undefined && this._accessToken !== undefined) {
+        if (this._customerId !== undefined) {
             try {
-                const result = await getZaloUserInfo(this._customerId, this._accessToken);
+                const result = await getZaloUserInfo(this._customerId);
 
                 return result;
             } catch (error) {
@@ -33,15 +29,54 @@ class QueryZalo_GetInforCustomerOnZalo extends QueryDB {
 
 export default QueryZalo_GetInforCustomerOnZalo;
 
-async function getZaloUserInfo(customerId: string, accessToken: string): Promise<ZaloCustomerField> {
-    const res = await axios.get('https://openapi.zalo.me/v2.0/oa/getprofile', {
-        params: {
-            data: JSON.stringify({ user_id: customerId }),
-        },
-        headers: {
-            access_token: accessToken,
-        },
-    });
+async function getZaloUserInfo(customerId: string): Promise<ZaloCustomerField | void> {
+    try {
+        const token = await getAccessTokenInfor();
 
-    return res.data as ZaloCustomerField;
+        const res = await axios.get('https://openapi.zalo.me/v2.0/oa/getprofile', {
+            params: {
+                data: JSON.stringify({ user_id: customerId }),
+            },
+            headers: {
+                access_token: token,
+            },
+        });
+
+        const resData = res.data as ZaloCustomerField;
+
+        if (resData.error !== 0) {
+            const newToken = await refreshAccessTokenInfor();
+
+            const res1 = await axios.get('https://openapi.zalo.me/v3.0/oa/user/detail', {
+                params: {
+                    data: JSON.stringify({ user_id: customerId }),
+                },
+                headers: {
+                    access_token: newToken,
+                },
+            });
+
+            return res1.data as ZaloCustomerField;
+        }
+
+        return resData;
+    } catch (err: any) {
+        // Nếu lỗi hết hạn token
+        console.error(err);
+
+        if (err.response?.data?.message === 'Access token has expired') {
+            const newToken = await refreshAccessTokenInfor();
+
+            const res = await axios.get('https://openapi.zalo.me/v2.0/oa/getprofile', {
+                params: {
+                    data: JSON.stringify({ user_id: customerId }),
+                },
+                headers: {
+                    access_token: newToken,
+                },
+            });
+
+            return res.data as ZaloCustomerField;
+        }
+    }
 }

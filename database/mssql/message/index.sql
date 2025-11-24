@@ -1,0 +1,17 @@
+CREATE TABLE message (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	eventName NVARCHAR(255) NOT NULL,
+    senserId NVARCHAR(255) NOT NULL,
+    message NVARCHAR(MAX) NOT NULL,
+	timestamp NVARCHAR(255) NOT NULL,
+	messageStatus NVARCHAR(255) NOT NULL,
+    status NVARCHAR(255) NOT NULL,
+    accountId INT NOT NULL,
+    updateTime DATETIMEOFFSET(7) NOT NULL,
+    createTime DATETIMEOFFSET(7) NOT NULL,
+
+    CONSTRAINT FK_message_Account FOREIGN KEY (accountId) REFERENCES account(id)
+)
+GO
+CREATE NONCLUSTERED INDEX idx_account_id ON message(accountId);
+GO

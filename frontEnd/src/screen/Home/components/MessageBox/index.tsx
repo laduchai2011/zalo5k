@@ -1,13 +1,18 @@
-import { FC, memo, useEffect } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
 import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
 import { MyCustomerField } from '@src/dataStruct/myCustom';
 import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
+import { ZaloCustomerField } from '@src/dataStruct/hookData';
 
 const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     const navigate = useNavigate();
+
+    const [zaloCustomer, setZaloCustomer] = useState<ZaloCustomerField | undefined>(undefined);
+
+    const avatar = zaloCustomer?.data.avatar ? zaloCustomer?.data.avatar : avatarnull;
 
     const {
         data: data_zaloInforCustomer,
@@ -32,10 +37,9 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     }, [isLoading_zaloInforCustomer]);
     useEffect(() => {
         const resData = data_zaloInforCustomer;
-        console.log(11112222, resData);
-        // if (resData?.isSuccess && resData.data) {
-        //     setMyCustomers(resData.data.items);
-        // }
+        if (resData?.isSuccess && resData.data && resData.data.error === 0) {
+            setZaloCustomer(resData.data);
+        }
     }, [data_zaloInforCustomer]);
 
     const handleGoToMessage = () => {
@@ -43,27 +47,29 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     };
 
     return (
-        <div className={style.parent} onClick={() => handleGoToMessage()}>
-            <div className={style.avatarContainer}>
-                <img src={avatarnull} alt="avatar" />
-            </div>
-            <div className={style.contentContainer}>
-                <div className={style.nameContainer}>
-                    <div>
-                        <div className={style.name}>name name name name name name name name name name name</div>
-                        <div className={style.time}>time</div>
-                    </div>
+        zaloCustomer && (
+            <div className={style.parent} onClick={() => handleGoToMessage()}>
+                <div className={style.avatarContainer}>
+                    <img src={avatar} alt="avatar" />
                 </div>
-                <div className={style.messageContainer}>
-                    <div>
-                        <div className={style.message}>
-                            Message Message Message Message Message Message Message Message
+                <div className={style.contentContainer}>
+                    <div className={style.nameContainer}>
+                        <div>
+                            <div className={style.name}>{zaloCustomer.data.display_name}</div>
+                            <div className={style.time}>time</div>
                         </div>
-                        <div className={style.newAmount}>3</div>
+                    </div>
+                    <div className={style.messageContainer}>
+                        <div>
+                            <div className={style.message}>
+                                Message Message Message Message Message Message Message Message
+                            </div>
+                            <div className={style.newAmount}>3</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        )
     );
 };
 

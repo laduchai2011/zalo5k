@@ -9,6 +9,7 @@ import service_image from './services/image';
 import service_video from './services/video';
 import service_account from '@src/services/account';
 import service_myCustomer from './services/myCustomer';
+import service_message from './services/message';
 
 const app: Express = express();
 const port = process.env.PORT || 3007;
@@ -44,6 +45,7 @@ app.use('/api/service_image', service_image);
 app.use('/api/service_video', service_video);
 app.use('/api/service_account', service_account);
 app.use('/api/service_myCustomer', service_myCustomer);
+app.use('/api/service_message', service_message);
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

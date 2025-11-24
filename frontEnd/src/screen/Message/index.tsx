@@ -3,6 +3,7 @@ import style from './style.module.scss';
 import YourMessage from './components/YourMessage';
 // import MyMessage from './components/MyMessage';
 import { MESSAGE } from '@src/const/text';
+import { IoMdSend } from 'react-icons/io';
 
 const Message = () => {
     const [hasMore, setHasMore] = useState(true);
@@ -18,12 +19,6 @@ const Message = () => {
         const contentContainerElement = contentContainer_element.current;
         if (!contentContainerElement) return;
 
-        // console.log(
-        //     111111,
-        //     contentContainerElement.scrollTop,
-        //     contentContainerElement.scrollHeight,
-        //     contentContainerElement.clientHeight
-        // );
         const scrollTop = contentContainerElement.scrollTop;
         const scrollHeight = contentContainerElement.scrollHeight;
         const clientHeight = contentContainerElement.clientHeight;
@@ -39,15 +34,8 @@ const Message = () => {
         const contentContainerElement = contentContainer_element.current;
         const oldScrollHeight = contentContainerElement?.scrollHeight ?? 0;
 
-        // console.log(222222222222);
-
-        // const res = await fetchMessages(page);
-
         setData((prev) => [index_mes + 1, ...prev]);
         set_index_mes((prev) => prev + 1);
-        // setPage((p) => p + 1);
-        // setHasMore(res.hasMore);
-        // setHasMore(false);
 
         // GIỮ NGUYÊN CHỖ ĐANG ĐỌC SAU KHI THÊM TIN
         requestAnimationFrame(() => {
@@ -68,6 +56,10 @@ const Message = () => {
                 <div className={style.header}>{MESSAGE}</div>
                 <div className={style.contentContainer} ref={contentContainer_element} onScroll={handleScroll}>
                     {list_mes}
+                </div>
+                <div className={style.inputContainer}>
+                    <input placeholder="Viết tin nhắn" />
+                    <IoMdSend size={30} color="blue" />
                 </div>
             </div>
         </div>
