@@ -94,7 +94,7 @@ export default [
             ...ts.configs.recommended.rules,
             'no-unused-vars': 'off',
             '@typescript-eslint/no-unused-vars': 'warn',
-            '@typescript-eslint/no-explicit-any': 'warn', // hoặc "warn" nếu bạn chỉ muốn cảnh báo
+            '@typescript-eslint/no-explicit-any': 'off',
             'import/no-unused-modules': [
                 'warn',
                 {

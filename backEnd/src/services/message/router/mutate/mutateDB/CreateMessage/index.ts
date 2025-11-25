@@ -24,10 +24,10 @@ class MutateDB_CreateMessage extends MutateDB {
                 const result = await this._connectionPool
                     .request()
                     .input('eventName', sql.NVarChar(255), this._createMessageBody.eventName)
-                    .input('senserId', sql.NVarChar(255), this._createMessageBody.senserId)
+                    .input('sender', sql.NVarChar(255), this._createMessageBody.sender)
                     .input('message', sql.NVarChar(sql.MAX), this._createMessageBody.message)
                     .input('timestamp', sql.NVarChar(255), this._createMessageBody.timestamp)
-                    .input('messageStatus', sql.Float, this._createMessageBody.messageStatus)
+                    .input('messageStatus', sql.NVarChar(255), this._createMessageBody.messageStatus)
                     .input('accountId', sql.Int, this._createMessageBody.accountId)
                     .execute('CreateMessage');
 

@@ -12,7 +12,7 @@ export interface HookDataField<Tdata = ZaloMessage> {
     timestamp: string;
 }
 
-export interface MessageTextField {
+interface MessageTextField {
     text: string;
     msg_id: string;
 }

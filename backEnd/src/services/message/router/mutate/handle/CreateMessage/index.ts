@@ -54,7 +54,7 @@ class Handle_CreateMessage {
     };
 
     main = async (_: Request, res: Response) => {
-        const createMessageBody = res.locals.createMedicationBody as CreateMessageBodyField;
+        const createMessageBody = res.locals.createMessageBody as CreateMessageBodyField;
 
         const myResponse: MyResponse<MessageField> = {
             isSuccess: false,

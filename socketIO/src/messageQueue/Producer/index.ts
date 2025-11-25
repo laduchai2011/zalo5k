@@ -1,6 +1,7 @@
 import { RabbitMQ } from '@src/connect/rabbitMQ';
+import { MessageZaloField } from '../type';
 
-export async function sendMessage(queue: string, data: unknown) {
+export async function sendMessage(queue: string, data: MessageZaloField) {
     const rabbit = await RabbitMQ.getInstance();
     const channel = rabbit.getChannel();
 

@@ -25,7 +25,7 @@ const router = createBrowserRouter(
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         future: { v7_startTransition: true } as any,
     }
 );

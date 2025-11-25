@@ -43,6 +43,7 @@ export default [
         rules: {
             '@typescript-eslint/no-unused-vars': 'warn',
             // 'no-console': 'warn',
+            '@typescript-eslint/no-explicit-any': 'off',
             'import/no-unused-modules': [
                 'warn',
                 {

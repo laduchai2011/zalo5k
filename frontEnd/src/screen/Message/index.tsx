@@ -4,9 +4,9 @@ import style from './style.module.scss';
 // import YourMessage from './components/YourMessage';
 import MyMessage from './components/MyMessage';
 import { MESSAGE } from '@src/const/text';
-import { MessageField, CreateMessageBodyField } from '@src/dataStruct/message';
+import { CreateMessageBodyField, messageStatus_enum, sender_enum, MessageField } from '@src/dataStruct/message';
+import { HookDataField, MessageTextField, zalo_event_name_enum } from '@src/dataStruct/hookData';
 import { IoMdSend } from 'react-icons/io';
-import { zalo_event_name_enum } from '@src/dataStruct/hookData';
 import { useCreateMessageMutation } from '@src/redux/query/messageRTK';
 import io from 'socket.io-client';
 import { SocketType, MessageSoc } from '@src/dataStruct/socketIO';
@@ -19,7 +19,7 @@ const Message = () => {
     const { id } = useParams<{ id: string }>();
     const [hasMore, setHasMore] = useState(true);
     const contentContainer_element = useRef<HTMLDivElement | null>(null);
-    const [data, setData] = useState<number[]>([1, 2]);
+    const [data, setData] = useState<MessageField[]>([]);
     const [index_mes, set_index_mes] = useState<number>(6);
     const [newMessage, setNewMessage] = useState<string>('');
 
@@ -76,7 +76,7 @@ const Message = () => {
         const contentContainerElement = contentContainer_element.current;
         const oldScrollHeight = contentContainerElement?.scrollHeight ?? 0;
 
-        setData((prev) => [index_mes + 1, ...prev]);
+        // setData((prev) => [index_mes + 1, ...prev]);
         set_index_mes((prev) => prev + 1);
 
         // GIỮ NGUYÊN CHỖ ĐANG ĐỌC SAU KHI THÊM TIN
@@ -94,15 +94,38 @@ const Message = () => {
     };
 
     const handleSend = () => {
+        if (!myId) return;
+        if (!id) return;
+        const myRoom = myId + id;
+
         const newMes = newMessage.trim();
         if (newMes.length === 0) return;
 
-        const createMessageBody: CreateMessageBodyField = {
-            eventName: '',
-            senserId: '',
-            message: newMes,
+        const messageText: MessageTextField = {
+            text: newMes,
+            msg_id: '',
+        };
+
+        const hookData: HookDataField<MessageTextField> = {
+            app_id: '',
+            user_id_by_app: '',
+            event_name: zalo_event_name_enum.member_sending,
+            sender: {
+                id: id,
+            },
+            recipient: {
+                id: '',
+            },
+            message: messageText,
             timestamp: '',
-            messageStatus: zalo_event_name_enum.i_sending,
+        };
+
+        const createMessageBody: CreateMessageBodyField = {
+            eventName: zalo_event_name_enum.member_sending,
+            sender: sender_enum.MEMBER,
+            message: JSON.stringify(hookData),
+            timestamp: '',
+            messageStatus: messageStatus_enum.SENDING,
             accountId: -1,
         };
 
@@ -110,6 +133,9 @@ const Message = () => {
             .then((res) => {
                 const resData = res.data;
                 console.log('createMessage', resData);
+                if (resData?.isSuccess && resData.data) {
+                    socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
+                }
             })
             .catch((err) => console.error(err));
     };
