@@ -17,7 +17,7 @@ export class RabbitMQ {
         return RabbitMQ.instance;
     }
 
-    private async init() {
+    async init() {
         const url = process.env.RABBIT_URL || 'amqp://guest:guest@5kaquarium.com:5672';
 
         // connect() TRẢ VỀ Connection — đúng type

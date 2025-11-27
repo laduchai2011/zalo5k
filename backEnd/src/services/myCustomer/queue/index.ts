@@ -14,7 +14,7 @@ function checkMyCustommer() {
 
         handle_getAMyCustomer.main({ senderId: messageZalo.data.sender.id }, async (myCustomer) => {
             const messageZalo1 = { ...messageZalo };
-            if (myCustomer) {
+            if (myCustomer !== null) {
                 messageZalo1.accountId = myCustomer.accountId;
                 messageZalo1.isNewCustom = false;
             } else {
@@ -43,8 +43,14 @@ function checkMyCustommer() {
                 }
             }
 
-            sendMessage('customerSend_sendToMember', messageZalo1);
+            sendMessage('customerSend_sendToMember_storeDB', messageZalo1);
         });
+    });
+}
+
+export function sendToMember() {
+    consumeMessage('customerSend_sendToMember_storeDB_feedback', (messageZalo) => {
+        sendMessage('customerSend_sendToMember', messageZalo);
     });
 }
 

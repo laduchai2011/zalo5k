@@ -47,6 +47,7 @@ const Message = () => {
             console.log('roomMessage', message);
         });
 
+        console.log('myRoom', myRoom);
         socket.emit('joinRoom', myRoom);
 
         // socket.emit('roomMessage', { roomName: myId, message: 'client hello' });
@@ -111,10 +112,10 @@ const Message = () => {
             user_id_by_app: '',
             event_name: zalo_event_name_enum.member_sending,
             sender: {
-                id: id,
+                id: myId,
             },
             recipient: {
-                id: '',
+                id: id,
             },
             message: messageText,
             timestamp: '',
@@ -123,6 +124,7 @@ const Message = () => {
         const createMessageBody: CreateMessageBodyField = {
             eventName: zalo_event_name_enum.member_sending,
             sender: sender_enum.MEMBER,
+            receiveId: id,
             message: JSON.stringify(hookData),
             timestamp: '',
             messageStatus: messageStatus_enum.SENDING,

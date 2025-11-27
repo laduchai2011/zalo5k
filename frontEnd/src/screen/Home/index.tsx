@@ -79,6 +79,10 @@ const Home = () => {
         }
     }, [data_myCustomers]);
 
+    // useEffect(() => {
+    //     console.log('myCustomers', myCustomers);
+    // }, [myCustomers]);
+
     const list_myCustomers = myCustomers.map((item, index) => {
         return <MessageBox data={item} key={index} />;
     });

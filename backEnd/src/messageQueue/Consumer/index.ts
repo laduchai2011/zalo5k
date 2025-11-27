@@ -4,6 +4,7 @@ import { MessageZaloField } from '../type';
 
 export async function consumeMessage(queue: string, callback: (messageZalo: MessageZaloField) => void) {
     const rabbit = await RabbitMQ.getInstance();
+    await rabbit.init();
     const channel = rabbit.getChannel();
 
     await channel.assertQueue(queue);

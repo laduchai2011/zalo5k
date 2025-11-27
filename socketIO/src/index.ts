@@ -22,7 +22,9 @@ io.on('connection', (socket) => {
         console.log(`User ${socket.id} joined room ${roomName}`);
 
         consumeMessage('customerSend_sendToMember', (data) => {
-            io.to(roomName).emit('roomMessage', `server hello: ${data.data.message.text}`);
+            const room = data.accountId.toString() + data.data.sender.id;
+            io.to(data.accountId.toString()).emit('roomMessage', `server hello: ${data.data.message.text}`);
+            io.to(room).emit('roomMessage', `server hello: ${data.data.message.text}`);
         });
         // Thông báo cho tất cả trong phòng
         // io.to(roomName).emit('systemMessage', `User ${socket.id} joined the room`);
@@ -36,7 +38,7 @@ io.on('connection', (socket) => {
             isNewCustom: false,
             accountId: -1,
         };
-        console.log(33333333333, message);
+        // console.log(33333333333, message);
         sendMessage('memberSend_sendToCustomer', messageZalo);
         io.to(roomName).emit('roomMessage', `server hello: ${message}`);
     });

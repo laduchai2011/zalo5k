@@ -1,6 +1,7 @@
 ALTER PROCEDURE CreateMessage
 	@eventName NVARCHAR(255),
-	@senderId NVARCHAR(255),
+	@sender NVARCHAR(255),
+	@receiveId NVARCHAR(255),
 	@message NVARCHAR(MAX),
 	@timestamp NVARCHAR(255),
 	@messageStatus NVARCHAR(255),
@@ -14,8 +15,8 @@ BEGIN
 		DECLARE @newMessageId INT;
 
 		-- Thêm medication
-        INSERT INTO dbo.message (eventName, senderId, message, timestamp, messageStatus, status, accountId, updateTime, createTime)
-        VALUES (@eventName, @senderId, @message, @timestamp, @messageStatus, 'normal', @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+        INSERT INTO dbo.message (eventName, sender, receiveId, message, timestamp, messageStatus, status, accountId, updateTime, createTime)
+        VALUES (@eventName, @sender, @receiveId, @message, @timestamp, @messageStatus, 'normal', @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
 		SET @newMessageId = SCOPE_IDENTITY();
 

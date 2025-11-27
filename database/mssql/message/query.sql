@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE GetMessages
+﻿ALTER PROCEDURE GetMessages
 	@page INT,
     @size INT,
     @accountId INT

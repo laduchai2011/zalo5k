@@ -3,6 +3,7 @@ import { MessageZaloField } from '../type';
 
 export async function sendMessage(queue: string, data: MessageZaloField) {
     const rabbit = await RabbitMQ.getInstance();
+    await rabbit.init();
     const channel = rabbit.getChannel();
 
     await channel.assertQueue(queue);

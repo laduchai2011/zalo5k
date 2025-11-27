@@ -2,6 +2,7 @@ export interface MessageField {
     id: number;
     eventName: string;
     sender: sender_type;
+    receiveId: string;
     message: string;
     timestamp: string;
     messageStatus: messageStatus_type;
@@ -25,6 +26,7 @@ export interface PagedMessageField {
 export interface CreateMessageBodyField {
     eventName: string;
     sender: sender_type;
+    receiveId: string;
     message: string;
     timestamp: string;
     messageStatus: string;
