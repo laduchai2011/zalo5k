@@ -1,9 +1,10 @@
 import express, { Express } from 'express';
 import dotenv from 'dotenv';
-import { checkMyCustommer, sendToMember } from './queue';
+import { checkMyCustommer, sendToMember, updateEvent_MemberSend } from './queue';
 
 checkMyCustommer();
 sendToMember();
+updateEvent_MemberSend();
 
 dotenv.config();
 

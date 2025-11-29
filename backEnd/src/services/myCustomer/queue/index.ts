@@ -2,13 +2,17 @@ import { consumeMessage } from '@src/messageQueue/Consumer';
 import { sendMessage } from '@src/messageQueue/Producer';
 import Handle_GetAMyCustomer from './handle/GetAMyCustomer';
 import Handle_CreateMyCustom from './handle/CreateMyCustom';
+import Handle_UpdateEvent_MemberSend from './handle/UpdateEvent_MemberSend';
 import { AccountField } from '@src/dataStruct/account';
 import ServiceRedis from '@src/cache/cacheRedis';
+import { zalo_event_name_enum } from '@src/dataStruct/hookData';
+import { UpdateEventMemberSendBodyField, messageStatus_enum } from '@src/dataStruct/message';
+import { MessageZaloField } from '@src/messageQueue/type';
 
 const serviceRedis = ServiceRedis.getInstance();
 
 function checkMyCustommer() {
-    consumeMessage('customerSend_checkMyCustommer', (messageZalo) => {
+    consumeMessage(zalo_event_name_enum.user_send_text, (messageZalo) => {
         const handle_getAMyCustomer = new Handle_GetAMyCustomer();
         const handle_createMyCustom = new Handle_CreateMyCustom();
 
@@ -48,10 +52,58 @@ function checkMyCustommer() {
     });
 }
 
-export function sendToMember() {
+function sendToMember() {
     consumeMessage('customerSend_sendToMember_storeDB_feedback', (messageZalo) => {
         sendMessage('customerSend_sendToMember', messageZalo);
     });
 }
 
-export { checkMyCustommer };
+function updateEvent_MemberSend() {
+    consumeMessage(zalo_event_name_enum.oa_send_text, (messageZalo) => {
+        const handle_getAMyCustomer = new Handle_GetAMyCustomer();
+
+        handle_getAMyCustomer.main({ senderId: messageZalo.data.sender.id }, async (myCustomer) => {
+            const messageZalo1 = { ...messageZalo };
+            if (myCustomer !== null) {
+                messageZalo1.accountId = myCustomer.accountId;
+                messageZalo1.isNewCustom = false;
+            } else {
+                const key = 'memberReceiveMessage';
+                try {
+                    await serviceRedis.init();
+                    const result = await serviceRedis.getData<AccountField>(key);
+                    messageZalo1.accountId = result.id;
+                    messageZalo1.isNewCustom = false;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            main(messageZalo1);
+        });
+    });
+
+    const main = (message: MessageZaloField) => {
+        const handle_updateEvent_memberSend = new Handle_UpdateEvent_MemberSend();
+
+        const updateEventMemberSendBody: UpdateEventMemberSendBodyField = {
+            eventName: message.data.event_name,
+            receiveId: message.data.recipient.id,
+            timestamp: message.data.timestamp,
+            messageStatus: messageStatus_enum.SENT,
+            accountId: message.accountId,
+        };
+
+        console.log('receiveId', message.data.recipient);
+
+        handle_updateEvent_memberSend.main(updateEventMemberSendBody, (message) => {
+            if (message) {
+                console.log('UpdateEvent_MemberSend', 'Cập nhật thành công !');
+            } else {
+                console.log('UpdateEvent_MemberSend', 'Cập nhật không thành công !');
+            }
+        });
+    };
+}
+
+export { checkMyCustommer, sendToMember, updateEvent_MemberSend };

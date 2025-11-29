@@ -1,20 +1,37 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback, useId } from 'react';
 import { useParams } from 'react-router-dom';
 import style from './style.module.scss';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 // import YourMessage from './components/YourMessage';
 import MyMessage from './components/MyMessage';
 import { MESSAGE } from '@src/const/text';
-import { CreateMessageBodyField, messageStatus_enum, sender_enum, MessageField } from '@src/dataStruct/message';
-import { HookDataField, MessageTextField, zalo_event_name_enum } from '@src/dataStruct/hookData';
+import { MessageField } from '@src/dataStruct/message';
 import { IoMdSend } from 'react-icons/io';
 import { useCreateMessageMutation } from '@src/redux/query/messageRTK';
 import io from 'socket.io-client';
 import { SocketType, MessageSoc } from '@src/dataStruct/socketIO';
 import { SOCKET_URL } from '@src/const/api/socketUrl';
+import { FaImage } from 'react-icons/fa';
+import MyToastMessage from './components/MyToastMessage';
+import MyImageInput from './components/MyImageInput';
+import MyVideoInput from './components/MyVideoInput';
+import axiosInstance from '@src/api/axiosInstance';
+import { IMAGE_API } from '@src/const/api/image';
+import { setData_toastMessage } from '@src/redux/slice/Message';
+import { messageType_enum } from '@src/component/ToastMessage/type';
+import { AImageFileField, AVideoFileField } from '@src/dataStruct/photo';
+import { MyResponse } from '@src/dataStruct/response';
+import { BASE_URL } from '@src/const/api/baseUrl';
+import { MessageImageField, MessageImageUrlField } from '@src/dataStruct/hookData';
 
 let socket: SocketType;
 
+const isProduct = process.env.NODE_ENV === 'production';
+const apiString = isProduct ? '' : '/api';
+
 const Message = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const myId = sessionStorage.getItem('myId');
     const { id } = useParams<{ id: string }>();
     const [hasMore, setHasMore] = useState(true);
@@ -22,6 +39,10 @@ const Message = () => {
     const [data, setData] = useState<MessageField[]>([]);
     const [index_mes, set_index_mes] = useState<number>(6);
     const [newMessage, setNewMessage] = useState<string>('');
+    const [localImages, setLocalImages] = useState<File[]>([]);
+    const [localVideos, setLocalVideos] = useState<File[]>([]);
+    const id_folderInput = useId();
+    const input_element = useRef<HTMLInputElement | null>(null);
 
     const [createMessage] = useCreateMessageMutation();
 
@@ -94,53 +115,204 @@ const Message = () => {
         setNewMessage(value);
     };
 
-    const handleSend = () => {
-        if (!myId) return;
-        if (!id) return;
-        const myRoom = myId + id;
+    const handleSend = async () => {
+        // if (!myId) return;
+        // if (!id) return;
+        // const myRoom = myId + id;
 
-        const newMes = newMessage.trim();
-        if (newMes.length === 0) return;
+        // const newMes = newMessage.trim();
+        // if (newMes.length === 0) return;
 
-        const messageText: MessageTextField = {
-            text: newMes,
-            msg_id: '',
-        };
+        // const messageText: MessageTextField = {
+        //     text: newMes,
+        //     msg_id: '',
+        // };
 
-        const hookData: HookDataField<MessageTextField> = {
-            app_id: '',
-            user_id_by_app: '',
-            event_name: zalo_event_name_enum.member_sending,
-            sender: {
-                id: myId,
-            },
-            recipient: {
-                id: id,
-            },
-            message: messageText,
-            timestamp: '',
-        };
+        // const hookData: HookDataField<MessageTextField> = {
+        //     app_id: '',
+        //     user_id_by_app: '',
+        //     event_name: zalo_event_name_enum.member_sending,
+        //     sender: {
+        //         id: myId,
+        //     },
+        //     recipient: {
+        //         id: id,
+        //     },
+        //     message: messageText,
+        //     timestamp: '',
+        // };
 
-        const createMessageBody: CreateMessageBodyField = {
-            eventName: zalo_event_name_enum.member_sending,
-            sender: sender_enum.MEMBER,
-            receiveId: id,
-            message: JSON.stringify(hookData),
-            timestamp: '',
-            messageStatus: messageStatus_enum.SENDING,
-            accountId: -1,
-        };
+        // const createMessageBody: CreateMessageBodyField = {
+        //     eventName: zalo_event_name_enum.member_sending,
+        //     sender: sender_enum.MEMBER,
+        //     receiveId: id,
+        //     message: JSON.stringify(hookData),
+        //     timestamp: '',
+        //     messageStatus: messageStatus_enum.SENDING,
+        //     accountId: -1,
+        // };
 
-        createMessage(createMessageBody)
-            .then((res) => {
-                const resData = res.data;
-                console.log('createMessage', resData);
-                if (resData?.isSuccess && resData.data) {
-                    socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
-                }
-            })
-            .catch((err) => console.error(err));
+        // createMessage(createMessageBody)
+        //     .then((res) => {
+        //         const resData = res.data;
+        //         console.log('createMessage', resData);
+        //         if (resData?.isSuccess && resData.data) {
+        //             socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
+        //         }
+        //     })
+        //     .catch((err) => console.error(err));
+        const resData_images = await handleUploadMultipleImages(localImages);
+        if (resData_images === null) return;
+        const imageFiles = resData_images.data;
+        if (!imageFiles) {
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.ERROR,
+            //         message: 'Đăng tải những hình ảnh thất bại !',
+            //     })
+            // );
+            console.log('Đăng tải những hình ảnh thất bại !');
+            return;
+        } else {
+            console.log('Đăng tải những hình ảnh thành công !');
+        }
     };
+
+    const handleIconClick = () => {
+        input_element.current?.click();
+    };
+
+    const handleFolderChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const files = event.target.files;
+
+            if (files) {
+                const images: File[] = [];
+                const videos: File[] = [];
+                Array.from(files).forEach((file) => {
+                    if (file.type.startsWith('image/')) {
+                        images.push(file);
+                    } else if (file.type.startsWith('video/')) {
+                        videos.push(file);
+                    }
+                });
+
+                setLocalImages(images);
+                setLocalVideos(videos);
+            }
+        },
+        [setLocalImages, setLocalVideos]
+    );
+
+    const handleUploadMultipleImages = async (files: File[]): Promise<MyResponse<AImageFileField[]> | null> => {
+        if (!files || files.length === 0) return null;
+
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append('images', file); // 👈 key này phải trùng với backend
+        });
+
+        try {
+            const res = await axiosInstance.post<MyResponse<AImageFileField[]>>(
+                IMAGE_API.UPLOAD_MULTIPLE_IMAGE, // hoặc vẫn là UPLOAD_AIMAGE nếu backend tự detect
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    onUploadProgress: (progressEvent) => {
+                        const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
+                        console.log(`Đang tải lên: ${percent}%`);
+                    },
+                }
+            );
+            return res.data;
+        } catch (error) {
+            console.error('Upload thất bại:', error);
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Đăng tải hình ảnh thất bại !',
+                })
+            );
+            return null;
+        }
+    };
+
+    // const handleUploadMultipleVideos = async (files: File[]): Promise<MyResponse<AVideoFileField[]> | null> => {
+    //     if (!files || files.length === 0) return null;
+
+    //     const formData = new FormData();
+    //     files.forEach((file) => {
+    //         formData.append('videos', file); // 👈 key này phải trùng với backend
+    //     });
+
+    //     try {
+    //         const res = await axiosInstance.post<MyResponse<AVideoFileField[]>>(
+    //             VIDEO_API.UPLOAD_MULTIPLE_VIDEOS,
+    //             formData,
+    //             {
+    //                 headers: { 'Content-Type': 'multipart/form-data' },
+    //                 onUploadProgress: (progressEvent) => {
+    //                     const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
+    //                     console.log(`Đang tải lên: ${percent}%`);
+    //                 },
+    //             }
+    //         );
+    //         return res.data;
+    //     } catch (error) {
+    //         console.error('Upload thất bại:', error);
+    //         // dispatch(
+    //         //     setData_toastMessage({
+    //         //         type: messageType_enum.ERROR,
+    //         //         message: 'Đăng tải hình ảnh thất bại !',
+    //         //     })
+    //         // );
+    //         return null;
+    //     }
+    // };
+
+    const handlePreImages = async () => {
+        const resData_images = await handleUploadMultipleImages(localImages);
+        if (resData_images === null) return;
+        const imageFiles = resData_images.data;
+        if (!imageFiles) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Đăng tải những hình ảnh thất bại !',
+                })
+            );
+            return;
+        }
+        const imageUrls: MessageImageUrlField[] = [];
+        for (let i: number = 0; i < imageFiles.length; i++) {
+            const url = `${BASE_URL}${apiString}/service_image/store/${imageFiles[i].filename}`;
+            const aImage: MessageImageUrlField = {
+                media_type: 'image',
+                url: url,
+            };
+            imageUrls.push(aImage);
+        }
+
+        return imageUrls;
+    };
+
+    const handleDeleteImage = (data: File) => {
+        const newImages = localImages.filter((image) => image !== data);
+        setLocalImages(newImages);
+    };
+
+    const handleDeleteVideo = (data: File) => {
+        const newVideos = localVideos.filter((video) => video !== data);
+        setLocalVideos(newVideos);
+    };
+
+    const list_image = localImages.map((data, index) => {
+        return <MyImageInput key={index} index={index} data={data} onClose={() => handleDeleteImage(data)} />;
+    });
+
+    const list_video = localVideos.map((data, index) => {
+        return <MyVideoInput key={index} index={index} data={data} onClose={() => handleDeleteVideo(data)} />;
+    });
 
     const list_mes = data.map((item, index) => {
         return <MyMessage key={index} data={item} />;
@@ -153,9 +325,20 @@ const Message = () => {
                 <div className={style.contentContainer} ref={contentContainer_element} onScroll={handleScroll}>
                     {list_mes}
                 </div>
+                <div className={style.iconContainer}>
+                    <FaImage id={id_folderInput} onClick={handleIconClick} />
+                    <input ref={input_element} onChange={handleFolderChange} type="file" id={id_folderInput} multiple />
+                </div>
+                <div className={style.photoContainer}>
+                    <div>{list_image}</div>
+                    <div>{list_video}</div>
+                </div>
                 <div className={style.inputContainer}>
                     <input value={newMessage} onChange={(e) => handleNewMessageChange(e)} placeholder="Viết tin nhắn" />
                     <IoMdSend onClick={() => handleSend()} size={30} color="blue" />
+                </div>
+                <div>
+                    <MyToastMessage />
                 </div>
             </div>
         </div>

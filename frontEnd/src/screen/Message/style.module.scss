@@ -34,6 +34,32 @@
             flex-direction: column-reverse;
         }
 
+        > .iconContainer {
+            box-sizing: border-box;
+            padding: 5px;
+            width: 100%;
+            max-width: 300px;
+            @include center-of-row;
+            justify-content: flex-start;
+
+            > svg {
+                width: 25px;
+                height: 25px;
+                color: greenyellow;
+                cursor: pointer;
+            }
+
+            > input {
+                display: none;
+            }
+        }
+
+        > .photoContainer {
+            overflow-y: scroll;
+            max-height: 300px;
+            @include small-scroll-yy(3px);
+        }
+
         > .inputContainer {
             @include center-of-row;
 

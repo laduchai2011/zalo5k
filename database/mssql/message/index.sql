@@ -4,6 +4,7 @@ CREATE TABLE message (
     sender NVARCHAR(255) NOT NULL,
 	receiveId NVARCHAR(255) NOT NULL,
     message NVARCHAR(MAX) NOT NULL,
+	type NVARCHAR(255) NOT NULL,
 	timestamp NVARCHAR(255) NOT NULL,
 	messageStatus NVARCHAR(255) NOT NULL,
     status NVARCHAR(255) NOT NULL,

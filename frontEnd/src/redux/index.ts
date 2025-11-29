@@ -5,7 +5,7 @@ import { configureStore } from '@reduxjs/toolkit';
 // import MedicationsReducer from '@src/redux/slice/Medications';
 // import CreateMedicationReducer from '@src/redux/slice/CreateMedication';
 // import DoctorsReducer from '@src/redux/slice/Doctors';
-// import VideoPlayBoxReducer from '@src/redux/slice/VideoPlayBox';
+import MessageReducer from '@src/redux/slice/Message';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
@@ -20,7 +20,7 @@ export const store = configureStore({
         // MedicationsSlice: MedicationsReducer,
         // CreateMedicationSlice: CreateMedicationReducer,
         // DoctorsSlice: DoctorsReducer,
-        // VideoPlayBoxSlice: VideoPlayBoxReducer,
+        MessageSlice: MessageReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageRTK.reducerPath]: messageRTK.reducer,

@@ -2,7 +2,7 @@ import sql from 'mssql';
 import { MutateDB } from '@src/services/message/interface';
 import { MessageField, CreateMessageBodyField } from '@src/dataStruct/message';
 
-class MutateDB_CreateMessage extends MutateDB {
+class MutateDB_CreateMessageText extends MutateDB {
     private _connectionPool: sql.ConnectionPool | undefined;
     private _createMessageBody: CreateMessageBodyField | undefined;
 
@@ -27,6 +27,7 @@ class MutateDB_CreateMessage extends MutateDB {
                     .input('sender', sql.NVarChar(255), this._createMessageBody.sender)
                     .input('receiveId', sql.NVarChar(255), this._createMessageBody.receiveId)
                     .input('message', sql.NVarChar(sql.MAX), this._createMessageBody.message)
+                    .input('type', sql.NVarChar(255), this._createMessageBody.type)
                     .input('timestamp', sql.NVarChar(255), this._createMessageBody.timestamp)
                     .input('messageStatus', sql.NVarChar(255), this._createMessageBody.messageStatus)
                     .input('accountId', sql.Int, this._createMessageBody.accountId)
@@ -40,4 +41,4 @@ class MutateDB_CreateMessage extends MutateDB {
     }
 }
 
-export default MutateDB_CreateMessage;
+export default MutateDB_CreateMessageText;

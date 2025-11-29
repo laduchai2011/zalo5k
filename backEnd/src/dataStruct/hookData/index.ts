@@ -32,7 +32,23 @@ export interface MessageTextField {
     msg_id: string;
 }
 
-type ZaloMessage = MessageTextField | Record<string, unknown>; // fallback
+export interface MessageImageField {
+    text: string;
+    msg_id: string;
+    attachment: {
+        type: 'template';
+        payload: {
+            template_type: 'media';
+            elements: MessageImageUrlField[];
+        };
+    };
+}
+export interface MessageImageUrlField {
+    media_type: 'image';
+    url: string;
+}
+
+type ZaloMessage = MessageTextField | MessageImageField | Record<string, unknown>; // fallback
 
 export interface ZaloCustomerField {
     data: {
