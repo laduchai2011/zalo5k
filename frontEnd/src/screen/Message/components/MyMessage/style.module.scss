@@ -26,9 +26,11 @@
                 > .text {
                     @include center-of-row;
                     justify-content: flex-end;
+                    max-width: 100%;
 
                     > div {
                         width: max-content;
+                        max-width: 100%;
                     }
                 }
 

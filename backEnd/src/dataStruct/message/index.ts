@@ -16,6 +16,7 @@ export interface MessageField {
 export interface MessageBodyField {
     page: number;
     size: number;
+    receiveId: string;
     accountId?: number;
 }
 

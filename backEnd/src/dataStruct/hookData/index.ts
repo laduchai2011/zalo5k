@@ -1,6 +1,8 @@
 export enum zalo_event_name_enum {
     user_send_text = 'user_send_text',
+    user_send_image = 'user_send_image',
     oa_send_text = 'oa_send_text',
+    oa_send_image = 'oa_send_image',
     user_received_message = 'user_received_message',
     user_seen_message = 'user_seen_message',
     member_sending = 'member_sending',
@@ -8,7 +10,9 @@ export enum zalo_event_name_enum {
 
 type zalo_event_name_type =
     | zalo_event_name_enum.user_send_text
+    | zalo_event_name_enum.user_send_image
     | zalo_event_name_enum.oa_send_text
+    | zalo_event_name_enum.oa_send_image
     | zalo_event_name_enum.user_received_message
     | zalo_event_name_enum.user_seen_message
     | zalo_event_name_enum.member_sending;
@@ -27,14 +31,20 @@ export interface HookDataField<Tdata = ZaloMessage> {
     timestamp: string;
 }
 
+export interface HookDataFieldToSend<Tdata = ZaloMessage> {
+    recipient: {
+        user_id: string;
+    };
+    message: Tdata;
+}
+
 export interface MessageTextField {
     text: string;
     msg_id: string;
 }
 
-export interface MessageImageField {
+export interface MessageImagesField {
     text: string;
-    msg_id: string;
     attachment: {
         type: 'template';
         payload: {
@@ -43,12 +53,13 @@ export interface MessageImageField {
         };
     };
 }
+
 export interface MessageImageUrlField {
     media_type: 'image';
     url: string;
 }
 
-type ZaloMessage = MessageTextField | MessageImageField | Record<string, unknown>; // fallback
+export type ZaloMessage = MessageTextField | MessageImagesField | Record<string, unknown>; // fallback
 
 export interface ZaloCustomerField {
     data: {

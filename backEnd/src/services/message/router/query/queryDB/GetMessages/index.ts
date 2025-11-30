@@ -38,8 +38,9 @@ class QueryDB_GetMessages extends QueryDB {
                     .request()
                     .input('page', sql.Int, this._messageBody.page)
                     .input('size', sql.Int, this._messageBody.size)
+                    .input('receiveId', sql.NVarChar(255), this._messageBody.receiveId)
                     .input('accountId', sql.Int, accountId)
-                    .execute('GetMedications');
+                    .execute('GetMessages');
 
                 return result as any as MessageQueryResult;
             } catch (error) {

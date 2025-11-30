@@ -1,4 +1,4 @@
-import { BASE_URL, BASE_URL_ZALO_WEBHOOK } from './baseUrl';
+import { BASE_URL } from './baseUrl';
 
 const isProduct = process.env.NODE_ENV === 'production';
 const apiString = isProduct ? '' : '/api';
@@ -10,6 +10,6 @@ export const IMAGE_API = {
     UPLOAD_MULTIPLE_IMAGE_TO_ZALO: `${BASE_URL}${apiString}/service_image/mutate/uploadMultipleImageToZalo`,
 };
 
-export const IMAGE_API_ZALO_WEBHOOK = {
-    UPLOAD_MULTIPLE_IMAGE_TO_ZALO: `${BASE_URL_ZALO_WEBHOOK}${apiString}/service_image/mutate/uploadMultipleImageToZalo`,
-};
+// export const IMAGE_API_ZALO_WEBHOOK = {
+//     UPLOAD_MULTIPLE_IMAGE_TO_ZALO: `${BASE_URL_ZALO_WEBHOOK}${apiString}/service_image/mutate/uploadMultipleImageToZalo`,
+// };

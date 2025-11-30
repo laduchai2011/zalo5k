@@ -1,6 +1,6 @@
 import { consumeMessage } from '@src/messageQueue/Consumer';
 import { sendMessage } from '@src/messageQueue/Producer';
-import Handle_CreateMessageText from './handle/CreateMessageText';
+import Handle_CreateMessage from './handle/CreateMessage';
 import { CreateMessageBodyField, messageStatus_enum, messageType_enum } from '@src/dataStruct/message';
 import { sender_enum } from '@src/dataStruct/message';
 import { MessageTextField, HookDataField, zalo_event_name_enum } from '@src/dataStruct/hookData';
@@ -8,7 +8,7 @@ import { my_log } from '@src/log';
 
 export function createMessageFromCustomerSend() {
     consumeMessage('customerSend_sendToMember_storeDB', (messageZalo) => {
-        const handle_createMessageText = new Handle_CreateMessageText();
+        const handle_createMessage = new Handle_CreateMessage();
 
         const data = messageZalo.data as HookDataField<MessageTextField>;
         const message = data.message;
@@ -43,7 +43,7 @@ export function createMessageFromCustomerSend() {
             accountId: messageZalo.accountId,
         };
 
-        handle_createMessageText.main(createMessageBody, (message) => {
+        handle_createMessage.main(createMessageBody, (message) => {
             if (message !== null) {
                 sendMessage('customerSend_sendToMember_storeDB_feedback', messageZalo);
             } else {

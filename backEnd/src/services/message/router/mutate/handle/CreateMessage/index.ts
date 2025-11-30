@@ -3,10 +3,10 @@ import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { MessageField, CreateMessageBodyField } from '@src/dataStruct/message';
 import { verifyRefreshToken } from '@src/token';
-import MutateDB_CreateMessage from '../../mutateDB/CreateMessageText';
+import MutateDB_CreateMessage from '../../mutateDB/CreateMessage';
 // import { produceTask } from '@src/queueRedis/producer';
 
-class Handle_CreateMessageText {
+class Handle_CreateMessage {
     private _mssql_server = mssql_server;
 
     constructor() {}
@@ -96,4 +96,4 @@ class Handle_CreateMessageText {
     };
 }
 
-export default Handle_CreateMessageText;
+export default Handle_CreateMessage;

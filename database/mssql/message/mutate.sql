@@ -1,4 +1,4 @@
-CREATE PROCEDURE CreateMessageText
+CREATE PROCEDURE CreateMessage
 	@eventName NVARCHAR(255),
 	@sender NVARCHAR(255),
 	@receiveId NVARCHAR(255),

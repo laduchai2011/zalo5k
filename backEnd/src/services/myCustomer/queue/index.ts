@@ -60,6 +60,15 @@ function sendToMember() {
 
 function updateEvent_MemberSend() {
     consumeMessage(zalo_event_name_enum.oa_send_text, (messageZalo) => {
+        console.log('updateEvent_MemberSend', 'oa_send_text', messageZalo);
+        update(messageZalo);
+    });
+    consumeMessage(zalo_event_name_enum.oa_send_image, (messageZalo) => {
+        console.log('updateEvent_MemberSend', 'oa_send_image', messageZalo);
+        update(messageZalo);
+    });
+
+    const update = (messageZalo: MessageZaloField) => {
         const handle_getAMyCustomer = new Handle_GetAMyCustomer();
 
         handle_getAMyCustomer.main({ senderId: messageZalo.data.sender.id }, async (myCustomer) => {
@@ -81,7 +90,7 @@ function updateEvent_MemberSend() {
 
             main(messageZalo1);
         });
-    });
+    };
 
     const main = (message: MessageZaloField) => {
         const handle_updateEvent_memberSend = new Handle_UpdateEvent_MemberSend();

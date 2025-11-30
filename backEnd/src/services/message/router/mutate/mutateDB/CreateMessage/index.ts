@@ -2,7 +2,7 @@ import sql from 'mssql';
 import { MutateDB } from '@src/services/message/interface';
 import { MessageField, CreateMessageBodyField } from '@src/dataStruct/message';
 
-class MutateDB_CreateMessageText extends MutateDB {
+class MutateDB_CreateMessage extends MutateDB {
     private _connectionPool: sql.ConnectionPool | undefined;
     private _createMessageBody: CreateMessageBodyField | undefined;
 
@@ -41,4 +41,4 @@ class MutateDB_CreateMessageText extends MutateDB {
     }
 }
 
-export default MutateDB_CreateMessageText;
+export default MutateDB_CreateMessage;

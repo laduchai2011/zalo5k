@@ -1,6 +1,7 @@
 ﻿ALTER PROCEDURE GetMessages
 	@page INT,
     @size INT,
+	@receiveId NVARCHAR(255),
     @accountId INT
 AS
 BEGIN
@@ -11,6 +12,7 @@ BEGIN
         FROM dbo.message AS m
 		WHERE 
 			status = 'normal' 
+			AND (@receiveId IS NULL OR m.receiveId = @receiveId) 
 			AND (@accountId IS NULL OR m.accountId = @accountId) 
     )
     SELECT *
