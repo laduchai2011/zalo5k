@@ -27,7 +27,7 @@ import {
     MessageImageField,
     // MessageImagesField,
     MessageImageUrlField,
-    // MessageTextField,
+    MessageTextField,
     HookDataField,
     ZaloMessage,
 } from '@src/dataStruct/hookData';
@@ -112,9 +112,9 @@ const Message = () => {
         });
 
         // Nhận message từ server
-        socket.on('roomMessage', (message: MessageSoc) => {
+        socket.on('roomMessage', (message: any) => {
             // setMessages((prev) => [...prev, data]);
-            console.log('roomMessage', message);
+            console.log('roomMessage', JSON.parse(message));
         });
 
         console.log('myRoom', myRoom);
@@ -220,29 +220,21 @@ const Message = () => {
                                   url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdZOBkio-wrTpcqr9ELIxaK-sN4PtmVHKATw&s',
                               },
                           ],
-                          //   columns: [
-                          //       {
-                          //           thumbnail: 'https://stc-developers.zdn.vn/images/bg_1.jpg',
-                          //           title: 'Ảnh 1',
-                          //           subtitle: 'Mô tả ảnh 1',
-                          //       },
-                          //       {
-                          //           thumbnail: 'https://stc-developers.zdn.vn/images/bg_2.jpg',
-                          //           title: 'Ảnh 2',
-                          //           subtitle: 'Mô tả ảnh 2',
-                          //       },
-                          //       {
-                          //           thumbnail: 'https://stc-developers.zdn.vn/images/bg_3.jpg',
-                          //           title: 'Ảnh 3',
-                          //           subtitle: 'Mô tả ảnh 3',
-                          //       },
-                          //   ],
                       },
                   },
               }
             : undefined;
 
         handleSendCommon(messageImages, messageType_enum.IMAGES);
+
+        const newMes = newMessage.trim();
+        if (newMes.length === 0) return;
+        const messageText: MessageTextField = {
+            text: newMes,
+            msg_id: '',
+        };
+
+        handleSendCommon(messageText, messageType_enum.TEXT);
     };
 
     const handleSendCommon = (message: ZaloMessage | undefined, messageType: messageType_type) => {
@@ -276,12 +268,15 @@ const Message = () => {
             messageStatus: messageStatus_enum.SENDING,
             accountId: -1,
         };
-        console.log('handleSendCommon', createMessageBody);
+        // console.log('handleSendCommon', createMessageBody);
         createMessage(createMessageBody)
             .then((res) => {
                 const resData = res.data;
                 console.log('createMessage', resData);
                 if (resData?.isSuccess && resData.data) {
+                    const newData: MessageField = resData.data;
+                    console.log('createMessage', 'newData', resData);
+                    setMessages((prev) => [...prev, newData]);
                     socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
                 }
             })

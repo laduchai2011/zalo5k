@@ -5,7 +5,7 @@ import Handle_CreateMyCustom from './handle/CreateMyCustom';
 import Handle_UpdateEvent_MemberSend from './handle/UpdateEvent_MemberSend';
 import { AccountField } from '@src/dataStruct/account';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { zalo_event_name_enum } from '@src/dataStruct/hookData';
+import { HookDataField, zalo_event_name_enum, MessageImagesField } from '@src/dataStruct/hookData';
 import { UpdateEventMemberSendBodyField, messageStatus_enum } from '@src/dataStruct/message';
 import { MessageZaloField } from '@src/messageQueue/type';
 
@@ -13,6 +13,16 @@ const serviceRedis = ServiceRedis.getInstance();
 
 function checkMyCustommer() {
     consumeMessage(zalo_event_name_enum.user_send_text, (messageZalo) => {
+        main(messageZalo);
+    });
+
+    consumeMessage(zalo_event_name_enum.user_send_image, (messageZalo) => {
+        // const data = messageZalo.data as HookDataField<MessageImagesField>;
+        console.log('user_send_image', messageZalo);
+        main(messageZalo);
+    });
+
+    const main = (messageZalo: MessageZaloField) => {
         const handle_getAMyCustomer = new Handle_GetAMyCustomer();
         const handle_createMyCustom = new Handle_CreateMyCustom();
 
@@ -49,7 +59,7 @@ function checkMyCustommer() {
 
             sendMessage('customerSend_sendToMember_storeDB', messageZalo1);
         });
-    });
+    };
 }
 
 function sendToMember() {
@@ -60,11 +70,12 @@ function sendToMember() {
 
 function updateEvent_MemberSend() {
     consumeMessage(zalo_event_name_enum.oa_send_text, (messageZalo) => {
-        console.log('updateEvent_MemberSend', 'oa_send_text', messageZalo);
+        // console.log('updateEvent_MemberSend', 'oa_send_text', messageZalo);
         update(messageZalo);
     });
     consumeMessage(zalo_event_name_enum.oa_send_image, (messageZalo) => {
-        console.log('updateEvent_MemberSend', 'oa_send_image', messageZalo);
+        // const data = messageZalo.data as HookDataField<MessageImageOaSendField>;
+        // console.log('updateEvent_MemberSend', 'oa_send_image', messageZalo, data.message, data.message.attachments);
         update(messageZalo);
     });
 

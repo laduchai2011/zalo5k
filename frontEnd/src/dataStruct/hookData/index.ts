@@ -59,24 +59,54 @@ export interface MessageImageUrlField {
     url: string;
 }
 
+export interface MessageImageOaSendField {
+    text: string;
+    attachments: MessageImageUrlOaSendField[];
+    msg_id: string;
+}
+
+export interface MessageImageUrlOaSendField {
+    payload: {
+        thumbnail: string;
+        url: string;
+    };
+    type: 'image';
+}
+
 export interface MessageImagesField {
+    text: string;
     attachment: {
         type: 'template';
         payload: {
-            template_type: 'carousel';
-            // elements: MessageImagesUrlField[];
-            columns: any[];
+            template_type: 'media';
+            elements: MessageImageUrlField[];
         };
     };
 }
 
-export interface MessageImagesUrlField {
-    title: string;
-    image_url: string;
-    subtitle: string;
+export interface MessageImageUrlField {
+    media_type: 'image';
+    url: string;
 }
 
-export type ZaloMessage = MessageTextField | MessageImagesField | MessageImageField | Record<string, unknown>; // fallback
+// export interface MessageImagesUSField {
+//     attachments: MessageImagesUSAttachmentField[];
+// }
+
+// export interface MessageImagesUSAttachmentField {
+//     payload: {
+//         thumbnail: string;
+//         url: string;
+//     };
+//     type: 'image';
+// }
+
+export type ZaloMessage =
+    | MessageTextField
+    | MessageImagesField
+    | MessageImageField
+    | MessageImageOaSendField
+    | Record<string, unknown>; // fallback
 
 export interface ZaloCustomerField {
     data: {

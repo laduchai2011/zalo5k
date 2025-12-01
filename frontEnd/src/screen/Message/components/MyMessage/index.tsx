@@ -21,29 +21,29 @@ const MyMessage: FC<{ data: MessageField }> = ({ data }) => {
                                     <div>{messageText.text && <LinkifyText text={messageText.text} />}</div>
                                 </div>
                             </div>
-                            <div className={style.status}>Đang gửi ...</div>
+                            <div className={style.status}>{data.messageStatus}</div>
                         </div>
                     </div>
                 </div>
             );
         }
         case messageType_enum.IMAGES: {
-            const messageText = hookData.message as MessageImageField;
+            const messageImage = hookData.message as MessageImageField;
             return (
                 <div className={style.parent}>
                     <div className={style.main}>
                         <div className={style.contentContainer}>
                             <div className={style.content}>
-                                <div className={style.text}>
-                                    <div>{messageText.text && <LinkifyText text={messageText.text} />}</div>
-                                </div>
                                 <LazyImage
                                     className={style.image}
-                                    src="https://cdn-media.sforum.vn/storage/app/media/anh-dep-8.jpg"
+                                    src={messageImage.attachment.payload.elements[0].url}
                                     alt="img"
                                 />
+                                <div className={style.text}>
+                                    <div>{messageImage.text && <LinkifyText text={messageImage.text} />}</div>
+                                </div>
                             </div>
-                            <div className={style.status}>Đang gửi ...</div>
+                            <div className={style.status}>{data.messageStatus}</div>
                         </div>
                     </div>
                 </div>

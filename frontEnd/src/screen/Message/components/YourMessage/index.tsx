@@ -7,7 +7,7 @@ import {
     HookDataField,
     MessageTextField,
     ZaloMessage,
-    MessageImageField,
+    MessageImageOaSendField,
     ZaloCustomerField,
 } from '@src/dataStruct/hookData';
 import LinkifyText from '@src/component/LinkifyText';
@@ -64,14 +64,14 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                                     {messageText.text && <LinkifyText text={messageText.text} />}
                                 </div>
                             </div>
-                            <div className={style.status}>Đang gửi ...</div>
+                            <div className={style.status}>{data.messageStatus}</div>
                         </div>
                     </div>
                 </div>
             );
         }
         case messageType_enum.IMAGES: {
-            const messageImage = hookData.message as MessageImageField;
+            const messageImage = hookData.message as MessageImageOaSendField;
             return (
                 <div className={style.parent}>
                     <div className={style.main}>
@@ -80,16 +80,16 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                         </div>
                         <div className={style.contentContainer}>
                             <div className={style.content}>
+                                <LazyImage
+                                    className={style.image}
+                                    src={messageImage.attachments[0].payload.url}
+                                    alt="img"
+                                />
                                 <div className={style.text}>
                                     {messageImage.text && <LinkifyText text={messageImage.text} />}
                                 </div>
-                                <LazyImage
-                                    className={style.image}
-                                    src={messageImage.attachment.payload.elements[0].url}
-                                    alt="img"
-                                />
                             </div>
-                            <div className={style.status}>Đang gửi ...</div>
+                            <div className={style.status}>{data.messageStatus}</div>
                         </div>
                     </div>
                 </div>

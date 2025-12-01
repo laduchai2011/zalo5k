@@ -62,7 +62,7 @@ export enum messageType_enum {
     VIDEOS = 'VIDEOS',
 }
 
-type messageType_type = messageType_enum.TEXT | messageType_enum.IMAGES | messageType_enum.VIDEOS;
+export type messageType_type = messageType_enum.TEXT | messageType_enum.IMAGES | messageType_enum.VIDEOS;
 
 export interface UpdateEventMemberSendBodyField {
     eventName: string;
