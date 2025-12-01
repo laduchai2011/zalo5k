@@ -37,6 +37,7 @@ const MyMessage: FC<{ data: MessageField }> = ({ data }) => {
                                 <LazyImage
                                     className={style.image}
                                     src={messageImage.attachment.payload.elements[0].url}
+                                    // src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlnhFBNw9Io0hHvtv8QzH_euzwGbRJv_IC9A&s"
                                     alt="img"
                                 />
                                 <div className={style.text}>

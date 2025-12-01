@@ -142,3 +142,9 @@ export interface ZaloCustomerField {
     error: number;
     message: string;
 }
+
+export interface MessageZaloField {
+    data: any;
+    isNewCustom: boolean;
+    accountId: number;
+}

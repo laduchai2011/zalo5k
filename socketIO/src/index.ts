@@ -23,6 +23,7 @@ io.on('connection', (socket) => {
 
         consumeMessage('customerSend_sendToMember', (data) => {
             const room = data.accountId.toString() + data.data.sender.id;
+            console.log(1111111111, data);
             io.to(data.accountId.toString()).emit('roomMessage', JSON.stringify(data));
             io.to(room).emit('roomMessage', JSON.stringify(data));
         });

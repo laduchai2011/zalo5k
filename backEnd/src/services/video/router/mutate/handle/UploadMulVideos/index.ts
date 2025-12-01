@@ -5,11 +5,12 @@ import fs from 'fs';
 // import { MyRequest } from '../../type';
 import { MyResponse } from '@src/dataStruct/response';
 import { AVideoFileField } from '@src/dataStruct/photo';
+import { exec } from 'child_process';
 
-const root_path = process.cwd();
 const videoPath = path.join(process.cwd(), 'data', 'video', 'input');
+const imagePath = path.join(process.cwd(), 'data', 'image');
 
-class Handle_UploadMultipleVideos {
+class Handle_UploadMulVideos {
     constructor() {}
 
     upload = (): multer.Multer => {
@@ -58,9 +59,29 @@ class Handle_UploadMultipleVideos {
             path: file.path,
         }));
 
+        for (let i: number = 0; i < files.length; i++) {
+            const input = path.join(videoPath, files[i].savedName);
+            const output = path.join(imagePath, `${files[i].savedName}.jpg`);
+            this.captureFrame(input, output, 1);
+        }
+
         res.locals.files = files;
 
         next();
+    };
+
+    captureFrame = (input: string, output: string, second: number): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            const cmd = `ffmpeg -ss ${second} -i "${input}" -vframes 1 "${output}" -y`;
+
+            exec(cmd, (error, stdout, stderr) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve();
+            });
+        });
     };
 
     main = (_: Request, res: Response) => {
@@ -76,4 +97,4 @@ class Handle_UploadMultipleVideos {
     };
 }
 
-export default Handle_UploadMultipleVideos;
+export default Handle_UploadMulVideos;

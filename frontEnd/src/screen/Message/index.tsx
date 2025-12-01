@@ -18,9 +18,10 @@ import MyImageInput from './components/MyImageInput';
 import MyVideoInput from './components/MyVideoInput';
 import axiosInstance from '@src/api/axiosInstance';
 import { IMAGE_API } from '@src/const/api/image';
+import { VIDEO_API } from '@src/const/api/video';
 import { setData_toastMessage } from '@src/redux/slice/Message';
 import { messageType_enum as toastMessageType_enum } from '@src/component/ToastMessage/type';
-import { AImageFileField } from '@src/dataStruct/photo';
+import { AImageFileField, AVideoFileField } from '@src/dataStruct/photo';
 import { MyResponse } from '@src/dataStruct/response';
 import { BASE_URL } from '@src/const/api/baseUrl';
 import {
@@ -31,7 +32,7 @@ import {
     HookDataField,
     ZaloMessage,
 } from '@src/dataStruct/hookData';
-import { zalo_event_name_enum } from '@src/dataStruct/hookData';
+import { zalo_event_name_enum, MessageZaloField, ZaloCustomerField } from '@src/dataStruct/hookData';
 import {
     sender_enum,
     CreateMessageBodyField,
@@ -40,6 +41,7 @@ import {
     messageType_type,
 } from '@src/dataStruct/message';
 import { useGetMessagesQuery } from '@src/redux/query/messageRTK';
+import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
 
 let socket: SocketType;
 
@@ -62,6 +64,35 @@ const Message = () => {
     const input_element = useRef<HTMLInputElement | null>(null);
 
     const [createMessage] = useCreateMessageMutation();
+
+    const [zaloCustomer, setZaloCustomer] = useState<ZaloCustomerField | undefined>(undefined);
+    const {
+        data: data_zaloInforCustomer,
+        // isFetching,
+        isLoading: isLoading_zaloInforCustomer,
+        isError: isError_zaloInforCustomer,
+        error: error_zaloInforCustomer,
+    } = useGetInforCustomerOnZaloQuery({ customerId: id || '' }, { skip: id === undefined });
+    useEffect(() => {
+        if (isError_zaloInforCustomer && error_zaloInforCustomer) {
+            console.error(error_zaloInforCustomer);
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.SUCCESS,
+            //         message: 'Lấy dữ liệu KHÔNG thành công !',
+            //     })
+            // );
+        }
+    }, [isError_zaloInforCustomer, error_zaloInforCustomer]);
+    useEffect(() => {
+        // setIsLoading(isLoading_medication);
+    }, [isLoading_zaloInforCustomer]);
+    useEffect(() => {
+        const resData = data_zaloInforCustomer;
+        if (resData?.isSuccess && resData.data && resData.data.error === 0) {
+            setZaloCustomer(resData.data);
+        }
+    }, [data_zaloInforCustomer]);
 
     const {
         data: data_messages,
@@ -114,7 +145,77 @@ const Message = () => {
         // Nhận message từ server
         socket.on('roomMessage', (message: any) => {
             // setMessages((prev) => [...prev, data]);
-            console.log('roomMessage', JSON.parse(message));
+            const mes = JSON.parse(message) as MessageZaloField;
+            const data = mes.data as HookDataField;
+            console.log(1111111111111111, data.event_name);
+            switch (data.event_name) {
+                case zalo_event_name_enum.user_send_text: {
+                    const hookData: HookDataField<ZaloMessage> = {
+                        app_id: '',
+                        user_id_by_app: '',
+                        event_name: zalo_event_name_enum.user_send_text,
+                        sender: {
+                            id: myId,
+                        },
+                        recipient: {
+                            id: id,
+                        },
+                        message: data.message,
+                        timestamp: '',
+                    };
+                    const newMessage: MessageField = {
+                        id: -1,
+                        eventName: zalo_event_name_enum.user_send_text,
+                        sender: sender_enum.CUSTOMER,
+                        receiveId: myId,
+                        message: JSON.stringify(hookData),
+                        type: messageType_enum.TEXT,
+                        timestamp: data.timestamp,
+                        messageStatus: messageStatus_enum.SENT,
+                        status: 'normal',
+                        accountId: Number(myId),
+                        updateTime: '',
+                        createTime: '',
+                    };
+                    setMessages((prev) => [newMessage, ...prev]);
+                    break;
+                }
+                case zalo_event_name_enum.user_send_image: {
+                    const hookData: HookDataField<ZaloMessage> = {
+                        app_id: '',
+                        user_id_by_app: '',
+                        event_name: zalo_event_name_enum.user_send_image,
+                        sender: {
+                            id: myId,
+                        },
+                        recipient: {
+                            id: id,
+                        },
+                        message: data.message,
+                        timestamp: '',
+                    };
+                    const newMessage: MessageField = {
+                        id: -1,
+                        eventName: zalo_event_name_enum.user_send_image,
+                        sender: sender_enum.CUSTOMER,
+                        receiveId: myId,
+                        message: JSON.stringify(hookData),
+                        type: messageType_enum.IMAGES,
+                        timestamp: data.timestamp,
+                        messageStatus: messageStatus_enum.SENT,
+                        status: 'normal',
+                        accountId: Number(myId),
+                        updateTime: '',
+                        createTime: '',
+                    };
+                    setMessages((prev) => [newMessage, ...prev]);
+                    break;
+                }
+                default: {
+                    //statements;
+                    break;
+                }
+            }
         });
 
         console.log('myRoom', myRoom);
@@ -165,80 +266,58 @@ const Message = () => {
     };
 
     const handleSend = async () => {
-        // if (!myId) return;
-        // if (!id) return;
-        // const myRoom = myId + id;
-        // const newMes = newMessage.trim();
-        // if (newMes.length === 0) return;
-        // const messageText: MessageTextField = {
-        //     text: newMes,
-        //     msg_id: '',
-        // };
-        // const hookData: HookDataField<MessageTextField> = {
-        //     app_id: '',
-        //     user_id_by_app: '',
-        //     event_name: zalo_event_name_enum.member_sending,
-        //     sender: {
-        //         id: myId,
-        //     },
-        //     recipient: {
-        //         id: id,
-        //     },
-        //     message: messageText,
-        //     timestamp: '',
-        // };
-        // const createMessageBody: CreateMessageBodyField = {
-        //     eventName: zalo_event_name_enum.member_sending,
-        //     sender: sender_enum.MEMBER,
-        //     receiveId: id,
-        //     message: JSON.stringify(hookData),
-        //     timestamp: '',
-        //     messageStatus: messageStatus_enum.SENDING,
-        //     accountId: -1,
-        // };
-        // createMessage(createMessageBody)
-        //     .then((res) => {
-        //         const resData = res.data;
-        //         console.log('createMessage', resData);
-        //         if (resData?.isSuccess && resData.data) {
-        //             socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
-        //         }
-        //     })
-        //     .catch((err) => console.error(err));
         const imageUrls: MessageImageUrlField[] | undefined = await handlePreImages();
-
-        const messageImages: MessageImageField | undefined = imageUrls
-            ? {
-                  text: '123, https://www.youtube.com/watch?v=UGeDFknQPVY&list=RD2ShEgpIibzQ&index=2',
-                  attachment: {
-                      type: 'template',
-                      payload: {
-                          template_type: 'media',
-                          elements: [
-                              {
-                                  media_type: 'image',
-                                  url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdZOBkio-wrTpcqr9ELIxaK-sN4PtmVHKATw&s',
+        if (imageUrls) {
+            for (let i: number = 0; i < imageUrls.length; i++) {
+                const imageUrls1 = [imageUrls[i]];
+                const messageImages: MessageImageField | undefined = imageUrls
+                    ? {
+                          text: '',
+                          attachment: {
+                              type: 'template',
+                              payload: {
+                                  template_type: 'media',
+                                  elements: imageUrls1,
                               },
-                          ],
-                      },
-                  },
-              }
-            : undefined;
+                          },
+                      }
+                    : undefined;
+                handleSendCommon(messageImages, messageType_enum.IMAGES);
+            }
+        }
 
-        handleSendCommon(messageImages, messageType_enum.IMAGES);
+        const resPreVideos = await handlePreVideos();
+        if (resPreVideos) {
+            for (let i: number = 0; i < resPreVideos.videoUrls.length; i++) {
+                const videoUrls = [resPreVideos.videoUrls[i]];
+                const pathUrls = [resPreVideos.pathUrls[i]];
+                const messageVideos: MessageImageField | undefined = resPreVideos
+                    ? {
+                          text: pathUrls[0],
+                          attachment: {
+                              type: 'template',
+                              payload: {
+                                  template_type: 'media',
+                                  elements: videoUrls,
+                              },
+                          },
+                      }
+                    : undefined;
+                handleSendCommon(messageVideos, messageType_enum.IMAGES);
+            }
+        }
 
         const newMes = newMessage.trim();
-        if (newMes.length === 0) return;
-        const messageText: MessageTextField = {
-            text: newMes,
-            msg_id: '',
-        };
-
-        handleSendCommon(messageText, messageType_enum.TEXT);
+        if (newMes.length !== 0) {
+            const messageText: MessageTextField = {
+                text: newMes,
+                msg_id: '',
+            };
+            handleSendCommon(messageText, messageType_enum.TEXT);
+        }
     };
 
     const handleSendCommon = (message: ZaloMessage | undefined, messageType: messageType_type) => {
-        console.log('handleSendCommon myId id', myId, id);
         if (!myId) return;
         if (!id) return;
         const myRoom = myId + id;
@@ -275,8 +354,7 @@ const Message = () => {
                 console.log('createMessage', resData);
                 if (resData?.isSuccess && resData.data) {
                     const newData: MessageField = resData.data;
-                    console.log('createMessage', 'newData', resData);
-                    setMessages((prev) => [...prev, newData]);
+                    setMessages((prev) => [newData, ...prev]);
                     socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
                 }
             })
@@ -343,38 +421,34 @@ const Message = () => {
         }
     };
 
-    // const handleUploadMultipleVideos = async (files: File[]): Promise<MyResponse<AVideoFileField[]> | null> => {
-    //     if (!files || files.length === 0) return null;
+    const handleUploadMultipleVideos = async (files: File[]): Promise<MyResponse<AVideoFileField[]> | null> => {
+        if (!files || files.length === 0) return null;
 
-    //     const formData = new FormData();
-    //     files.forEach((file) => {
-    //         formData.append('videos', file); // 👈 key này phải trùng với backend
-    //     });
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append('videos', file); // 👈 key này phải trùng với backend
+        });
 
-    //     try {
-    //         const res = await axiosInstance.post<MyResponse<AVideoFileField[]>>(
-    //             VIDEO_API.UPLOAD_MULTIPLE_VIDEOS,
-    //             formData,
-    //             {
-    //                 headers: { 'Content-Type': 'multipart/form-data' },
-    //                 onUploadProgress: (progressEvent) => {
-    //                     const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
-    //                     console.log(`Đang tải lên: ${percent}%`);
-    //                 },
-    //             }
-    //         );
-    //         return res.data;
-    //     } catch (error) {
-    //         console.error('Upload thất bại:', error);
-    //         // dispatch(
-    //         //     setData_toastMessage({
-    //         //         type: messageType_enum.ERROR,
-    //         //         message: 'Đăng tải hình ảnh thất bại !',
-    //         //     })
-    //         // );
-    //         return null;
-    //     }
-    // };
+        try {
+            const res = await axiosInstance.post<MyResponse<AVideoFileField[]>>(VIDEO_API.UPLOAD_MUL_VIDEOS, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
+                    console.log(`Đang tải lên: ${percent}%`);
+                },
+            });
+            return res.data;
+        } catch (error) {
+            console.error('Upload thất bại:', error);
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.ERROR,
+            //         message: 'Đăng tải hình ảnh thất bại !',
+            //     })
+            // );
+            return null;
+        }
+    };
 
     const handlePreImages = async () => {
         const resData_images = await handleUploadMultipleImages(localImages);
@@ -400,6 +474,35 @@ const Message = () => {
         }
 
         return imageUrls;
+    };
+
+    const handlePreVideos = async () => {
+        const resData_videos = await handleUploadMultipleVideos(localVideos);
+        if (resData_videos === null) return;
+        const videoFiles = resData_videos.data;
+        if (!videoFiles) {
+            dispatch(
+                setData_toastMessage({
+                    type: toastMessageType_enum.ERROR,
+                    message: 'Đăng tải những thước phim thất bại !',
+                })
+            );
+            return;
+        }
+        const videoUrls: MessageImageUrlField[] = [];
+        const pathUrls: string[] = [];
+        for (let i: number = 0; i < videoFiles.length; i++) {
+            const imageUrl = `${BASE_URL}${apiString}/service_image/store/${videoFiles[i].savedName}.jpg`;
+            const url = `${BASE_URL}${apiString}/service_video/query/streamVideo?id=${videoFiles[i].savedName}`;
+            const aImage: MessageImageUrlField = {
+                media_type: 'image',
+                url: imageUrl,
+            };
+            videoUrls.push(aImage);
+            pathUrls.push(url);
+        }
+
+        return { videoUrls: videoUrls, pathUrls: pathUrls };
     };
 
     const handleDeleteImage = (data: File) => {
@@ -433,7 +536,7 @@ const Message = () => {
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{MESSAGE}</div>
+                <div className={style.header}>{`${MESSAGE} - ${zaloCustomer?.data.display_name}`}</div>
                 <div className={style.contentContainer} ref={contentContainer_element} onScroll={handleScroll}>
                     {list_mes}
                 </div>
