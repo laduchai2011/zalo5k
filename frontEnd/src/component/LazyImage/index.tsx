@@ -75,6 +75,10 @@ const LazyImage = ({ src, alt, className, root }: LazyImageProps) => {
         return () => observer.disconnect();
     }, [root]);
 
+    const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        console.log(e);
+    };
+
     return (
         <div className={`${style.parent} ${className || ''}`}>
             {!loaded && <Skeleton />}
@@ -85,6 +89,7 @@ const LazyImage = ({ src, alt, className, root }: LazyImageProps) => {
                 alt={alt}
                 className={style.image}
                 onLoad={() => setLoaded(true)}
+                onError={(e) => handleError(e)}
                 style={{ opacity: loaded ? 1 : 0 }}
             />
         </div>

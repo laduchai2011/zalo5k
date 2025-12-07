@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateMyCustomer
+﻿CREATE PROCEDURE CreateMyCustomer
 	@senderId NVARCHAR(255),
 	@accountId INT
 AS

@@ -19,6 +19,7 @@ import { my_log } from '@src/log';
 
 export function createMessageFromCustomerSend() {
     consumeMessage('customerSend_sendToMember_storeDB', (messageZalo) => {
+        console.log('consumeMessage', 'customerSend_sendToMember_storeDB');
         const data = messageZalo.data as HookDataField<any>;
         const message = data.message;
 
@@ -35,6 +36,10 @@ export function createMessageFromCustomerSend() {
             }
             case zalo_event_name_enum.user_send_image: {
                 type = messageType_enum.IMAGES;
+                break;
+            }
+            case zalo_event_name_enum.user_send_video: {
+                type = messageType_enum.VIDEOS;
                 break;
             }
             default: {

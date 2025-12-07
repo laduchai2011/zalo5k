@@ -1,6 +1,6 @@
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { PROFILE, ADMIN, MEMBER, MEMBER_RECEIVE_MESSAGE, MANAGE_MEMBERS } from '@src/const/text';
+import { PROFILE, ADMIN, MEMBER, MEMBER_RECEIVE_MESSAGE, MANAGE_MEMBERS, SIGNOUT } from '@src/const/text';
 import Header from '../Header';
 import { select_enum, route_enum } from '@src/router/type';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
@@ -14,6 +14,10 @@ const Profile = () => {
 
     const goToManageMembers = () => {
         navigate(route_enum.MANAGE_MEMBERS);
+    };
+
+    const goToSignout = () => {
+        navigate(route_enum.SIGNOUT);
     };
 
     return (
@@ -31,6 +35,9 @@ const Profile = () => {
                     </div>
                     <div className={style.option} onClick={() => goToManageMembers()}>
                         {MANAGE_MEMBERS}
+                    </div>
+                    <div className={style.option} onClick={() => goToSignout()}>
+                        {SIGNOUT}
                     </div>
                 </div>
                 <div className={style.headerTab}>

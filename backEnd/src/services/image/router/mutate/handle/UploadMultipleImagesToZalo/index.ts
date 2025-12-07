@@ -11,7 +11,7 @@ import { getAccessToken, refreshAccessToken } from '@src/services/zalo_webhook/h
 
 // const OA_ACCESS_TOKEN = process.env.ZALO_OA_ACCESS_TOKEN!;
 const API_UPLOAD = 'https://openapi.zalo.me/v2.0/oa/upload/image';
-const API_SEND = 'https://openapi.zalo.me/v2.0/oa/message';
+const API_SEND = 'https://openapi.zalo.me/v3.0/oa/message/cs';
 
 class Handle_UploadMultipleImagesToZalo {
     constructor() {}

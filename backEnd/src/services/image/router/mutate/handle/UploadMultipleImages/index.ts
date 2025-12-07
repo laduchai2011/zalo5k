@@ -4,19 +4,25 @@ import fs from 'fs';
 import multer from 'multer';
 import { AImageFileField } from '@src/dataStruct/photo';
 import { MyResponse } from '@src/dataStruct/response';
+import sharp from 'sharp';
+
+const imagePath = path.join(process.cwd(), 'data', 'image');
+const folderInputPath = path.join(imagePath, 'input');
+const folderOutputPath = path.join(imagePath, 'output');
 
 class Handle_UploadMultipleImages {
     constructor() {}
 
     upload = (): multer.Multer => {
-        const imagePath = path.join(process.cwd(), 'data', 'image');
-        if (!fs.existsSync(imagePath)) {
-            fs.mkdirSync(imagePath, { recursive: true });
-        }
+        [folderInputPath, folderOutputPath].forEach((dir) => {
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+        });
 
         const storage = multer.diskStorage({
             destination: (_req, _file, cb) => {
-                cb(null, imagePath);
+                cb(null, folderInputPath);
             },
             filename: (req, file, cb) => {
                 const userId = req.cookies?.id || 'unknown';
@@ -58,6 +64,16 @@ class Handle_UploadMultipleImages {
             mimetype: file.mimetype,
         }));
 
+        for (let i: number = 0; i < fileInfos.length; i++) {
+            const inputPath = path.join(folderInputPath, fileInfos[i].filename);
+            const outputPath = path.join(folderOutputPath, fileInfos[i].filename);
+            const stats = fs.statSync(inputPath);
+            const fileSizeInBytes = stats.size;
+            if (fileSizeInBytes > 1024 * 1024) {
+                compressImageFromUrl(inputPath, outputPath);
+            }
+        }
+
         const resData: MyResponse<AImageFileField[]> = {
             message: 'Đăng tải những hình ảnh thành công !',
             isSuccess: true,
@@ -67,6 +83,16 @@ class Handle_UploadMultipleImages {
         res.json(resData);
         return;
     };
+}
+
+async function compressImageFromUrl(inputPath: string, outputPath: string) {
+    // Resize và nén ảnh
+    await sharp(inputPath)
+        .resize({ width: 1024 }) // thay đổi chiều rộng nếu muốn
+        .jpeg({ quality: 80 }) // giảm chất lượng jpeg
+        .toFile(outputPath);
+
+    console.log('Ảnh đã nén xong:', outputPath);
 }
 
 export default Handle_UploadMultipleImages;

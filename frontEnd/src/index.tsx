@@ -22,11 +22,11 @@ if (process.env.NODE_ENV === DEVELOPMENT) {
     reportWebVitals(console.log);
 }
 if (process.env.NODE_ENV === PRODUCTION) {
-    reportWebVitals((metric) => {
-        fetch('/analytics', {
-            method: 'POST',
-            body: JSON.stringify(metric),
-            headers: { 'Content-Type': 'application/json' },
-        });
-    });
+    // reportWebVitals((metric) => {
+    //     fetch('/analytics', {
+    //         method: 'POST',
+    //         body: JSON.stringify(metric),
+    //         headers: { 'Content-Type': 'application/json' },
+    //     });
+    // });
 }

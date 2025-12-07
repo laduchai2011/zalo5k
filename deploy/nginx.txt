@@ -28,8 +28,43 @@ server {
     }
 }
 
+server {
+    listen 443 ssl;
+    server_name socketapp.5kaquarium.com;
+
+    ssl_certificate /etc/letsencrypt/live/socketapp.5kaquarium.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/socketapp.5kaquarium.com/privkey.pem;
+
+    location /api/ {
+        if ($request_method = OPTIONS) {
+                add_header Access-Control-Allow-Origin "https://5kaquarium.com" always;
+                add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+                add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
+                add_header Access-Control-Allow-Credentials "true" always;
+                add_header Content-Length 0;
+                add_header Content-Type text/plain;
+                return 204;
+        }
+
+         # Proxy tất cả các request khác
+        add_header Access-Control-Allow-Origin "https://5kaquarium.com" always;
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
+        add_header Access-Control-Allow-Credentials "true" always;
+
+        proxy_pass http://socketapp_container:3005;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
 
 docker run -d --name nginx_server --network network_zalo_5kaquarium -v /root/nginx/conf:/etc/nginx/conf.d -v /root/nginx/html:/usr/share/nginx/html -p 80:80 -p 443:443 nginx
+docker run -d --name nginx_server --network network_zalo_5kaquarium -v ~/nginx/conf:/etc/nginx/conf.d -v /etc/letsencrypt:/etc/letsencrypt:ro -p 80:80 -p 443:443 nginx
+sudo nano /root/nginx/conf/default.conf
+
+sudo pkill -f nginx
 
 -cài đặt
 sudo apt update
@@ -43,3 +78,112 @@ sudo certbot --nginx -d 5kaquarium.com -d www.5kaquarium.com
 - vị trí chứng chỉ
 /etc/letsencrypt/live/5kaquarium.com/fullchain.pem
 /etc/letsencrypt/live/5kaquarium.com/privkey.pem
+
+
+
+
+
+
+
+
+server {
+    listen 80;
+    server_name 5kaquarium.com www.5kaquarium.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name 5kaquarium.com www.5kaquarium.com;
+
+    ssl_certificate /etc/letsencrypt/live/5kaquarium.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/5kaquarium.com/privkey.pem;
+
+    location /api/ {
+        proxy_pass http://nodeserver_container:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location /zalo/webhook {
+       proxy_pass http://nodeserver_container:3000/api/service_zalo_webhook/zalo/webhook;
+    
+       proxy_set_header Host $host;
+       proxy_set_header X-Real-IP $remote_addr;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location /.well-known/acme-challenge/ {
+        root /usr/share/nginx/html;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name zalowebhook.5kaquarium.com;
+
+    ssl_certificate /etc/letsencrypt/live/zalowebhook.5kaquarium.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/zalowebhook.5kaquarium.com/privkey.pem;
+   
+    location /api/ {
+	if ($request_method = OPTIONS) {
+		add_header Access-Control-Allow-Origin "https://5kaquarium.com" always;
+		add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+		add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
+		add_header Access-Control-Allow-Credentials "true" always;
+		add_header Content-Length 0;
+		add_header Content-Type text/plain;
+		return 204;
+	}
+
+   	 # Proxy tất cả các request khác
+	add_header Access-Control-Allow-Origin "https://5kaquarium.com" always;
+	add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+	add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
+	add_header Access-Control-Allow-Credentials "true" always;
+
+        proxy_pass http://zalowebhook_container:9000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }    
+
+    location /zalo/webhook {
+        proxy_pass http://zalowebhook_container:9000/api/service_zalo_webhook/zalo/webhook;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name socketapp.5kaquarium.com;
+
+    ssl_certificate /etc/letsencrypt/live/socketapp.5kaquarium.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/socketapp.5kaquarium.com/privkey.pem;
+
+    location /api/ {
+        if ($request_method = OPTIONS) {
+                add_header Access-Control-Allow-Origin "https://5kaquarium.com" always;
+                add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+                add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
+                add_header Access-Control-Allow-Credentials "true" always;
+                add_header Content-Length 0;
+                add_header Content-Type text/plain;
+                return 204;
+        }
+
+         # Proxy tất cả các request khác
+        add_header Access-Control-Allow-Origin "https://5kaquarium.com" always;
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
+        add_header Access-Control-Allow-Credentials "true" always;
+
+        proxy_pass http://socketapp_container:3005;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}

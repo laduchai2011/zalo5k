@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetMessages
+﻿CREATE PROCEDURE GetMessages
 	@page INT,
     @size INT,
 	@receiveId NVARCHAR(255),

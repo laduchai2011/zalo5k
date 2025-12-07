@@ -28,6 +28,8 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
 
     const myResponse: MyResponse<unknown> = {
         isSuccess: false,
+        isAuth: false,
+        message: 'Bắt đầu xác thực !',
     };
 
     try {
@@ -58,6 +60,8 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
         }
 
         if (verify_accessToken && verify_accessToken !== 'expired') {
+            myResponse.isAuth = true;
+            myResponse.message = 'Xác thực thành công, access-token còn hạn !';
             next();
             return;
         } else {
@@ -119,6 +123,8 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
                     await serviceRedis.setData<StoreAuthToken>(keyServiceRedis, storeAuthToken, timeExpireat);
 
                     await lock.release();
+                    myResponse.isAuth = true;
+                    myResponse.message = 'Xác thực thành công, access-token được cấp mới !';
                     next();
                     return;
                     //----------------------------------------------------------/
@@ -126,6 +132,8 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
                     if (err instanceof LockError) {
                         //--------------------Tiếp tục thực hiện những request cùng thời điểm------------------------//
                         if (storeAuthToken.grayAccessToken === accessToken) {
+                            myResponse.isAuth = true;
+                            myResponse.message = 'Xác thực thành công, truy cập tạm access-token cũ !';
                             next();
                             return;
                         } else {

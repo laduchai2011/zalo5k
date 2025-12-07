@@ -5,20 +5,23 @@ import Handle_CreateMyCustom from './handle/CreateMyCustom';
 import Handle_UpdateEvent_MemberSend from './handle/UpdateEvent_MemberSend';
 import { AccountField } from '@src/dataStruct/account';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { HookDataField, zalo_event_name_enum, MessageImagesField } from '@src/dataStruct/hookData';
+import { zalo_event_name_enum, zalo_event_name_enum_messageQueue } from '@src/dataStruct/hookData';
 import { UpdateEventMemberSendBodyField, messageStatus_enum } from '@src/dataStruct/message';
 import { MessageZaloField } from '@src/messageQueue/type';
+import { redisKey_memberReceiveMessage } from '@src/const/redisKey';
 
 const serviceRedis = ServiceRedis.getInstance();
 
 function checkMyCustommer() {
-    consumeMessage(zalo_event_name_enum.user_send_text, (messageZalo) => {
+    consumeMessage(zalo_event_name_enum_messageQueue.user_send_text, (messageZalo) => {
         main(messageZalo);
     });
 
-    consumeMessage(zalo_event_name_enum.user_send_image, (messageZalo) => {
-        // const data = messageZalo.data as HookDataField<MessageImagesField>;
-        console.log('user_send_image', messageZalo);
+    consumeMessage(zalo_event_name_enum_messageQueue.user_send_image, (messageZalo) => {
+        main(messageZalo);
+    });
+
+    consumeMessage(zalo_event_name_enum_messageQueue.user_send_video, (messageZalo) => {
         main(messageZalo);
     });
 
@@ -28,11 +31,11 @@ function checkMyCustommer() {
 
         handle_getAMyCustomer.main({ senderId: messageZalo.data.sender.id }, async (myCustomer) => {
             const messageZalo1 = { ...messageZalo };
-            if (myCustomer !== null) {
+            if (myCustomer) {
                 messageZalo1.accountId = myCustomer.accountId;
                 messageZalo1.isNewCustom = false;
             } else {
-                const key = 'memberReceiveMessage';
+                const key = redisKey_memberReceiveMessage;
                 try {
                     await serviceRedis.init();
                     const result = await serviceRedis.getData<AccountField>(key);
@@ -64,16 +67,17 @@ function checkMyCustommer() {
 
 function sendToMember() {
     consumeMessage('customerSend_sendToMember_storeDB_feedback', (messageZalo) => {
+        console.log('consumeMessage', 'customerSend_sendToMember_storeDB_feedback');
         sendMessage('customerSend_sendToMember', messageZalo);
     });
 }
 
 function updateEvent_MemberSend() {
-    consumeMessage(zalo_event_name_enum.oa_send_text, (messageZalo) => {
+    consumeMessage(zalo_event_name_enum_messageQueue.oa_send_text, (messageZalo) => {
         // console.log('updateEvent_MemberSend', 'oa_send_text', messageZalo);
         update(messageZalo);
     });
-    consumeMessage(zalo_event_name_enum.oa_send_image, (messageZalo) => {
+    consumeMessage(zalo_event_name_enum_messageQueue.oa_send_image, (messageZalo) => {
         // const data = messageZalo.data as HookDataField<MessageImageOaSendField>;
         // console.log('updateEvent_MemberSend', 'oa_send_image', messageZalo, data.message, data.message.attachments);
         update(messageZalo);
@@ -84,11 +88,11 @@ function updateEvent_MemberSend() {
 
         handle_getAMyCustomer.main({ senderId: messageZalo.data.sender.id }, async (myCustomer) => {
             const messageZalo1 = { ...messageZalo };
-            if (myCustomer !== null) {
+            if (myCustomer) {
                 messageZalo1.accountId = myCustomer.accountId;
                 messageZalo1.isNewCustom = false;
             } else {
-                const key = 'memberReceiveMessage';
+                const key = redisKey_memberReceiveMessage;
                 try {
                     await serviceRedis.init();
                     const result = await serviceRedis.getData<AccountField>(key);

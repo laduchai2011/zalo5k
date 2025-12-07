@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
 // import avatarnull from '@src/asset/avatar/avatarnull.png';
@@ -9,9 +9,11 @@ import {
     ZaloMessage,
     MessageImageOaSendField,
     ZaloCustomerField,
+    MessageVideosField,
 } from '@src/dataStruct/hookData';
 import LinkifyText from '@src/component/LinkifyText';
 import LazyImage from '@src/component/LazyImage';
+import LazyVideo from '@src/component/LazyVideo';
 import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
 
 const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
@@ -56,7 +58,9 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                 <div className={style.parent}>
                     <div className={style.main}>
                         <div className={style.avatarContainer}>
-                            <img src={zaloCustomer?.data.avatar} alt="avatar" />
+                            {zaloCustomer?.data.avatar && (
+                                <LazyImage className={style.avatar} src={zaloCustomer?.data.avatar} alt="avatar" />
+                            )}
                         </div>
                         <div className={style.contentContainer}>
                             <div className={style.content}>
@@ -76,7 +80,9 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                 <div className={style.parent}>
                     <div className={style.main}>
                         <div className={style.avatarContainer}>
-                            <img src={zaloCustomer?.data.avatar} alt="avatar" />
+                            {zaloCustomer?.data.avatar && (
+                                <LazyImage className={style.avatar} src={zaloCustomer?.data.avatar} alt="avatar" />
+                            )}
                         </div>
                         <div className={style.contentContainer}>
                             <div className={style.content}>
@@ -95,31 +101,34 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                 </div>
             );
         }
+        case messageType_enum.VIDEOS: {
+            const messageVideo = hookData.message as MessageVideosField;
+            console.log(1111111, messageVideo);
+            return (
+                <div className={style.parent}>
+                    <div className={style.main}>
+                        <div className={style.avatarContainer}>
+                            {zaloCustomer?.data.avatar && (
+                                <LazyImage className={style.avatar} src={zaloCustomer?.data.avatar} alt="avatar" />
+                            )}
+                        </div>
+                        <div className={style.contentContainer}>
+                            <div className={style.content}>
+                                <LazyVideo className={style.image} src={messageVideo.attachments[0].payload.url} />
+                                <div className={style.text}>
+                                    {messageVideo.text && <LinkifyText text={messageVideo.text} />}
+                                </div>
+                            </div>
+                            <div className={style.status}>{data.messageStatus}</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
         default: {
             return;
         }
     }
-
-    // return (
-    //     <div className={style.parent}>
-    //         <div className={style.main}>
-    //             <div className={style.avatarContainer}>
-    //                 <img src={avatarnull} alt="avatar" />
-    //             </div>
-    //             <div className={style.contentContainer}>
-    //                 <div className={style.content}>
-    //                     <div className={style.text}>{messageText.text}</div>
-    //                     {/* <img
-    //                         className={style.image}
-    //                         src="https://cdn-media.sforum.vn/storage/app/media/anh-dep-8.jpg"
-    //                         alt="img"
-    //                     /> */}
-    //                 </div>
-    //                 <div className={style.status}>Đang gửi ...</div>
-    //             </div>
-    //         </div>
-    //     </div>
-    // );
 };
 
-export default YourMessage;
+export default memo(YourMessage);

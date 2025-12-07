@@ -1,6 +1,7 @@
 import { MutateDB } from '@src/services/account/interface';
 import { AccountField } from '@src/dataStruct/account';
 import ServiceRedis from '@src/cache/cacheRedis';
+import { redisKey_memberReceiveMessage } from '@src/const/redisKey';
 
 const serviceRedis = ServiceRedis.getInstance();
 const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
@@ -17,7 +18,7 @@ class MutateDB_SetMemberReceiveMessage extends MutateDB {
     };
 
     async run(): Promise<AccountField | void> {
-        const key = 'memberReceiveMessage';
+        const key = redisKey_memberReceiveMessage;
 
         if (this._member !== undefined) {
             try {

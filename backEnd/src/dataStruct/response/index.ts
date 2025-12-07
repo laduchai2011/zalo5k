@@ -1,8 +1,9 @@
-export interface MyResponse <T>{
-    message?: string,
-    isSuccess?: boolean,
-    err?: Error | string | unknown,
-    data?: T, 
-    isSignin?: boolean,
-    isEmptyData?: boolean
+export interface MyResponse<T> {
+    message?: string;
+    isSuccess?: boolean;
+    err?: Error | string | unknown;
+    data?: T;
+    isSignin?: boolean;
+    isEmptyData?: boolean;
+    isAuth?: boolean;
 }

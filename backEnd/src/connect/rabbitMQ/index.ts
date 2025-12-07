@@ -1,5 +1,6 @@
 import { connect } from 'amqplib';
 import type { Connection, Channel } from '@src/types/amqp';
+import { my_log } from '@src/log';
 
 export class RabbitMQ {
     private static instance: RabbitMQ;
@@ -9,10 +10,10 @@ export class RabbitMQ {
 
     private constructor() {}
 
-    public static async getInstance(): Promise<RabbitMQ> {
+    static getInstance(): RabbitMQ {
         if (!RabbitMQ.instance) {
             RabbitMQ.instance = new RabbitMQ();
-            await RabbitMQ.instance.init();
+            // await RabbitMQ.instance.init();
         }
         return RabbitMQ.instance;
     }
@@ -28,7 +29,7 @@ export class RabbitMQ {
         const ch: Channel = await conn.createChannel();
         this.channel = ch;
 
-        console.log('RabbitMQ connected');
+        my_log.withGreen('RabbitMQ connected successly !');
 
         this.connection.on('error', (err) => {
             console.error('RabbitMQ connection error:', err);
@@ -41,5 +42,12 @@ export class RabbitMQ {
 
     public getChannel(): Channel {
         return this.channel;
+    }
+
+    async close(): Promise<void> {
+        if (this.connection) {
+            await this.connection.close();
+            my_log.withYellow('RabbitMQ connection closed.');
+        }
     }
 }

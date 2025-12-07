@@ -16,9 +16,9 @@
             flex-direction: column;
             justify-content: flex-start;
 
-            > img {
+            > .avatar {
                 width: 30px;
-                aspect-ratio: 1 / 1;
+                height: 30px;
                 border-radius: 50%;
                 overflow: hidden;
             }
@@ -38,6 +38,8 @@
 
                 > .image {
                     max-width: 100%;
+                    // width: max-content;
+                    // height: 50px;
                 }
             }
 

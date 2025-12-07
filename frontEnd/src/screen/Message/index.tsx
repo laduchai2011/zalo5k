@@ -23,7 +23,7 @@ import { setData_toastMessage } from '@src/redux/slice/Message';
 import { messageType_enum as toastMessageType_enum } from '@src/component/ToastMessage/type';
 import { AImageFileField, AVideoFileField } from '@src/dataStruct/photo';
 import { MyResponse } from '@src/dataStruct/response';
-import { BASE_URL } from '@src/const/api/baseUrl';
+import { BASE_URL, isProduct } from '@src/const/api/baseUrl';
 import {
     MessageImageField,
     // MessageImagesField,
@@ -45,7 +45,6 @@ import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
 
 let socket: SocketType;
 
-const isProduct = process.env.NODE_ENV === 'production';
 const apiString = isProduct ? '' : '/api';
 
 const Message = () => {
@@ -147,8 +146,9 @@ const Message = () => {
             // setMessages((prev) => [...prev, data]);
             const mes = JSON.parse(message) as MessageZaloField;
             const data = mes.data as HookDataField;
-            console.log(1111111111111111, data.event_name);
-            switch (data.event_name) {
+            console.log(1111111111111111, data);
+            const event_name = isProduct ? data.event_name : data.event_name + '_dev';
+            switch (event_name) {
                 case zalo_event_name_enum.user_send_text: {
                     const hookData: HookDataField<ZaloMessage> = {
                         app_id: '',
@@ -201,6 +201,37 @@ const Message = () => {
                         receiveId: myId,
                         message: JSON.stringify(hookData),
                         type: messageType_enum.IMAGES,
+                        timestamp: data.timestamp,
+                        messageStatus: messageStatus_enum.SENT,
+                        status: 'normal',
+                        accountId: Number(myId),
+                        updateTime: '',
+                        createTime: '',
+                    };
+                    setMessages((prev) => [newMessage, ...prev]);
+                    break;
+                }
+                case zalo_event_name_enum.user_send_video: {
+                    const hookData: HookDataField<ZaloMessage> = {
+                        app_id: '',
+                        user_id_by_app: '',
+                        event_name: zalo_event_name_enum.user_send_video,
+                        sender: {
+                            id: myId,
+                        },
+                        recipient: {
+                            id: id,
+                        },
+                        message: data.message,
+                        timestamp: '',
+                    };
+                    const newMessage: MessageField = {
+                        id: -1,
+                        eventName: zalo_event_name_enum.user_send_video,
+                        sender: sender_enum.CUSTOMER,
+                        receiveId: myId,
+                        message: JSON.stringify(hookData),
+                        type: messageType_enum.VIDEOS,
                         timestamp: data.timestamp,
                         messageStatus: messageStatus_enum.SENT,
                         status: 'normal',
@@ -354,7 +385,7 @@ const Message = () => {
                 console.log('createMessage', resData);
                 if (resData?.isSuccess && resData.data) {
                     const newData: MessageField = resData.data;
-                    setMessages((prev) => [newData, ...prev]);
+                    setMessages((prev) => [...prev, newData]);
                     socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
                 }
             })

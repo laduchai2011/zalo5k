@@ -10,7 +10,7 @@ CREATE FUNCTION Signin (@userName NVARCHAR(100), @password NVARCHAR(100)) RETURN
 GO
 
 
-ALTER PROCEDURE GetAllMembers
+CREATE PROCEDURE GetAllMembers
     @addedById INT
 AS
 BEGIN

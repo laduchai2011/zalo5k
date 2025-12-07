@@ -12,8 +12,8 @@ INSERT INTO
     )
 VALUES
     (
-        'laduchai',
-        '123',
+        'admin',
+        'admin',
         '0789860854',
         'la',
         'hai',
@@ -32,7 +32,7 @@ INSERT INTO
     )
 VALUES
     (
-        null,
+        1,
         'admin',
         '1'
     );

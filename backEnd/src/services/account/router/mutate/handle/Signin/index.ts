@@ -62,7 +62,7 @@ class Handle_Signin {
                     const id = result.recordset[0].id;
 
                     if (id === null) {
-                        myResponse.message = 'Đăng ký thất bại !';
+                        myResponse.message = 'Đăng nhập thất bại !';
                         res.status(500).json(myResponse);
                         return;
                     }
@@ -124,7 +124,7 @@ class Handle_Signin {
                             secure: secure_cookie,
                             sameSite: sameSite,
                             expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                            domain: '.zalo5k.com',
+                            domain: '.5kaquarium.com',
                             // signed: true
                         })
                             .cookie('accessToken', accessToken, {
@@ -132,14 +132,14 @@ class Handle_Signin {
                                 secure: secure_cookie,
                                 sameSite: sameSite,
                                 expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                domain: '.zalo5k.com',
+                                domain: '.5kaquarium.com',
                             })
                             .cookie('refreshToken', refreshToken, {
                                 httpOnly: true,
                                 secure: secure_cookie,
                                 sameSite: sameSite,
                                 expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                domain: '.zalo5k.com',
+                                domain: '.5kaquarium.com',
                             });
                     }
 

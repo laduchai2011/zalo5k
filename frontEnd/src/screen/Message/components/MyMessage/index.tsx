@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import style from './style.module.scss';
 import { MessageField, messageType_enum } from '@src/dataStruct/message';
 import { HookDataField, MessageTextField, ZaloMessage, MessageImageField } from '@src/dataStruct/hookData';
@@ -80,4 +80,4 @@ const MyMessage: FC<{ data: MessageField }> = ({ data }) => {
     // );
 };
 
-export default MyMessage;
+export default memo(MyMessage);

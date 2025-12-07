@@ -161,6 +161,12 @@ const rollup_prod = isProd && [
             },
         ],
         plugins: [
+            replace({
+                preventAssignment: true, // Cần thiết cho Rollup 3+
+                'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+                'process.env.API_URL': JSON.stringify(process.env.API_URL || ''),
+                'process.env.SOCKET_URL': JSON.stringify(process.env.SOCKET_URL || ''),
+            }),
             resolve({
                 browser: true, // Quan trọng: để build cho browser
                 preferBuiltins: false,
@@ -178,7 +184,6 @@ const rollup_prod = isProd && [
                     sass: true,
                 },
             }),
-
             typescript({
                 tsconfig: './tsconfig.json',
                 // declarationDir: 'dist/types',
@@ -196,11 +201,6 @@ const rollup_prod = isProd && [
                 targets: [{ src: 'public/index.html', dest: 'dist' }],
             }),
             json(),
-            replace({
-                preventAssignment: true, // Cần thiết cho Rollup 3+
-                'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
-                'process.env.API_URL': JSON.stringify(process.env.API_URL || ''),
-            }),
             // html({
             //     fileName: 'index.html',
             // }),

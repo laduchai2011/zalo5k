@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION GetMyCustemerIdWithSenderId (@senderId INT) RETURNS TABLE AS RETURN (
+﻿ALTER FUNCTION GetMyCustemerIdWithSenderId (@senderId NVARCHAR(255)) RETURNS TABLE AS RETURN (
     SELECT
         *
     FROM
@@ -51,7 +51,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetAMyCustomer
+CREATE PROCEDURE GetAMyCustomer
 	@senderId NVARCHAR(255)
 AS
 BEGIN
