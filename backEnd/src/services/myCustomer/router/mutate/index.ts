@@ -11,7 +11,7 @@ const router_mutate_myCustomer: Router = express.Router();
 const handle_delIsNewMessage = new Handle_DelIsNewMessage();
 // const handle_createMedicationComment = new Handle_CreateMedicationComment();
 
-router_mutate_myCustomer.post('/delIsNewMessage', handle_delIsNewMessage.main);
+router_mutate_myCustomer.delete('/delIsNewMessage', handle_delIsNewMessage.main);
 
 // router_mutate_medication.post(
 //     '/createMedicationComment',

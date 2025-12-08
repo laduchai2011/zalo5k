@@ -76,15 +76,14 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
         if (resData?.isSuccess && resData.data) {
             setData_setIsNewMes(resData.data);
             setIsNewMes(true);
+        } else {
+            setIsNewMes(false);
         }
     }, [data_IsNewMessage]);
 
     const handleGoToMessage = () => {
         if (data_isNewMes) {
             dispatch(set_id_isNewMessage_current(data_isNewMes?.id));
-        } else {
-            alert('Có lỗi với: set_id_isNewMessage_current');
-            return;
         }
 
         const timeout = setTimeout(() => {

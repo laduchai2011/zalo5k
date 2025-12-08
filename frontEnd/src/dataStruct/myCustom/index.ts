@@ -37,3 +37,7 @@ export interface IsNewMessageField {
 export interface IsNewMessageBodyField {
     myCustomerId: number;
 }
+
+export interface DelIsNewMessageBodyField {
+    id: number;
+}

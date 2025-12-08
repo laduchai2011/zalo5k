@@ -14,7 +14,7 @@ import {
 import LinkifyText from '@src/component/LinkifyText';
 import LazyImage from '@src/component/LazyImage';
 import LazyVideo from '@src/component/LazyVideo';
-import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
+import { useGetInforCustomerOnZaloQuery, useDelIsNewMessageMutation } from '@src/redux/query/myCustomerRTK';
 import { useUpdateMessageStatusMutation } from '@src/redux/query/messageRTK';
 import { UpdateMessageStatusBodyField, messageStatus_enum } from '@src/dataStruct/message';
 import { useSelector } from 'react-redux';
@@ -30,6 +30,18 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
     const [zaloCustomer, setZaloCustomer] = useState<ZaloCustomerField | undefined>(undefined);
 
     const [updateMessageStatus] = useUpdateMessageStatusMutation();
+    const [delIsNewMessage] = useDelIsNewMessageMutation();
+
+    useEffect(() => {
+        if (data.messageStatus !== messageStatus_enum.SEEN) {
+            delIsNewMessage({ id: id_isNewMessage_current })
+                .then((res) => {
+                    const resData1 = res.data;
+                    console.log(22222, resData1);
+                })
+                .catch((err) => console.error(err));
+        }
+    }, [id_isNewMessage_current, delIsNewMessage, data]);
 
     useEffect(() => {
         const updateMessageStatusBody: UpdateMessageStatusBodyField = {
@@ -39,13 +51,23 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
             messageStatus: messageStatus_enum.SEEN,
             accountId: data.accountId,
         };
-        updateMessageStatus(updateMessageStatusBody)
-            .then((res) => {
-                const resData = res.data;
-                console.log(111, resData);
-            })
-            .catch((err) => console.error(err));
-    }, [data, updateMessageStatus]);
+
+        if (data.messageStatus !== messageStatus_enum.SEEN) {
+            updateMessageStatus(updateMessageStatusBody)
+                .then((res) => {
+                    const resData = res.data;
+                    if (resData?.isSuccess && res.data) {
+                        // delIsNewMessage({ id: id_isNewMessage_current })
+                        //     .then((res) => {
+                        //         const resData1 = res.data;
+                        //         console.log(22222, resData1);
+                        //     })
+                        //     .catch((err) => console.error(err));
+                    }
+                })
+                .catch((err) => console.error(err));
+        }
+    }, [updateMessageStatus, data]);
 
     const {
         data: data_zaloInforCustomer,
@@ -127,7 +149,6 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
         }
         case messageType_enum.VIDEOS: {
             const messageVideo = hookData.message as MessageVideosField;
-            console.log(1111111, messageVideo);
             return (
                 <div className={style.parent}>
                     <div className={style.main}>
