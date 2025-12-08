@@ -15,13 +15,37 @@ import LinkifyText from '@src/component/LinkifyText';
 import LazyImage from '@src/component/LazyImage';
 import LazyVideo from '@src/component/LazyVideo';
 import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
+import { useUpdateMessageStatusMutation } from '@src/redux/query/messageRTK';
+import { UpdateMessageStatusBodyField, messageStatus_enum } from '@src/dataStruct/message';
+import { useSelector } from 'react-redux';
+import { RootState } from '@src/redux';
 
 const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
     const { id } = useParams<{ id: string }>();
     const message = data.message;
     const hookData: HookDataField<ZaloMessage> = JSON.parse(message);
 
+    const id_isNewMessage_current: number = useSelector((state: RootState) => state.AppSlice.id_isNewMessage_current);
+
     const [zaloCustomer, setZaloCustomer] = useState<ZaloCustomerField | undefined>(undefined);
+
+    const [updateMessageStatus] = useUpdateMessageStatusMutation();
+
+    useEffect(() => {
+        const updateMessageStatusBody: UpdateMessageStatusBodyField = {
+            eventName: data.eventName,
+            receiveId: data.receiveId,
+            timestamp: data.timestamp,
+            messageStatus: messageStatus_enum.SEEN,
+            accountId: data.accountId,
+        };
+        updateMessageStatus(updateMessageStatusBody)
+            .then((res) => {
+                const resData = res.data;
+                console.log(111, resData);
+            })
+            .catch((err) => console.error(err));
+    }, [data, updateMessageStatus]);
 
     const {
         data: data_zaloInforCustomer,

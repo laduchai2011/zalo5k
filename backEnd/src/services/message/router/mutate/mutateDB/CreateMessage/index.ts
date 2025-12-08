@@ -25,6 +25,7 @@ class MutateDB_CreateMessage extends MutateDB {
                     .request()
                     .input('eventName', sql.NVarChar(255), this._createMessageBody.eventName)
                     .input('sender', sql.NVarChar(255), this._createMessageBody.sender)
+                    .input('senderId', sql.NVarChar(255), this._createMessageBody.senderId)
                     .input('receiveId', sql.NVarChar(255), this._createMessageBody.receiveId)
                     .input('message', sql.NVarChar(sql.MAX), this._createMessageBody.message)
                     .input('type', sql.NVarChar(255), this._createMessageBody.type)

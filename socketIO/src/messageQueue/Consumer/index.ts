@@ -1,20 +1,29 @@
 import type { ConsumeMessage } from '@src/types/amqp';
-import { rabbit_server } from '@src/connect';
 import { MessageZaloField } from '../type';
+import { rabbit_server } from '@src/connect';
 
 export async function consumeMessage(queue: string, callback: (messageZalo: MessageZaloField) => void) {
     await rabbit_server.init();
-    const channel = rabbit_server.getChannel();
+    const channel = await rabbit_server.createChannel();
 
-    await channel.assertQueue(queue);
+    await channel.assertQueue(queue, { durable: true });
 
-    channel.consume(queue, (msg: ConsumeMessage | null) => {
-        if (!msg) return;
+    channel.prefetch(10);
 
-        const data = JSON.parse(msg.content.toString());
-        // console.log('Received:', data);
-        callback(data);
+    channel.consume(
+        queue,
+        (msg: ConsumeMessage | null) => {
+            if (!msg) {
+                console.log(msg);
+                return;
+            }
 
-        channel.ack(msg);
-    });
+            const data = JSON.parse(msg.content.toString());
+            // console.log('Received:', data);
+            callback(data);
+
+            channel.ack(msg);
+        },
+        { noAck: false }
+    );
 }

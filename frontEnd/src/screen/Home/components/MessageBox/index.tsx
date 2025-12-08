@@ -3,15 +3,21 @@ import style from './style.module.scss';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
 import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
-import { MyCustomerField } from '@src/dataStruct/myCustom';
-import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
+import { MyCustomerField, IsNewMessageField } from '@src/dataStruct/myCustom';
+import { useGetInforCustomerOnZaloQuery, useGetIsNewMessageQuery } from '@src/redux/query/myCustomerRTK';
 import { ZaloCustomerField } from '@src/dataStruct/hookData';
+import { set_id_isNewMessage_current } from '@src/redux/slice/App';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 
 const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
     // console.log('MessageBox', data);
 
     const [zaloCustomer, setZaloCustomer] = useState<ZaloCustomerField | undefined>(undefined);
+    const [isNewMes, setIsNewMes] = useState<boolean>(false);
+    const [data_isNewMes, setData_setIsNewMes] = useState<IsNewMessageField | undefined>(undefined);
 
     const avatar = zaloCustomer?.data.avatar ? zaloCustomer?.data.avatar : avatarnull;
 
@@ -44,8 +50,47 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
         }
     }, [data_zaloInforCustomer]);
 
+    const {
+        data: data_IsNewMessage,
+        // isFetching,
+        isLoading: isLoading_IsNewMessage,
+        isError: isError_IsNewMessage,
+        error: error_IsNewMessage,
+    } = useGetIsNewMessageQuery({ myCustomerId: data.id });
+    useEffect(() => {
+        if (isError_IsNewMessage && error_IsNewMessage) {
+            console.error(error_IsNewMessage);
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.SUCCESS,
+            //         message: 'Lấy dữ liệu KHÔNG thành công !',
+            //     })
+            // );
+        }
+    }, [isError_IsNewMessage, error_IsNewMessage]);
+    useEffect(() => {
+        // setIsLoading(isLoading_medication);
+    }, [isLoading_IsNewMessage]);
+    useEffect(() => {
+        const resData = data_IsNewMessage;
+        if (resData?.isSuccess && resData.data) {
+            setData_setIsNewMes(resData.data);
+            setIsNewMes(true);
+        }
+    }, [data_IsNewMessage]);
+
     const handleGoToMessage = () => {
-        navigate(route_enum.MESSAGE + '/' + `${data.senderId}`);
+        if (data_isNewMes) {
+            dispatch(set_id_isNewMessage_current(data_isNewMes?.id));
+        } else {
+            alert('Có lỗi với: set_id_isNewMessage_current');
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            navigate(route_enum.MESSAGE + '/' + `${data.senderId}`);
+            clearTimeout(timeout);
+        }, 50);
     };
 
     return (
@@ -63,10 +108,8 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
                     </div>
                     <div className={style.messageContainer}>
                         <div>
-                            <div className={style.message}>
-                                Message Message Message Message Message Message Message Message
-                            </div>
-                            <div className={style.newAmount}>3</div>
+                            <div className={style.message}>{isNewMes ? 'Có tin nhắn mới' : ''}</div>
+                            {isNewMes && <div className={style.newAmountRed}>3</div>}
                         </div>
                     </div>
                 </div>

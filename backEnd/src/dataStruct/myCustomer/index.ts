@@ -26,3 +26,18 @@ export interface PagedMyCustomerField {
     items: MyCustomerField[];
     totalCount: number;
 }
+
+export interface IsNewMessageField {
+    id: number;
+    myCustomerId: number;
+    updateTime: string;
+    createTime: string;
+}
+
+export interface IsNewMessageBodyField {
+    myCustomerId: number;
+}
+
+export interface DelIsNewMessageBodyField {
+    id: number;
+}

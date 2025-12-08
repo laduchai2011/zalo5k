@@ -25,3 +25,26 @@ BEGIN
 	END CATCH
 END;
 GO
+
+CREATE PROCEDURE DeleteIsNewMessage
+	@id NVARCHAR(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+		DELETE dbo.isNewMessage WHERE id= @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+delete dbo.isNewMessage
+go
+delete dbo.myCustomer
+go

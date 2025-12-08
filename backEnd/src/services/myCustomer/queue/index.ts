@@ -5,10 +5,15 @@ import Handle_CreateMyCustom from './handle/CreateMyCustom';
 import Handle_UpdateEvent_MemberSend from './handle/UpdateEvent_MemberSend';
 import { AccountField } from '@src/dataStruct/account';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { zalo_event_name_enum, zalo_event_name_enum_messageQueue } from '@src/dataStruct/hookData';
+import { zalo_event_name_enum_messageQueue } from '@src/dataStruct/hookData';
 import { UpdateEventMemberSendBodyField, messageStatus_enum } from '@src/dataStruct/message';
 import { MessageZaloField } from '@src/messageQueue/type';
 import { redisKey_memberReceiveMessage } from '@src/const/redisKey';
+import {
+    customerSend_sendToMember_storeDB,
+    customerSend_sendToMember_storeDB_feedback,
+    customerSend_sendToMember,
+} from './const';
 
 const serviceRedis = ServiceRedis.getInstance();
 
@@ -60,15 +65,15 @@ function checkMyCustommer() {
                 }
             }
 
-            sendMessage('customerSend_sendToMember_storeDB', messageZalo1);
+            sendMessage(customerSend_sendToMember_storeDB, messageZalo1);
         });
     };
 }
 
 function sendToMember() {
-    consumeMessage('customerSend_sendToMember_storeDB_feedback', (messageZalo) => {
-        console.log('consumeMessage', 'customerSend_sendToMember_storeDB_feedback');
-        sendMessage('customerSend_sendToMember', messageZalo);
+    consumeMessage(customerSend_sendToMember_storeDB_feedback, (messageZalo) => {
+        console.log('consumeMessage', customerSend_sendToMember_storeDB_feedback);
+        sendMessage(customerSend_sendToMember, messageZalo);
     });
 }
 

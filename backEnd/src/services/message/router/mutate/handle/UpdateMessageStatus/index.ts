@@ -1,21 +1,28 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { AccountField, AllMembersBodyField } from '@src/dataStruct/account';
-import QueryDB_GetAllMembers from '../../queryDB/GetAllMembers';
+import { MessageField, UpdateMessageStatusBodyField } from '@src/dataStruct/message';
+import MutateDB_UpdateMessageStatus from '../../mutateDB/UpdateMessageStatus';
 import { verifyRefreshToken } from '@src/token';
 
-class Handle_GetAllMembers {
+class Handle_UpdateMessageStatus {
     private _mssql_server = mssql_server;
 
     constructor() {}
 
-    setup = (req: Request<any, any, AllMembersBodyField>, res: Response, next: NextFunction) => {
-        const myResponse: MyResponse<AccountField> = {
+    setup = async (
+        req: Request<Record<string, never>, unknown, UpdateMessageStatusBodyField>,
+        res: Response,
+        next: NextFunction
+    ) => {
+        const myResponse: MyResponse<MessageField> = {
             isSuccess: false,
+            message: 'Băt đầu thiết lập !',
         };
 
-        const allMembersBody = req.body;
+        await this._mssql_server.init();
+
+        const updateMessageStatusBody = req.body;
         const { refreshToken } = req.cookies;
 
         if (typeof refreshToken === 'string') {
@@ -34,9 +41,9 @@ class Handle_GetAllMembers {
             }
 
             const { id } = verify_refreshToken;
-            const allMembersBody_cp = { ...allMembersBody };
-            allMembersBody_cp.addedById = id;
-            res.locals.allMembersBody = allMembersBody_cp;
+            const updateMessageStatusBody_cp = { ...updateMessageStatusBody };
+            updateMessageStatusBody_cp.accountId = id;
+            res.locals.updateMessageStatusBody = updateMessageStatusBody_cp;
 
             next();
         } else {
@@ -47,42 +54,41 @@ class Handle_GetAllMembers {
     };
 
     main = async (_: Request, res: Response) => {
-        // const allMembersBody = res.locals.allMembersBody as AllMembersBodyField;
-        const allMembersBody = { addedById: 1 } as AllMembersBodyField;
+        const updateMessageStatusBody = res.locals.updateMessageStatusBody as UpdateMessageStatusBodyField;
 
-        const myResponse: MyResponse<AccountField[]> = {
+        const myResponse: MyResponse<MessageField> = {
             isSuccess: false,
+            message: 'Băt đầu cập nhật !',
         };
 
         await this._mssql_server.init();
 
-        const queryDB_getAllMembers = new QueryDB_GetAllMembers();
-        queryDB_getAllMembers.setAllMembersBody(allMembersBody);
+        const mutateDB_updateMessageStatus = new MutateDB_UpdateMessageStatus();
+        mutateDB_updateMessageStatus.setUpdateMessageStatusBody(updateMessageStatusBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
-            queryDB_getAllMembers.set_connection_pool(connection_pool);
+            mutateDB_updateMessageStatus.set_connection_pool(connection_pool);
         } else {
-            myResponse.message = 'Kết nối cơ sở dữ liệu không thành công !';
-            res.status(500).json(myResponse);
-            return;
+            console.error('Kết nối cơ sở dữ liệu không thành công !');
         }
 
         try {
-            const result = await queryDB_getAllMembers.run();
+            const result = await mutateDB_updateMessageStatus.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                myResponse.data = result?.recordset;
-                myResponse.message = 'Lấy tất cả thành viên thành công !';
+                const data = result.recordset[0];
+                myResponse.message = 'Cập nhật trạng thái nhắn thành công !';
                 myResponse.isSuccess = true;
+                myResponse.data = data;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Lấy tất cả thành viên KHÔNG thành công 1 !';
+                myResponse.message = 'Cập nhật trạng thái tin nhắn KHÔNG thành công 1 !';
                 res.status(204).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy tất cả thành viên KHÔNG thành công 2 !';
+            myResponse.message = 'Cập nhật trạng thái tin nhắn KHÔNG thành công 2 !';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -90,4 +96,4 @@ class Handle_GetAllMembers {
     };
 }
 
-export default Handle_GetAllMembers;
+export default Handle_UpdateMessageStatus;

@@ -28,6 +28,7 @@ export interface PagedMessageField {
 export interface CreateMessageBodyField {
     eventName: string;
     sender: sender_type;
+    senderId: string;
     receiveId: string;
     message: string;
     type: messageType_type;
@@ -65,6 +66,14 @@ export enum messageType_enum {
 export type messageType_type = messageType_enum.TEXT | messageType_enum.IMAGES | messageType_enum.VIDEOS;
 
 export interface UpdateEventMemberSendBodyField {
+    eventName: string;
+    receiveId: string;
+    timestamp: string;
+    messageStatus: messageStatus_type;
+    accountId: number;
+}
+
+export interface UpdateMessageStatusBodyField {
     eventName: string;
     receiveId: string;
     timestamp: string;

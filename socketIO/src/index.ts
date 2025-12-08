@@ -5,6 +5,7 @@ import { consumeMessage } from '@src/messageQueue/Consumer';
 import { sendMessage } from '@src/messageQueue/Producer';
 import { MessageZaloField } from './messageQueue/type';
 import process from 'process';
+import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
 
 dotenv.config();
 
@@ -23,16 +24,14 @@ const io = new Server(httpServer, {
     },
 });
 
-consumeMessage('customerSend_sendToMember', (data) => {
+consumeMessage(customerSend_sendToMember, (data) => {
     const room = data.accountId.toString() + data.data.sender.id;
     const myRoom = data.accountId.toString();
-    console.log(1111111111, data);
     io.to(myRoom).emit('roomMessage', JSON.stringify(data));
     io.to(room).emit('roomMessage', JSON.stringify(data));
 });
 
 // consumeMessage('test', (data) => {
-//     console.log(22222222222, data);
 // });
 
 // Lắng nghe connection
@@ -56,9 +55,8 @@ io.on('connection', (socket) => {
             isNewCustom: false,
             accountId: -1,
         };
-        // console.log(33333333333, message);
         // sendMessage('test', messageZalo);
-        sendMessage('memberSend_sendToCustomer', messageZalo);
+        sendMessage(memberSend_sendToCustomer, messageZalo);
         // io.to(roomName).emit('roomMessage', `server hello: ${message}`);
     });
 

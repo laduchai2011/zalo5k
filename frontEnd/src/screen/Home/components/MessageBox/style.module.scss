@@ -66,8 +66,18 @@
                     @include line-clamp(1);
                 }
 
-                > .newAmount {
+                // > .newAmount {
+                //     width: max-content;
+                // }
+
+                > .newAmountRed {
                     width: max-content;
+                    background-color: red;
+                    color: white;
+                    width: 25px;
+                    height: 25px;
+                    @include center-of-rectangle;
+                    border-radius: 50%;
                 }
             }
         }

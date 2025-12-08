@@ -16,10 +16,11 @@ import {
     // ZaloMessage,
 } from '@src/dataStruct/hookData';
 import { my_log } from '@src/log';
+import { customerSend_sendToMember_storeDB, customerSend_sendToMember_storeDB_feedback } from './const';
 
 export function createMessageFromCustomerSend() {
-    consumeMessage('customerSend_sendToMember_storeDB', (messageZalo) => {
-        console.log('consumeMessage', 'customerSend_sendToMember_storeDB');
+    consumeMessage(customerSend_sendToMember_storeDB, (messageZalo) => {
+        console.log('consumeMessage', customerSend_sendToMember_storeDB);
         const data = messageZalo.data as HookDataField<any>;
         const message = data.message;
 
@@ -51,7 +52,7 @@ export function createMessageFromCustomerSend() {
         const hookData: HookDataField<MessageTextField> = {
             app_id: '',
             user_id_by_app: '',
-            event_name: zalo_event_name_enum.member_sending,
+            event_name: data.event_name,
             sender: {
                 id: data.sender.id,
             },
@@ -65,6 +66,7 @@ export function createMessageFromCustomerSend() {
         const createMessageBody: CreateMessageBodyField = {
             eventName: data.event_name,
             sender: sender_enum.CUSTOMER,
+            senderId: data.sender.id,
             receiveId: data.sender.id,
             message: JSON.stringify(hookData),
             type: type,
@@ -76,7 +78,7 @@ export function createMessageFromCustomerSend() {
         const handle_createMessage = new Handle_CreateMessage();
         handle_createMessage.main(createMessageBody, (message) => {
             if (message !== null) {
-                sendMessage('customerSend_sendToMember_storeDB_feedback', messageZalo);
+                sendMessage(customerSend_sendToMember_storeDB_feedback, messageZalo);
             } else {
                 my_log.withRed('Lưu trữ tin nhắn khách hàng gửi lên KHÔNG thành công');
             }

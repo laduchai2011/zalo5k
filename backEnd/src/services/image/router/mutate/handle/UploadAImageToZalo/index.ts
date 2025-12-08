@@ -52,9 +52,7 @@ class Handle_UploadAImageToZalo {
             }
 
             const uploadRes: ZaloOaAImageField = await uploadToZalo(file.path);
-            console.log(111111111, uploadRes);
             const sendRes = await sendImage('5324785107455488962', uploadRes.data.attachment_id, 'gui hinh anh');
-            console.log(2222222222, sendRes);
         } catch (e: any) {
             console.error(e.response?.data || e);
             res.status(500).json(e.response?.data || e);

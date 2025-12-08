@@ -56,8 +56,6 @@ class Handle_UploadMultipleImagesToZalo {
             isSuccess: false,
         };
 
-        console.log(33333333333, 'Handle_UploadMultipleImagesToZalo', 'main');
-
         try {
             const files = req.files as Express.Multer.File[];
             const { userId, text } = req.body;

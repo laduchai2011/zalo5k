@@ -10,7 +10,7 @@ import { MessageField } from '@src/dataStruct/message';
 import { IoMdSend } from 'react-icons/io';
 import { useCreateMessageMutation } from '@src/redux/query/messageRTK';
 import io from 'socket.io-client';
-import { SocketType, MessageSoc } from '@src/dataStruct/socketIO';
+import { SocketType } from '@src/dataStruct/socketIO';
 import { SOCKET_URL } from '@src/const/api/socketUrl';
 import { FaImage } from 'react-icons/fa';
 import MyToastMessage from './components/MyToastMessage';
@@ -146,8 +146,7 @@ const Message = () => {
             // setMessages((prev) => [...prev, data]);
             const mes = JSON.parse(message) as MessageZaloField;
             const data = mes.data as HookDataField;
-            console.log(1111111111111111, data);
-            const event_name = isProduct ? data.event_name : data.event_name + '_dev';
+            const event_name = data.event_name;
             switch (event_name) {
                 case zalo_event_name_enum.user_send_text: {
                     const hookData: HookDataField<ZaloMessage> = {
@@ -371,6 +370,7 @@ const Message = () => {
         const createMessageBody: CreateMessageBodyField = {
             eventName: zalo_event_name_enum.member_sending,
             sender: sender_enum.MEMBER,
+            senderId: myId,
             receiveId: id,
             type: messageType,
             message: JSON.stringify(hookData),

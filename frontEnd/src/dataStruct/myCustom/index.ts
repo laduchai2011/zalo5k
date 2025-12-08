@@ -7,6 +7,15 @@ export interface MyCustomerField {
     createTime: string;
 }
 
+export interface CreateMyCustomerBodyField {
+    senderId: string;
+    accountId: number;
+}
+
+export interface AMyCustomerBodyField {
+    senderId: string;
+}
+
 export interface MyCustomerBodyField {
     page: number;
     size: number;
@@ -16,4 +25,15 @@ export interface MyCustomerBodyField {
 export interface PagedMyCustomerField {
     items: MyCustomerField[];
     totalCount: number;
+}
+
+export interface IsNewMessageField {
+    id: number;
+    myCustomerId: number;
+    updateTime: string;
+    createTime: string;
+}
+
+export interface IsNewMessageBodyField {
+    myCustomerId: number;
 }

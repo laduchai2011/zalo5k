@@ -3,8 +3,8 @@ import { MessageZaloField } from '../type';
 
 export async function sendMessage(queue: string, messageZalo: MessageZaloField) {
     await rabbit_server.init();
-    const channel = rabbit_server.getChannel();
+    const channel = await rabbit_server.createChannel();
 
-    await channel.assertQueue(queue);
-    channel.sendToQueue(queue, Buffer.from(JSON.stringify(messageZalo)));
+    await channel.assertQueue(queue, { durable: true });
+    channel.sendToQueue(queue, Buffer.from(JSON.stringify(messageZalo)), { persistent: true });
 }

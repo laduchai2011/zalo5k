@@ -1,5 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { PagedMessageField, MessageBodyField, MessageField, CreateMessageBodyField } from '@src/dataStruct/message';
+import {
+    PagedMessageField,
+    MessageBodyField,
+    MessageField,
+    CreateMessageBodyField,
+    UpdateMessageStatusBodyField,
+} from '@src/dataStruct/message';
 import { MESSAGE_API } from '@src/const/api/message';
 import { MyResponse } from '@src/dataStruct/response';
 
@@ -23,7 +29,15 @@ export const messageRTK = createApi({
             }),
             // invalidatesTags: ['Medication'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
+        updateMessageStatus: builder.mutation<MyResponse<MessageField>, UpdateMessageStatusBodyField>({
+            query: (body) => ({
+                url: MESSAGE_API.UPDATE_MESSAGE_STATUS,
+                method: 'POST',
+                body,
+            }),
+            // invalidatesTags: ['Medication'], // dùng nếu muốn refetch danh sách sau khi thêm
+        }),
     }),
 });
 
-export const { useGetMessagesQuery, useCreateMessageMutation } = messageRTK;
+export const { useGetMessagesQuery, useCreateMessageMutation, useUpdateMessageStatusMutation } = messageRTK;
