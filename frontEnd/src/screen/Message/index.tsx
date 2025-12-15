@@ -136,6 +136,9 @@ const Message = () => {
 
         // Kết nối server
         socket = io(SOCKET_URL || '');
+        // socket = io('wss://socketapp.5kaquarium.com', {
+        //     path: '/socket.io/',
+        // });
 
         socket.on('connect', () => {
             console.log('Connected:', socket.id);
@@ -438,7 +441,7 @@ const Message = () => {
                     },
                 }
             );
-            console.log('handleUploadMultipleImages', res.data);
+            // console.log('handleUploadMultipleImages', res.data);
             return res.data;
         } catch (error) {
             console.error('Upload thất bại:', error);

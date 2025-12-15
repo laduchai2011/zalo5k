@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
     PagedMessageField,
     MessageBodyField,
+    MessagesHasFilterBodyField,
     MessageField,
     CreateMessageBodyField,
     UpdateMessageStatusBodyField,
@@ -17,6 +18,13 @@ export const messageRTK = createApi({
         getMessages: builder.query<MyResponse<PagedMessageField>, MessageBodyField>({
             query: (body) => ({
                 url: MESSAGE_API.GET_MESSAGES,
+                method: 'POST',
+                body,
+            }),
+        }),
+        getMessagesHasFilter: builder.query<MyResponse<PagedMessageField>, MessagesHasFilterBodyField>({
+            query: (body) => ({
+                url: MESSAGE_API.GET_MESSAGES_HAS_FILTER,
                 method: 'POST',
                 body,
             }),
@@ -40,4 +48,9 @@ export const messageRTK = createApi({
     }),
 });
 
-export const { useGetMessagesQuery, useCreateMessageMutation, useUpdateMessageStatusMutation } = messageRTK;
+export const {
+    useGetMessagesQuery,
+    useGetMessagesHasFilterQuery,
+    useCreateMessageMutation,
+    useUpdateMessageStatusMutation,
+} = messageRTK;

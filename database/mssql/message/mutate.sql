@@ -45,7 +45,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE UpdateEvent_MemberSend
+ALTER PROCEDURE UpdateEvent_MemberSend
 	@eventName NVARCHAR(255),
 	@receiveId NVARCHAR(255),
 	@timestamp NVARCHAR(255),

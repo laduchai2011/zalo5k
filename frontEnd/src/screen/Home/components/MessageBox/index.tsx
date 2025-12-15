@@ -6,15 +6,19 @@ import { route_enum } from '@src/router/type';
 import { MyCustomerField, IsNewMessageField } from '@src/dataStruct/myCustom';
 import { useGetInforCustomerOnZaloQuery, useGetIsNewMessageQuery } from '@src/redux/query/myCustomerRTK';
 import { ZaloCustomerField } from '@src/dataStruct/hookData';
+import { messageStatus_enum } from '@src/dataStruct/message';
 import { set_id_isNewMessage_current } from '@src/redux/slice/App';
+import { MessageField } from '@src/dataStruct/message';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
+import { useGetMessagesHasFilterQuery } from '@src/redux/query/messageRTK';
 
 const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
+    const myId = sessionStorage.getItem('myId');
     // console.log('MessageBox', data);
-
+    const [messages, setMessages] = useState<MessageField[]>([]);
     const [zaloCustomer, setZaloCustomer] = useState<ZaloCustomerField | undefined>(undefined);
     const [isNewMes, setIsNewMes] = useState<boolean>(false);
     const [data_isNewMes, setData_setIsNewMes] = useState<IsNewMessageField | undefined>(undefined);
@@ -44,7 +48,7 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     }, [isLoading_zaloInforCustomer]);
     useEffect(() => {
         const resData = data_zaloInforCustomer;
-        console.log('MessageBox', data_zaloInforCustomer);
+        // console.log('MessageBox', data_zaloInforCustomer);
         if (resData?.isSuccess && resData.data && resData.data.error === 0) {
             setZaloCustomer(resData.data);
         }
@@ -81,6 +85,44 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
         }
     }, [data_IsNewMessage]);
 
+    const {
+        data: data_messages,
+        // isFetching,
+        isLoading: isLoading_messages,
+        isError: isError_messages,
+        error: error_messages,
+    } = useGetMessagesHasFilterQuery(
+        {
+            page: 1,
+            size: 100,
+            receiveId: data.senderId || '',
+            accountId: Number(myId),
+            messageStatus: messageStatus_enum.SENT,
+        },
+        { skip: myId === null || data.senderId === undefined }
+    );
+    useEffect(() => {
+        if (isError_messages && error_messages) {
+            console.error(error_messages);
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.SUCCESS,
+            //         message: 'Lấy dữ liệu KHÔNG thành công !',
+            //     })
+            // );
+        }
+    }, [isError_messages, error_messages]);
+    useEffect(() => {
+        // setIsLoading(isLoading_medication);
+    }, [isLoading_messages]);
+    useEffect(() => {
+        const resData = data_messages;
+        if (resData?.isSuccess && resData.data) {
+            const mes = resData.data.items;
+            setMessages((prev) => mes.concat(prev));
+        }
+    }, [data_messages]);
+
     const handleGoToMessage = () => {
         if (data_isNewMes) {
             dispatch(set_id_isNewMessage_current(data_isNewMes?.id));
@@ -108,7 +150,7 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
                     <div className={style.messageContainer}>
                         <div>
                             <div className={style.message}>{isNewMes ? 'Có tin nhắn mới' : ''}</div>
-                            {isNewMes && <div className={style.newAmountRed}>3</div>}
+                            {isNewMes && <div className={style.newAmountRed}>{messages.length || 0}</div>}
                         </div>
                     </div>
                 </div>

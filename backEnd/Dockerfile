@@ -1,6 +1,9 @@
 # Sử dụng Node.js 18 dựa trên Ubuntu
 FROM node:18-bullseye
 
+# Cài ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
+
 # Thiết lập thư mục làm việc
 WORKDIR /app
 
@@ -13,6 +16,8 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && cu
 # Sao chép package.json trước để tận dụng cache Docker
 COPY package*.json ./
 
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
 # Cài đặt dependencies
 RUN npm install
 
@@ -23,7 +28,7 @@ COPY . .
 RUN npm run build
 
 # Mở port (nếu app chạy trên 3000)
-EXPOSE 3000
+EXPOSE 4000
 
 # Chạy ứng dụng
 CMD ["node", "dist/src/index.js"]

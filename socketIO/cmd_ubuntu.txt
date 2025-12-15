@@ -1,2 +1,2 @@
 docker build -t socketapp .
-docker run -dit --name socketapp_container --network network_zalo_5kaquarium -p 3005:3005 socketapp
+docker run -dit --name socketapp_container --network network_zalo_5kaquarium -p 6000:6000 socketapp

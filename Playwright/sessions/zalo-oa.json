@@ -1,0 +1,215 @@
+{
+  "cookies": [
+    {
+      "name": "ZPIDb2613",
+      "value": "1u6ntwgp79wbudl01inm8dgrw",
+      "domain": "oa.zalo.me",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "zpdid",
+      "value": "4HFsdLpqfpOT4v-PN_3DC1CJcvTVyCW_",
+      "domain": ".id.zalo.me",
+      "path": "/",
+      "expires": 1800356260.633934,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gid",
+      "value": "GA1.2.554859429.1765796261",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1765882682,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gat",
+      "value": "1",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1765796321,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_zlang",
+      "value": "vn",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1765882670.019438,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "zlogin_session",
+      "value": "kW4JGLyjCnIxFnDDLXTbH-Tj1q9G6ML0u6GTKWbPQrYh9Gj66bvjMAih5raRLM4K",
+      "domain": ".id.zalo.me",
+      "path": "/",
+      "expires": 1765799861.512244,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_3EM8ZPYYN3",
+      "value": "GS2.2.s1765796261$o1$g0$t1765796261$j60$l0$h0",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1800356261.813556,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "zpsid",
+      "value": "V0SG.442960777.72.QHENZDguX_9Ji-3erhY7yg_BzSRkYhx4we-mnTGQbPNbPJTqsyXkpREuX_8",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1797332270.019159,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "zpsid",
+      "value": "eMKnVcAlVqAZUYmFL_11Azj-Itf0yaKkrNzLUaNhEb6Y7rvsPz0uIlmWRmHj_oCFbd9a2skA83kRMqSmGTKEDiu2NW4hwG8onp5i6p7w8G7BAsymBEG933W",
+      "domain": ".zaloapp.com",
+      "path": "/",
+      "expires": 1797332270.173711,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "__zi",
+      "value": "3000.POlxz9b218bXok3bXGC6bdoOjxxQHWIIUPQsyjn61Tj_cBRrsqO3qJG.1",
+      "domain": ".zaloapp.com",
+      "path": "/",
+      "expires": 1800356270.173829,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "__oam_sid",
+      "value": "d4935cba5cdf2e8077cf.bsC1Hg5nisxM64/ONk1wNpYjqcONuOTmY1LYjWWelLo=",
+      "domain": ".oa.zalo.me",
+      "path": "/",
+      "expires": 1765882670.304619,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "zlanguage",
+      "value": "VN",
+      "domain": ".oa.zalo.me",
+      "path": "/",
+      "expires": 1765882683.400001,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__zactoa_0ab268493316da488307",
+      "value": "MjAxODc5Mzg4ODgwMTc0MTUyOQ==",
+      "domain": ".oa.zalo.me",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__zapage",
+      "value": "6f374cc8c2972bc97286",
+      "domain": ".oa.zalo.me",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_NVN38N77J3",
+      "value": "GS2.2.s1765796271$o1$g1$t1765796277$j54$l0$h0",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1800356277.16278,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_E63JS7SPBL",
+      "value": "GS2.1.s1765796270$o1$g1$t1765796282$j48$l0$h0",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1800356282.088972,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gat_gtag_UA_108352130_9",
+      "value": "1",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1765796342,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_WSPJQT0ZH1",
+      "value": "GS2.1.s1765796282$o1$g0$t1765796282$j60$l0$h0",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1800356282.577059,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.1544804580.1765796261",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1800356282.577802,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "zoats",
+      "value": "69e0f93ef65b8404dd4b",
+      "domain": ".oa.zalo.me",
+      "path": "/",
+      "expires": 1767869883.399922,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "zoalang",
+      "value": "vi",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

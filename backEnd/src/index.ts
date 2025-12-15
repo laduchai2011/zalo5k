@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import process from 'process';
-import cors from 'cors';
+// import cors from 'cors';
 
 dotenv.config();
 
@@ -15,9 +15,13 @@ import service_message from './services/message';
 const app: Express = express();
 const port = process.env.PORT || 3007;
 
+const isProduct = process.env.NODE_ENV === 'production';
+
+const apiString = isProduct ? '' : '/api';
+
 app.use(cookieParser());
-app.use('/api', express.json());
-app.use('/api', express.urlencoded({ extended: true }));
+app.use(apiString, express.json());
+app.use(apiString, express.urlencoded({ extended: true }));
 
 // app.use((req, res, next) => {
 //     const allowedOrigins = ['http://zalo5k.local.com:3000'];
@@ -38,23 +42,23 @@ app.use('/api', express.urlencoded({ extended: true }));
 //     next();
 // });
 
-app.use(
-    cors({
-        origin: ['http://zalo5k.local.com:3000'],
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        credentials: true,
-    })
-);
+// app.use(
+//     cors({
+//         origin: ['https://5kaquarium.com'],
+//         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//         credentials: true,
+//     })
+// );
 
-app.use('/api/hello', (req, res) => {
+app.use(`${apiString}/hello`, (req, res) => {
     res.send('hello');
 });
 
-app.use('/api/service_image', service_image);
-app.use('/api/service_video', service_video);
-app.use('/api/service_account', service_account);
-app.use('/api/service_myCustomer', service_myCustomer);
-app.use('/api/service_message', service_message);
+app.use(`${apiString}/service_image`, service_image);
+app.use(`${apiString}/service_video`, service_video);
+app.use(`${apiString}/service_account`, service_account);
+app.use(`${apiString}/service_myCustomer`, service_myCustomer);
+app.use(`${apiString}/service_message`, service_message);
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

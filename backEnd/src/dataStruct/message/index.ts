@@ -20,6 +20,14 @@ export interface MessageBodyField {
     accountId?: number;
 }
 
+export interface MessagesHasFilterBodyField {
+    page: number;
+    size: number;
+    receiveId: string;
+    messageStatus: string;
+    accountId?: number;
+}
+
 export interface PagedMessageField {
     items: MessageField[];
     totalCount: number;

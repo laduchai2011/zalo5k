@@ -1,2 +1,2 @@
 docker build -t webapp .
-docker run -dit --name webapp_container --network network_zalo_5kaquarium -p 4000:4000 webapp
+docker run -dit --name webapp_container --network network_zalo_5kaquarium -p 3000:3000 webapp

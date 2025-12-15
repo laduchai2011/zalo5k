@@ -90,7 +90,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetAMyCustomer
+ALTER PROCEDURE GetAMyCustomer
 	@senderId NVARCHAR(255)
 AS
 BEGIN
@@ -101,7 +101,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetAIsNewMessage
+create PROCEDURE GetAIsNewMessage
 	@myCustomerId INT
 AS
 BEGIN

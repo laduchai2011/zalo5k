@@ -1,6 +1,7 @@
 import { QueryDB } from '@src/services/account/interface';
 import { AccountField } from '@src/dataStruct/account';
 import ServiceRedis from '@src/cache/cacheRedis';
+import { redisKey_memberReceiveMessage } from '@src/const/redisKey';
 
 const serviceRedis = ServiceRedis.getInstance();
 
@@ -10,7 +11,7 @@ class QueryDB_GetMemberReceiveMessage extends QueryDB {
     }
 
     async run(): Promise<AccountField | void> {
-        const key = 'memberReceiveMessage';
+        const key = redisKey_memberReceiveMessage;
 
         try {
             await serviceRedis.init();
