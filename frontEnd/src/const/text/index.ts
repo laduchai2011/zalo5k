@@ -18,3 +18,6 @@ export const MANAGE_MEMBERS = 'Quản lý thành viên';
 export const ADD_MEMBER = 'Thêm thành viên';
 export const ADD = 'Thêm';
 export const CLOSE = 'Đóng';
+export const NOTE = 'Ghi chú';
+export const ORDER = 'Đơn hàng';
+export const SEE_MORE = 'Xem thêm';

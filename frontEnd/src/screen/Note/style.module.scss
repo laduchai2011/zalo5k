@@ -1,0 +1,84 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+    @include center-of-column;
+
+    > .main {
+        background-color: white;
+        width: 350px;
+        height: 100vh;
+        // height: 500px;
+        display: flex;
+        flex-direction: column;
+
+        > .header {
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 1px solid gray;
+            position: sticky;
+            top: 0;
+            background-color: white;
+        }
+
+        > .optionContainer {
+            @include center-of-row;
+
+            > .option {
+                background-color: rgb(241, 241, 241);
+                margin: 3px;
+                border-radius: 10px;
+                box-sizing: border-box;
+                padding: 5px;
+                cursor: pointer;
+                user-select: none;
+
+                &:hover {
+                    background-color: rgb(218, 218, 218);
+                }
+
+                &.selected {
+                    background-color: rgb(218, 218, 218);
+                }
+            }
+        }
+
+        > .list {
+            width: 100%;
+            flex: 1;
+            overflow-y: scroll;
+            @include small-scroll-yy(3px);
+            display: flex;
+            flex-direction: column;
+
+            // > .note {
+            //     background-color: rgb(238, 238, 238);
+            //     margin: 3px 0;
+            //     box-sizing: border-box;
+            //     padding: 5px;
+            // }
+
+            > .seeMore {
+                @include center-of-rectangle;
+
+                > div {
+                    cursor: pointer;
+                    user-select: none;
+                    margin: 10px 0;
+                    color: blue;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+
+        > .headerTab {
+            position: sticky;
+            bottom: 0;
+        }
+    }
+}

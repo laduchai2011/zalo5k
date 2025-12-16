@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import style from './style.module.scss';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
+import TopIcons from './components/TopIcons';
 import YourMessage from './components/YourMessage';
 import MyMessage from './components/MyMessage';
 import { MESSAGE } from '@src/const/text';
@@ -51,11 +52,10 @@ const Message = () => {
     const dispatch = useDispatch<AppDispatch>();
     const myId = sessionStorage.getItem('myId');
     const { id } = useParams<{ id: string }>();
-    const [hasMore, setHasMore] = useState(true);
+    // const [hasMore, setHasMore] = useState(true);
     const contentContainer_element = useRef<HTMLDivElement | null>(null);
-    const [data, setData] = useState<MessageField[]>([]);
     const [messages, setMessages] = useState<MessageField[]>([]);
-    const [index_mes, set_index_mes] = useState<number>(6);
+    // const [index_mes, set_index_mes] = useState<number>(6);
     const [newMessage, setNewMessage] = useState<string>('');
     const [localImages, setLocalImages] = useState<File[]>([]);
     const [localVideos, setLocalVideos] = useState<File[]>([]);
@@ -63,6 +63,10 @@ const Message = () => {
     const input_element = useRef<HTMLInputElement | null>(null);
 
     const [createMessage] = useCreateMessageMutation();
+
+    useEffect(() => {
+        setMessages([]);
+    }, [id]);
 
     const [zaloCustomer, setZaloCustomer] = useState<ZaloCustomerField | undefined>(undefined);
     const {
@@ -251,7 +255,7 @@ const Message = () => {
             }
         });
 
-        console.log('myRoom', myRoom);
+        // console.log('myRoom', myRoom);
         socket.emit('joinRoom', myRoom);
 
         // socket.emit('roomMessage', { roomName: myId, message: 'client hello' });
@@ -275,23 +279,23 @@ const Message = () => {
         }
     };
 
-    const loadMore = async () => {
-        if (!hasMore) return;
+    // const loadMore = async () => {
+    //     if (!hasMore) return;
 
-        const contentContainerElement = contentContainer_element.current;
-        const oldScrollHeight = contentContainerElement?.scrollHeight ?? 0;
+    //     const contentContainerElement = contentContainer_element.current;
+    //     const oldScrollHeight = contentContainerElement?.scrollHeight ?? 0;
 
-        // setData((prev) => [index_mes + 1, ...prev]);
-        set_index_mes((prev) => prev + 1);
+    //     // setData((prev) => [index_mes + 1, ...prev]);
+    //     // set_index_mes((prev) => prev + 1);
 
-        // GIỮ NGUYÊN CHỖ ĐANG ĐỌC SAU KHI THÊM TIN
-        requestAnimationFrame(() => {
-            if (contentContainerElement) {
-                const newScrollHeight = contentContainerElement.scrollHeight;
-                contentContainerElement.scrollTop = newScrollHeight - oldScrollHeight;
-            }
-        });
-    };
+    //     // GIỮ NGUYÊN CHỖ ĐANG ĐỌC SAU KHI THÊM TIN
+    //     requestAnimationFrame(() => {
+    //         if (contentContainerElement) {
+    //             const newScrollHeight = contentContainerElement.scrollHeight;
+    //             contentContainerElement.scrollTop = newScrollHeight - oldScrollHeight;
+    //         }
+    //     });
+    // };
 
     const handleNewMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -571,6 +575,7 @@ const Message = () => {
         <div className={style.parent}>
             <div className={style.main}>
                 <div className={style.header}>{`${MESSAGE} - ${zaloCustomer?.data.display_name}`}</div>
+                <TopIcons />
                 <div className={style.contentContainer} ref={contentContainer_element} onScroll={handleScroll}>
                     {list_mes}
                 </div>

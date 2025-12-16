@@ -79,7 +79,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE UpdateMessageStatus
+ALTER PROCEDURE UpdateMessageStatus
 	@eventName NVARCHAR(255),
 	@receiveId NVARCHAR(255),
 	@timestamp NVARCHAR(255),

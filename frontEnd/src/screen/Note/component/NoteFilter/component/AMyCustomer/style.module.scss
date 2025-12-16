@@ -1,0 +1,25 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 5px;
+    width: max-content;
+    @include center-of-row;
+
+    &:hover {
+        background-color: rgb(243, 243, 243);
+    }
+
+    > img {
+        height: 35px;
+        width: 35px;
+        border-radius: 50%;
+    }
+
+    > div {
+        box-sizing: border-box;
+        padding: 5px;
+        width: max-content;
+    }
+}

@@ -3,6 +3,7 @@ import style from './style.module.scss';
 import { IoMdHome } from 'react-icons/io';
 import { IoIosPeople } from 'react-icons/io';
 import { ImProfile } from 'react-icons/im';
+import { LuNotebookPen } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 import { route_enum, select_enum, selected_type } from '@src/router/type';
 
@@ -24,8 +25,12 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 childs[1].classList.add(style.selected);
                 break;
             }
-            case select_enum.PROFILE: {
+            case select_enum.NOTE: {
                 childs[2].classList.add(style.selected);
+                break;
+            }
+            case select_enum.PROFILE: {
+                childs[3].classList.add(style.selected);
                 break;
             }
             default: {
@@ -43,6 +48,10 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
             }
             case select_enum.MEMBERS: {
                 navigate(route_enum.MEMBERS);
+                break;
+            }
+            case select_enum.NOTE: {
+                navigate(route_enum.NOTE);
                 break;
             }
             case select_enum.PROFILE: {
@@ -63,6 +72,9 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
             </div>
             <div onClick={() => handleSelect(select_enum.MEMBERS)}>
                 <IoIosPeople />
+            </div>
+            <div onClick={() => handleSelect(select_enum.NOTE)}>
+                <LuNotebookPen />
             </div>
             <div onClick={() => handleSelect(select_enum.PROFILE)}>
                 <ImProfile />

@@ -51,6 +51,7 @@ export const messageRTK = createApi({
 export const {
     useGetMessagesQuery,
     useGetMessagesHasFilterQuery,
+    useLazyGetMessagesHasFilterQuery,
     useCreateMessageMutation,
     useUpdateMessageStatusMutation,
 } = messageRTK;

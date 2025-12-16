@@ -5,6 +5,7 @@
     box-sizing: border-box;
     border-top: 1px solid gray;
     @include center-of-row;
+    background-color: white;
 
     > div {
         width: calc(100% / 3);

@@ -6,6 +6,7 @@
     @include center-of-row;
     height: 70px;
     cursor: pointer;
+    width: 100%;
 
     &:hover {
         background-color: rgb(240, 240, 255);

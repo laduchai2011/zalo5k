@@ -39,7 +39,7 @@ class QueryDB_GetMessagesHasFilter extends QueryDB {
                     .input('page', sql.Int, this._messagesHasFilterBody.page)
                     .input('size', sql.Int, this._messagesHasFilterBody.size)
                     .input('receiveId', sql.NVarChar(255), this._messagesHasFilterBody.receiveId)
-                    .input('@messageStatus', sql.NVarChar(255), this._messagesHasFilterBody.messageStatus)
+                    .input('messageStatus', sql.NVarChar(255), this._messagesHasFilterBody.messageStatus)
                     .input('accountId', sql.Int, accountId)
                     .execute('GetMessagesHasFilter');
 

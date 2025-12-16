@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import process from 'process';
-// import cors from 'cors';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -11,6 +11,7 @@ import service_video from './services/video';
 import service_account from '@src/services/account';
 import service_myCustomer from './services/myCustomer';
 import service_message from './services/message';
+import service_note from './services/note';
 
 const app: Express = express();
 const port = process.env.PORT || 3007;
@@ -41,14 +42,14 @@ app.use(apiString, express.urlencoded({ extended: true }));
 
 //     next();
 // });
-
-// app.use(
-//     cors({
-//         origin: ['https://5kaquarium.com'],
-//         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//         credentials: true,
-//     })
-// );
+const originArray: string[] = ['http://zalo5k.local.com:3000'];
+app.use(
+    cors({
+        origin: originArray,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        credentials: true,
+    })
+);
 
 app.use(`${apiString}/hello`, (req, res) => {
     res.send('hello');
@@ -59,6 +60,7 @@ app.use(`${apiString}/service_video`, service_video);
 app.use(`${apiString}/service_account`, service_account);
 app.use(`${apiString}/service_myCustomer`, service_myCustomer);
 app.use(`${apiString}/service_message`, service_message);
+app.use(`${apiString}/service_note`, service_note);
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

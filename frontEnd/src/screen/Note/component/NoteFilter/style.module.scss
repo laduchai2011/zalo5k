@@ -1,0 +1,45 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+    @include center-of-row;
+
+    > .main {
+        position: relative;
+
+        > .selected {
+            @include center-of-row;
+
+            > div:nth-child(1) {
+                max-width: 150px;
+            }
+
+            > .iconcontainer {
+                cursor: pointer;
+            }
+        }
+
+        > .options {
+            position: absolute;
+            background-color: white;
+            box-sizing: border-box;
+            border: 1px dashed gray;
+            border-radius: 10px;
+            overflow: hidden;
+            max-height: 500px;
+            overflow-y: scroll;
+            @include small-scroll-yy(3px);
+
+            // > div {
+            //     cursor: pointer;
+            //     box-sizing: border-box;
+            //     padding: 5px;
+
+            //     &:hover {
+            //         background-color: rgb(243, 243, 243);
+            //     }
+            // }
+        }
+    }
+}

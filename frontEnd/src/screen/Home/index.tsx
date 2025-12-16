@@ -9,7 +9,7 @@ import Header from '../Header';
 import { select_enum } from '@src/router/type';
 import { route_enum } from '@src/router/type';
 import { SOCKET_URL } from '@src/const/api/socketUrl';
-import { SocketType, MessageSoc } from '@src/dataStruct/socketIO';
+import { SocketType } from '@src/dataStruct/socketIO';
 import { MyCustomerField } from '@src/dataStruct/myCustom';
 
 let socket: SocketType;
@@ -38,12 +38,12 @@ const Home = () => {
         });
 
         // Nhận message từ server
-        socket.on('roomMessage', (message: MessageSoc) => {
+        socket.on('roomMessage', (message: any) => {
             // setMessages((prev) => [...prev, data]);
             console.log('roomMessage', message);
         });
 
-        console.log('myId', myId);
+        // console.log('myId', myId);
         socket.emit('joinRoom', myId);
 
         // socket.emit('roomMessage', { roomName: myId, message: 'client hello' });
@@ -77,6 +77,7 @@ const Home = () => {
     }, [isLoading_myCustomers]);
     useEffect(() => {
         const resData = data_myCustomers;
+        // console.log(1111111, resData);
         if (resData?.isSuccess && resData.data) {
             setMyCustomers(resData.data.items);
         }

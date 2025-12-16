@@ -1,0 +1,22 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: rgb(238, 238, 238);
+    margin: 3px 0;
+    box-sizing: border-box;
+    padding: 5px;
+
+    > div:nth-child(1) {
+        > span {
+            background-color: blue;
+            color: white;
+            box-sizing: border-box;
+            padding: 5px;
+        }
+    }
+
+    > div:nth-child(2) {
+        box-sizing: border-box;
+        padding: 5px;
+    }
+}
