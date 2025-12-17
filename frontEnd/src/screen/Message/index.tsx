@@ -14,7 +14,9 @@ import io from 'socket.io-client';
 import { SocketType } from '@src/dataStruct/socketIO';
 import { SOCKET_URL } from '@src/const/api/socketUrl';
 import { FaImage } from 'react-icons/fa';
+import { MdOndemandVideo } from 'react-icons/md';
 import MyToastMessage from './components/MyToastMessage';
+import MyLoading from './components/MyLoading';
 import MyImageInput from './components/MyImageInput';
 import MyVideoInput from './components/MyVideoInput';
 import axiosInstance from '@src/api/axiosInstance';
@@ -27,8 +29,10 @@ import { MyResponse } from '@src/dataStruct/response';
 import { BASE_URL, isProduct } from '@src/const/api/baseUrl';
 import {
     MessageImageField,
+    MessageVideoField,
     // MessageImagesField,
     MessageImageUrlField,
+    MessageVideoUrlField,
     MessageTextField,
     HookDataField,
     ZaloMessage,
@@ -43,6 +47,7 @@ import {
 } from '@src/dataStruct/message';
 import { useGetMessagesQuery } from '@src/redux/query/messageRTK';
 import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
+import { uploadVideo } from './handle';
 
 let socket: SocketType;
 
@@ -59,8 +64,12 @@ const Message = () => {
     const [newMessage, setNewMessage] = useState<string>('');
     const [localImages, setLocalImages] = useState<File[]>([]);
     const [localVideos, setLocalVideos] = useState<File[]>([]);
+    // const [localVideo, setLocalVideo] = useState<File | undefined>(undefined);
     const id_folderInput = useId();
+    const id_videoInput = useId();
     const input_element = useRef<HTMLInputElement | null>(null);
+    const videoInput_element = useRef<HTMLInputElement | null>(null);
+    const [isSending, setIsSending] = useState<boolean>(false);
 
     const [createMessage] = useCreateMessageMutation();
 
@@ -323,26 +332,26 @@ const Message = () => {
             }
         }
 
-        const resPreVideos = await handlePreVideos();
-        if (resPreVideos) {
-            for (let i: number = 0; i < resPreVideos.videoUrls.length; i++) {
-                const videoUrls = [resPreVideos.videoUrls[i]];
-                const pathUrls = [resPreVideos.pathUrls[i]];
-                const messageVideos: MessageImageField | undefined = resPreVideos
-                    ? {
-                          text: pathUrls[0],
-                          attachment: {
-                              type: 'template',
-                              payload: {
-                                  template_type: 'media',
-                                  elements: videoUrls,
-                              },
-                          },
-                      }
-                    : undefined;
-                handleSendCommon(messageVideos, messageType_enum.IMAGES);
-            }
-        }
+        // const resPreVideos = await handlePreVideos();
+        // if (resPreVideos) {
+        //     for (let i: number = 0; i < resPreVideos.videoUrls.length; i++) {
+        //         const videoUrls = [resPreVideos.videoUrls[i]];
+        //         const pathUrls = [resPreVideos.pathUrls[i]];
+        //         const messageVideos: MessageImageField | undefined = resPreVideos
+        //             ? {
+        //                   text: pathUrls[0],
+        //                   attachment: {
+        //                       type: 'template',
+        //                       payload: {
+        //                           template_type: 'media',
+        //                           elements: videoUrls,
+        //                       },
+        //                   },
+        //               }
+        //             : undefined;
+        //         handleSendCommon(messageVideos, messageType_enum.IMAGES);
+        //     }
+        // }
 
         const newMes = newMessage.trim();
         if (newMes.length !== 0) {
@@ -354,50 +363,53 @@ const Message = () => {
         }
     };
 
-    const handleSendCommon = (message: ZaloMessage | undefined, messageType: messageType_type) => {
-        if (!myId) return;
-        if (!id) return;
-        const myRoom = myId + id;
-        const newMes = newMessage.trim();
-        if (messageType === messageType_enum.TEXT && newMes.length === 0) return;
-        if (message === undefined) return;
-        const hookData: HookDataField<ZaloMessage> = {
-            app_id: '',
-            user_id_by_app: '',
-            event_name: zalo_event_name_enum.member_sending,
-            sender: {
-                id: myId,
-            },
-            recipient: {
-                id: id,
-            },
-            message: message,
-            timestamp: '',
-        };
-        const createMessageBody: CreateMessageBodyField = {
-            eventName: zalo_event_name_enum.member_sending,
-            sender: sender_enum.MEMBER,
-            senderId: myId,
-            receiveId: id,
-            type: messageType,
-            message: JSON.stringify(hookData),
-            timestamp: '',
-            messageStatus: messageStatus_enum.SENDING,
-            accountId: -1,
-        };
-        // console.log('handleSendCommon', createMessageBody);
-        createMessage(createMessageBody)
-            .then((res) => {
-                const resData = res.data;
-                console.log('createMessage', resData);
-                if (resData?.isSuccess && resData.data) {
-                    const newData: MessageField = resData.data;
-                    setMessages((prev) => [...prev, newData]);
-                    socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
-                }
-            })
-            .catch((err) => console.error(err));
-    };
+    const handleSendCommon = useCallback(
+        (message: ZaloMessage | undefined, messageType: messageType_type) => {
+            if (!myId) return;
+            if (!id) return;
+            const myRoom = myId + id;
+            const newMes = newMessage.trim();
+            if (messageType === messageType_enum.TEXT && newMes.length === 0) return;
+            if (message === undefined) return;
+            const hookData: HookDataField<ZaloMessage> = {
+                app_id: '',
+                user_id_by_app: '',
+                event_name: zalo_event_name_enum.member_sending,
+                sender: {
+                    id: myId,
+                },
+                recipient: {
+                    id: id,
+                },
+                message: message,
+                timestamp: '',
+            };
+            const createMessageBody: CreateMessageBodyField = {
+                eventName: zalo_event_name_enum.member_sending,
+                sender: sender_enum.MEMBER,
+                senderId: myId,
+                receiveId: id,
+                type: messageType,
+                message: JSON.stringify(hookData),
+                timestamp: '',
+                messageStatus: messageStatus_enum.SENDING,
+                accountId: -1,
+            };
+            // console.log('handleSendCommon', createMessageBody);
+            createMessage(createMessageBody)
+                .then((res) => {
+                    const resData = res.data;
+                    console.log('createMessage', resData);
+                    if (resData?.isSuccess && resData.data) {
+                        const newData: MessageField = resData.data;
+                        setMessages((prev) => [...prev, newData]);
+                        socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
+                    }
+                })
+                .catch((err) => console.error(err));
+        },
+        [createMessage, id, myId, newMessage]
+    );
 
     const handleIconClick = () => {
         input_element.current?.click();
@@ -423,6 +435,126 @@ const Message = () => {
             }
         },
         [setLocalImages, setLocalVideos]
+    );
+
+    const handleVideoIconClick = () => {
+        videoInput_element.current?.click();
+    };
+    const handlePreVideo = useCallback(
+        async (localVideo: File) => {
+            if (!myId) return;
+            const pathUrls: string[] = [];
+            const videoUrls: MessageVideoUrlField[] = [];
+            dispatch(
+                setData_toastMessage({
+                    type: toastMessageType_enum.NORMAL,
+                    message: 'Bắt đầu đăng tải thước phim !',
+                })
+            );
+            const resData_video = await uploadVideo(localVideo, myId);
+            if (resData_video === null) {
+                dispatch(
+                    setData_toastMessage({
+                        type: toastMessageType_enum.ERROR,
+                        message: 'Đăng tải thước phim thất bại !',
+                    })
+                );
+                return;
+            }
+            dispatch(
+                setData_toastMessage({
+                    type: toastMessageType_enum.SUCCESS,
+                    message: 'Đăng tải thước phim thành công !',
+                })
+            );
+            const filename = resData_video.filename;
+            const imageUrl = `${BASE_URL}${apiString}/service_image/store/${filename}.jpg`;
+            const url = `${BASE_URL}${apiString}/service_video/query/streamVideo?id=${filename}`;
+            const aVideo: MessageVideoUrlField = {
+                media_type: 'video',
+                url: url,
+                thumbnail: imageUrl,
+            };
+            videoUrls.push(aVideo);
+            pathUrls.push(url);
+
+            return { videoUrls: videoUrls, pathUrls: pathUrls };
+        },
+        [dispatch, myId]
+    );
+    const handleVideoChange = useCallback(
+        async (event: React.ChangeEvent<HTMLInputElement>) => {
+            if (!myId) return;
+            if (!id) return;
+            const myRoom = myId + id;
+            const files = event.target.files;
+            if (files) {
+                const videos: File[] = [];
+                Array.from(files).forEach((file) => {
+                    if (file.type.startsWith('video/')) {
+                        videos.push(file);
+                    }
+                });
+                setIsSending(true);
+                const resPreVideo = await handlePreVideo(videos[0]);
+                if (resPreVideo) {
+                    const videoUrls = [resPreVideo.videoUrls[0]];
+                    const pathUrls = [resPreVideo.pathUrls[0]];
+                    const messageVideos: MessageVideoField = {
+                        text: pathUrls[0],
+                        attachment: {
+                            type: 'template',
+                            payload: {
+                                template_type: 'media',
+                                elements: videoUrls,
+                            },
+                        },
+                    };
+                    // handleSendCommon(messageVideos, messageType_enum.VIDEOS);
+
+                    const hookData: HookDataField<MessageVideoField> = {
+                        app_id: '',
+                        user_id_by_app: '',
+                        event_name: zalo_event_name_enum.member_sending,
+                        sender: {
+                            id: myId,
+                        },
+                        recipient: {
+                            id: id,
+                        },
+                        message: messageVideos,
+                        timestamp: '',
+                    };
+                    const createMessageBody: CreateMessageBodyField = {
+                        eventName: zalo_event_name_enum.member_sending,
+                        sender: sender_enum.MEMBER,
+                        senderId: myId,
+                        receiveId: id,
+                        type: messageType_enum.VIDEOS,
+                        message: JSON.stringify(hookData),
+                        timestamp: '',
+                        messageStatus: messageStatus_enum.SENDING,
+                        accountId: -1,
+                    };
+                    // console.log('handleSendCommon', createMessageBody);
+                    createMessage(createMessageBody)
+                        .then((res) => {
+                            const resData = res.data;
+                            console.log('createMessage Video', resData);
+                            if (resData?.isSuccess && resData.data) {
+                                const newData: MessageField = resData.data;
+                                setMessages((prev) => [...prev, newData]);
+                                socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
+                            }
+                        })
+                        .catch((err) => console.error(err))
+                        .finally(() => setIsSending(false));
+                } else {
+                    setIsSending(false);
+                }
+            }
+        },
+        [handlePreVideo, createMessage, id, myId]
     );
 
     const handleUploadMultipleImages = async (files: File[]): Promise<MyResponse<AImageFileField[]> | null> => {
@@ -459,34 +591,34 @@ const Message = () => {
         }
     };
 
-    const handleUploadMultipleVideos = async (files: File[]): Promise<MyResponse<AVideoFileField[]> | null> => {
-        if (!files || files.length === 0) return null;
+    // const handleUploadMultipleVideos = async (files: File[]): Promise<MyResponse<AVideoFileField[]> | null> => {
+    //     if (!files || files.length === 0) return null;
 
-        const formData = new FormData();
-        files.forEach((file) => {
-            formData.append('videos', file); // 👈 key này phải trùng với backend
-        });
+    //     const formData = new FormData();
+    //     files.forEach((file) => {
+    //         formData.append('videos', file); // 👈 key này phải trùng với backend
+    //     });
 
-        try {
-            const res = await axiosInstance.post<MyResponse<AVideoFileField[]>>(VIDEO_API.UPLOAD_MUL_VIDEOS, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-                onUploadProgress: (progressEvent) => {
-                    const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
-                    console.log(`Đang tải lên: ${percent}%`);
-                },
-            });
-            return res.data;
-        } catch (error) {
-            console.error('Upload thất bại:', error);
-            // dispatch(
-            //     setData_toastMessage({
-            //         type: messageType_enum.ERROR,
-            //         message: 'Đăng tải hình ảnh thất bại !',
-            //     })
-            // );
-            return null;
-        }
-    };
+    //     try {
+    //         const res = await axiosInstance.post<MyResponse<AVideoFileField[]>>(VIDEO_API.UPLOAD_MUL_VIDEOS, formData, {
+    //             headers: { 'Content-Type': 'multipart/form-data' },
+    //             onUploadProgress: (progressEvent) => {
+    //                 const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
+    //                 console.log(`Đang tải lên: ${percent}%`);
+    //             },
+    //         });
+    //         return res.data;
+    //     } catch (error) {
+    //         console.error('Upload thất bại:', error);
+    //         // dispatch(
+    //         //     setData_toastMessage({
+    //         //         type: messageType_enum.ERROR,
+    //         //         message: 'Đăng tải hình ảnh thất bại !',
+    //         //     })
+    //         // );
+    //         return null;
+    //     }
+    // };
 
     const handlePreImages = async () => {
         const resData_images = await handleUploadMultipleImages(localImages);
@@ -514,34 +646,34 @@ const Message = () => {
         return imageUrls;
     };
 
-    const handlePreVideos = async () => {
-        const resData_videos = await handleUploadMultipleVideos(localVideos);
-        if (resData_videos === null) return;
-        const videoFiles = resData_videos.data;
-        if (!videoFiles) {
-            dispatch(
-                setData_toastMessage({
-                    type: toastMessageType_enum.ERROR,
-                    message: 'Đăng tải những thước phim thất bại !',
-                })
-            );
-            return;
-        }
-        const videoUrls: MessageImageUrlField[] = [];
-        const pathUrls: string[] = [];
-        for (let i: number = 0; i < videoFiles.length; i++) {
-            const imageUrl = `${BASE_URL}${apiString}/service_image/store/${videoFiles[i].savedName}.jpg`;
-            const url = `${BASE_URL}${apiString}/service_video/query/streamVideo?id=${videoFiles[i].savedName}`;
-            const aImage: MessageImageUrlField = {
-                media_type: 'image',
-                url: imageUrl,
-            };
-            videoUrls.push(aImage);
-            pathUrls.push(url);
-        }
+    // const handlePreVideos = async () => {
+    //     const resData_videos = await handleUploadMultipleVideos(localVideos);
+    //     if (resData_videos === null) return;
+    //     const videoFiles = resData_videos.data;
+    //     if (!videoFiles) {
+    //         dispatch(
+    //             setData_toastMessage({
+    //                 type: toastMessageType_enum.ERROR,
+    //                 message: 'Đăng tải những thước phim thất bại !',
+    //             })
+    //         );
+    //         return;
+    //     }
+    //     const videoUrls: MessageImageUrlField[] = [];
+    //     const pathUrls: string[] = [];
+    //     for (let i: number = 0; i < videoFiles.length; i++) {
+    //         const imageUrl = `${BASE_URL}${apiString}/service_image/store/${videoFiles[i].savedName}.jpg`;
+    //         const url = `${BASE_URL}${apiString}/service_video/query/streamVideo?id=${videoFiles[i].savedName}`;
+    //         const aImage: MessageImageUrlField = {
+    //             media_type: 'image',
+    //             url: imageUrl,
+    //         };
+    //         videoUrls.push(aImage);
+    //         pathUrls.push(url);
+    //     }
 
-        return { videoUrls: videoUrls, pathUrls: pathUrls };
-    };
+    //     return { videoUrls: videoUrls, pathUrls: pathUrls };
+    // };
 
     const handleDeleteImage = (data: File) => {
         const newImages = localImages.filter((image) => image !== data);
@@ -582,6 +714,8 @@ const Message = () => {
                 <div className={style.iconContainer}>
                     <FaImage id={id_folderInput} onClick={handleIconClick} />
                     <input ref={input_element} onChange={handleFolderChange} type="file" id={id_folderInput} multiple />
+                    <MdOndemandVideo id={id_videoInput} onClick={handleVideoIconClick} />
+                    <input ref={videoInput_element} onChange={handleVideoChange} type="file" id={id_videoInput} />
                 </div>
                 <div className={style.photoContainer}>
                     <div>{list_image}</div>
@@ -593,6 +727,7 @@ const Message = () => {
                 </div>
                 <div>
                     <MyToastMessage />
+                    <MyLoading isLoading={isSending} />
                 </div>
             </div>
         </div>

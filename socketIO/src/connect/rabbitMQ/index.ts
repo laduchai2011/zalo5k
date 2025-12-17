@@ -82,7 +82,7 @@ export class RabbitMQ {
     }
 
     private async connect(): Promise<void> {
-        const url = process.env.RABBIT_URL || 'amqp://guest:guest@localhost:5672';
+        const url = process.env.RABBIT_URL || 'amqp://guest:guest@5kaquarium.com:5672';
 
         const conn: Connection = await connect(url);
         this.connection = conn;

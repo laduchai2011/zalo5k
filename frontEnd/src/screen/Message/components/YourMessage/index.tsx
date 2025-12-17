@@ -35,9 +35,9 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
     useEffect(() => {
         if (data.messageStatus !== messageStatus_enum.SEEN) {
             delIsNewMessage({ id: id_isNewMessage_current })
-                .then((res) => {
-                    const resData1 = res.data;
-                    console.log(22222, resData1);
+                .then(() => {
+                    // const resData1 = res.data;
+                    // console.log(22222, resData1);
                 })
                 .catch((err) => console.error(err));
         }
@@ -114,7 +114,7 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                                     {messageText.text && <LinkifyText text={messageText.text} />}
                                 </div>
                             </div>
-                            <div className={style.status}>{data.messageStatus}</div>
+                            {/* <div className={style.status}>{data.messageStatus}</div> */}
                         </div>
                     </div>
                 </div>
@@ -141,7 +141,7 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                                     {messageImage.text && <LinkifyText text={messageImage.text} />}
                                 </div>
                             </div>
-                            <div className={style.status}>{data.messageStatus}</div>
+                            {/* <div className={style.status}>{data.messageStatus}</div> */}
                         </div>
                     </div>
                 </div>
@@ -164,7 +164,7 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                                     {messageVideo.text && <LinkifyText text={messageVideo.text} />}
                                 </div>
                             </div>
-                            <div className={style.status}>{data.messageStatus}</div>
+                            {/* <div className={style.status}>{data.messageStatus}</div> */}
                         </div>
                     </div>
                 </div>

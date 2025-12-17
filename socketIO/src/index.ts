@@ -55,6 +55,7 @@ io.on('connection', (socket) => {
             isNewCustom: false,
             accountId: -1,
         };
+        console.log(message);
         // sendMessage('test', messageZalo);
         sendMessage(memberSend_sendToCustomer, messageZalo);
         // io.to(roomName).emit('roomMessage', `server hello: ${message}`);

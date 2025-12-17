@@ -21,7 +21,7 @@ const MyMessage: FC<{ data: MessageField }> = ({ data }) => {
                                     <div>{messageText.text && <LinkifyText text={messageText.text} />}</div>
                                 </div>
                             </div>
-                            <div className={style.status}>{data.messageStatus}</div>
+                            {/* <div className={style.status}>{data.messageStatus}</div> */}
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@ const MyMessage: FC<{ data: MessageField }> = ({ data }) => {
                                     <div>{messageImage.text && <LinkifyText text={messageImage.text} />}</div>
                                 </div>
                             </div>
-                            <div className={style.status}>{data.messageStatus}</div>
+                            {/* <div className={style.status}>{data.messageStatus}</div> */}
                         </div>
                     </div>
                 </div>

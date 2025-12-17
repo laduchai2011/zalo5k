@@ -45,8 +45,15 @@
             > svg {
                 width: 25px;
                 height: 25px;
-                color: greenyellow;
                 cursor: pointer;
+                margin: 5px;
+            }
+
+            > svg:nth-child(1) {
+                color: greenyellow;
+            }
+            > svg:nth-child(3) {
+                color: red;
             }
 
             > input {

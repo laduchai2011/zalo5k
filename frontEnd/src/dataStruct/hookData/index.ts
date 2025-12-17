@@ -67,9 +67,26 @@ export interface MessageImageField {
     };
 }
 
+export interface MessageVideoField {
+    text: string;
+    attachment: {
+        type: 'template';
+        payload: {
+            template_type: 'media';
+            elements: MessageVideoUrlField[];
+        };
+    };
+}
+
 export interface MessageImageUrlField {
     media_type: 'image';
     url: string;
+}
+
+export interface MessageVideoUrlField {
+    media_type: 'video';
+    url: string;
+    thumbnail: string;
 }
 
 export interface MessageImageOaSendField {
@@ -118,6 +135,7 @@ export type ZaloMessage =
     | MessageTextField
     | MessageImagesField
     | MessageImageField
+    | MessageVideoField
     | MessageImageOaSendField
     | Record<string, unknown>; // fallback
 

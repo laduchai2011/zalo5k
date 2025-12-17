@@ -17,7 +17,7 @@ let socket: SocketType;
 const Home = () => {
     const navigate = useNavigate();
     const myId = sessionStorage.getItem('myId');
-
+    const [newMes, setNewMes] = useState<any>();
     const [myCustomers, setMyCustomers] = useState<MyCustomerField[]>([]);
 
     useEffect(() => {
@@ -40,7 +40,8 @@ const Home = () => {
         // Nhận message từ server
         socket.on('roomMessage', (message: any) => {
             // setMessages((prev) => [...prev, data]);
-            console.log('roomMessage', message);
+            setNewMes(message);
+            // console.log('roomMessage', message);
         });
 
         // console.log('myId', myId);
@@ -88,7 +89,7 @@ const Home = () => {
     // }, [myCustomers]);
 
     const list_myCustomers = myCustomers.map((item, index) => {
-        return <MessageBox data={item} key={index} />;
+        return <MessageBox data={item} key={index} newMes={newMes} />;
     });
 
     return (

@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
 import { MyCustomerField, IsNewMessageField } from '@src/dataStruct/myCustom';
 import { useGetInforCustomerOnZaloQuery, useGetIsNewMessageQuery } from '@src/redux/query/myCustomerRTK';
-import { ZaloCustomerField } from '@src/dataStruct/hookData';
 import { messageStatus_enum } from '@src/dataStruct/message';
 import { set_id_isNewMessage_current } from '@src/redux/slice/App';
 import { MessageField } from '@src/dataStruct/message';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { useLazyGetMessagesHasFilterQuery } from '@src/redux/query/messageRTK';
+import { MessageZaloField, ZaloCustomerField, HookDataField } from '@src/dataStruct/hookData';
 
-const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
+const MessageBox: FC<{ data: MyCustomerField; newMes: any }> = ({ data, newMes }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const myId = sessionStorage.getItem('myId');
@@ -92,6 +92,7 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
     }, [data_IsNewMessage]);
 
     useEffect(() => {
+        console.log(1111111);
         getMessagesHasFilter({
             page: 1,
             size: 100,
@@ -103,13 +104,39 @@ const MessageBox: FC<{ data: MyCustomerField }> = ({ data }) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
                     const mes = resData.data.items;
-                    setMessages((prev) => mes.concat(prev));
+                    setMessages(mes);
                 }
             })
             .catch((err) => {
                 console.error(err);
             });
     }, [data.senderId, getMessagesHasFilter, myId]);
+
+    useEffect(() => {
+        if (newMes) {
+            const mes = JSON.parse(newMes) as MessageZaloField;
+            const data1 = mes.data as HookDataField;
+            if (data1.sender.id === data.senderId) {
+                getMessagesHasFilter({
+                    page: 1,
+                    size: 100,
+                    receiveId: data.senderId || '',
+                    accountId: Number(myId),
+                    messageStatus: messageStatus_enum.SENT,
+                })
+                    .then((res) => {
+                        const resData = res.data;
+                        if (resData?.isSuccess && resData.data) {
+                            const mes = resData.data.items;
+                            setMessages(mes);
+                        }
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+            }
+        }
+    }, [newMes]);
 
     const handleGoToMessage = () => {
         if (data_isNewMes) {
