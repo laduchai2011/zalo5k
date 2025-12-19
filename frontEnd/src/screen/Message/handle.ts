@@ -1,5 +1,8 @@
 import { VIDEO_API } from '@src/const/api/video';
 import { IMAGE_API } from '@src/const/api/image';
+import axiosInstance from '@src/api/axiosInstance';
+import { MyResponse } from '@src/dataStruct/response';
+import { MessageField, SendVideoTdFailureBodyField, SendVideoTdSuccessBodyField } from '@src/dataStruct/message';
 
 const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB
 
@@ -67,4 +70,28 @@ export const uploadImage = async (file: File, id: string) => {
     });
 
     return { filename: filename };
+};
+
+export const handleSendVideoTdFailure = async (sendVideoTdFailureBody: SendVideoTdFailureBodyField) => {
+    try {
+        const response = await axiosInstance.post<MyResponse<MessageField>, any, SendVideoTdFailureBodyField>(
+            `/service_message/mutate/sendVideoTdFailure`,
+            sendVideoTdFailureBody
+        );
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export const handleSendVideoTdSuccess = async (sendVideoTdSuccessBody: SendVideoTdSuccessBodyField) => {
+    try {
+        const response = await axiosInstance.post<MyResponse<MessageField>, any, SendVideoTdSuccessBodyField>(
+            `/service_message/mutate/sendVideoTdSuccess`,
+            sendVideoTdSuccessBody
+        );
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
 };

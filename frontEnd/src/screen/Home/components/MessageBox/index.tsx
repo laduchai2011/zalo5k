@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
 import { MyCustomerField, IsNewMessageField } from '@src/dataStruct/myCustom';
 import { useGetInforCustomerOnZaloQuery, useGetIsNewMessageQuery } from '@src/redux/query/myCustomerRTK';
-import { messageStatus_enum } from '@src/dataStruct/message';
+import { messageStatus_enum, sender_enum } from '@src/dataStruct/message';
 import { set_id_isNewMessage_current } from '@src/redux/slice/App';
 import { MessageField } from '@src/dataStruct/message';
 import { useDispatch } from 'react-redux';
@@ -82,7 +82,6 @@ const MessageBox: FC<{ data: MyCustomerField; newMes: any }> = ({ data, newMes }
     }, [isLoading_IsNewMessage]);
     useEffect(() => {
         const resData = data_IsNewMessage;
-        // console.log(1111111111, resData);
         if (resData?.isSuccess && resData.data) {
             setData_setIsNewMes(resData.data);
             setIsNewMes(true);
@@ -96,6 +95,7 @@ const MessageBox: FC<{ data: MyCustomerField; newMes: any }> = ({ data, newMes }
             page: 1,
             size: 100,
             receiveId: data.senderId || '',
+            sender: sender_enum.CUSTOMER,
             accountId: Number(myId),
             messageStatus: messageStatus_enum.SENT,
         })
@@ -120,6 +120,7 @@ const MessageBox: FC<{ data: MyCustomerField; newMes: any }> = ({ data, newMes }
                     page: 1,
                     size: 100,
                     receiveId: data.senderId || '',
+                    sender: sender_enum.CUSTOMER,
                     accountId: Number(myId),
                     messageStatus: messageStatus_enum.SENT,
                 })

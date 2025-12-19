@@ -64,7 +64,8 @@ BEGIN
 			timestamp = @timestamp,
 			messageStatus = @messageStatus
 		WHERE receiveId = @receiveId 
-			AND accountId = @accountId;
+			AND accountId = @accountId
+			AND messageStatus = 'SENDING'
 
 		SET @messageId = SCOPE_IDENTITY();
 
@@ -93,14 +94,85 @@ BEGIN
         BEGIN TRANSACTION;
 		DECLARE @messageId INT;
 
+		SELECT @messageId = id
+        FROM dbo.message
+        WHERE 
+			receiveId = @receiveId 
+			AND accountId = @accountId;
+
 		UPDATE dbo.message
 		SET eventName = @eventName,
 			timestamp = @timestamp,
 			messageStatus = @messageStatus
-		WHERE receiveId = @receiveId 
+		WHERE 
+			receiveId = @receiveId 
 			AND accountId = @accountId;
 
-		SET @messageId = SCOPE_IDENTITY();
+		SELECT * FROM dbo.message WHERE id = @messageId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+ALTER PROCEDURE SendVideoTdFailure
+	@id NVARCHAR(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+		DECLARE @messageId INT;
+
+		SELECT @messageId = id
+        FROM dbo.message
+        WHERE 
+			id = @id
+			AND status = 'normal' ;
+
+		UPDATE dbo.message
+		SET status = 'failure'
+		WHERE 
+			id = @id
+			AND status = 'normal' ;
+
+		SELECT * FROM dbo.message WHERE id = @messageId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+ALTER PROCEDURE SendVideoTdSuccess
+	@id NVARCHAR(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+		DECLARE @messageId INT;
+
+		SELECT @messageId = id
+        FROM dbo.message
+        WHERE 
+			id = @id
+			AND status = 'normal' ;
+
+		UPDATE dbo.message
+		SET messageStatus = 'SENT'
+		WHERE 
+			id = @id
+			AND status = 'normal' ;
 
 		SELECT * FROM dbo.message WHERE id = @messageId;
 

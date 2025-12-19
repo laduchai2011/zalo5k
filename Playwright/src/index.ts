@@ -111,8 +111,11 @@ const basePath = 'D:/zalo5k/backEnd/data/video/input';
                         if (i_page === -1) {
                             page = await context.newPage();
                             pages.push({ oaid: oaid, uid: uid, page: page, accountId: accountId });
-                            await page.goto(`https://oa.zalo.me/chat?uid=${UID}&oaid=${OAID}`, { timeout: 0 });
-                            await page.waitForTimeout(1000);
+                            await page.goto(`https://oa.zalo.me/chat?uid=${UID}&oaid=${OAID}`, {
+                                // waitUntil: 'domcontentloaded',
+                                timeout: 0,
+                            });
+                            await page.waitForTimeout(6000);
 
                             const btn = page.getByRole('button', { name: 'Tìm hiểu thêm' });
                             if ((await btn.count()) > 0) {

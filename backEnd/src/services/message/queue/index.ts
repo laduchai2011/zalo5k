@@ -8,13 +8,7 @@ import {
     messageType_type,
 } from '@src/dataStruct/message';
 import { sender_enum } from '@src/dataStruct/message';
-import {
-    MessageTextField,
-    HookDataField,
-    zalo_event_name_enum,
-    // MessageImageOaSendField,
-    // ZaloMessage,
-} from '@src/dataStruct/hookData';
+import { MessageTextField, HookDataField, zalo_event_name_enum } from '@src/dataStruct/hookData';
 import { my_log } from '@src/log';
 import { customerSend_sendToMember_storeDB, customerSend_sendToMember_storeDB_feedback } from './const';
 
@@ -23,11 +17,6 @@ export function createMessageFromCustomerSend() {
         console.log('consumeMessage', customerSend_sendToMember_storeDB);
         const data = messageZalo.data as HookDataField<any>;
         const message = data.message;
-
-        // const messageText: MessageTextField = {
-        //     text: message.text,
-        //     msg_id: message.msg_id,
-        // };
 
         let type: messageType_type = messageType_enum.TEXT;
         switch (data.event_name) {

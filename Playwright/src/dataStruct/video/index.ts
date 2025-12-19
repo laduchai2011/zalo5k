@@ -11,6 +11,7 @@ export function isVideoTDBodyField(data: unknown): data is VideoTDBodyField {
         data !== null &&
         typeof (data as any).receiveId === 'string' &&
         typeof (data as any).oaid === 'string' &&
-        typeof (data as any).name === 'string'
+        typeof (data as any).name === 'string' &&
+        typeof (data as any).accountId === 'string'
     );
 }

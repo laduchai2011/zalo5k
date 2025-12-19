@@ -78,15 +78,14 @@ const Home = () => {
     }, [isLoading_myCustomers]);
     useEffect(() => {
         const resData = data_myCustomers;
-        console.log('home', 'data_myCustomers', resData);
         if (resData?.isSuccess && resData.data) {
             setMyCustomers(resData.data.items);
         }
     }, [data_myCustomers]);
 
-    useEffect(() => {
-        console.log('myCustomers', myCustomers);
-    }, [myCustomers]);
+    // useEffect(() => {
+    //     console.log('myCustomers', myCustomers);
+    // }, [myCustomers]);
 
     const list_myCustomers = myCustomers.map((item, index) => {
         return <MessageBox data={item} key={index} newMes={newMes} />;

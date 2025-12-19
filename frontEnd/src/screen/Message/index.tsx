@@ -34,7 +34,7 @@ import { zalo_event_name_enum, MessageZaloField, ZaloCustomerField } from '@src/
 import { sender_enum, CreateMessageBodyField, messageStatus_enum, messageType_enum } from '@src/dataStruct/message';
 import { useGetMessagesQuery } from '@src/redux/query/messageRTK';
 import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
-import { uploadVideo, uploadImage } from './handle';
+import { uploadVideo, uploadImage, handleSendVideoTdFailure, handleSendVideoTdSuccess } from './handle';
 
 const apiString = isProduct ? '' : '/api';
 const OAID = '2018793888801741529';
@@ -56,6 +56,7 @@ const Message = () => {
     const [is_open_chatRoom_tadao, set_is_open_chatRoom_tadao] = useState<boolean | undefined>(undefined);
     const [is_success_sendVideo, set_is_success_sendVideo] = useState<boolean | undefined>(undefined);
     const socketRef = useRef<SocketType | undefined>(undefined);
+    const messageId_videoTd_current = useRef<number>(-1);
     const [createMessage] = useCreateMessageMutation();
 
     useEffect(() => {
@@ -279,7 +280,6 @@ const Message = () => {
             }
         });
 
-        // console.log('myRoom', myRoom);
         socket.emit('joinRoom', myRoom);
 
         const oaid = OAID;
@@ -292,17 +292,58 @@ const Message = () => {
             set_is_open_chatRoom_tadao(false);
         });
         socket.on('send_videoTD_success', () => {
+            handleSendVideoTdSuccess({ id: messageId_videoTd_current.current })
+                .then((res) => {
+                    const resData = res.data;
+                    if (resData?.isSuccess && resData?.data) {
+                        dispatch(
+                            setData_toastMessage({
+                                type: toastMessageType_enum.SUCCESS,
+                                message: 'Cập nhật tin nhắn videoTd khi gửi thành công !',
+                            })
+                        );
+                    } else {
+                        dispatch(
+                            setData_toastMessage({
+                                type: toastMessageType_enum.ERROR,
+                                message: 'Cập nhật tin nhắn videoTd khi gửi thất bại !',
+                            })
+                        );
+                    }
+                })
+                .catch((err) => console.error(err));
             set_is_success_sendVideo(true);
         });
         socket.on('send_videoTD_failure', () => {
+            handleSendVideoTdFailure({ id: messageId_videoTd_current.current })
+                .then((res) => {
+                    const resData = res.data;
+                    if (resData?.isSuccess && resData.data) {
+                        dispatch(
+                            setData_toastMessage({
+                                type: toastMessageType_enum.SUCCESS,
+                                message: 'Tin nhắn videoTd bị xóa do gửi thất bại !',
+                            })
+                        );
+                        setMessages((pre) => {
+                            const newArr = pre.filter((item) => item.id !== messageId_videoTd_current.current);
+                            return newArr;
+                        });
+                    } else {
+                        dispatch(
+                            setData_toastMessage({
+                                type: toastMessageType_enum.ERROR,
+                                message: 'Tin nhắn videoTd gửi đi thất bại nhưng không xóa được khỏi DB !',
+                            })
+                        );
+                    }
+                })
+                .catch((err) => console.error(err));
             set_is_success_sendVideo(false);
         });
         socket.emit('open_chatRoom_tadao', { oaid, uid, accountId });
 
-        // socket.emit('roomMessage', { roomName: myId, message: 'client hello' });
-
         return () => {
-            console.log('unmount');
             socket.emit('close_chatRoom_tadao', { oaid, uid, accountId });
             socket.emit('leaveRoom', myId);
             socket.disconnect();
@@ -523,6 +564,7 @@ const Message = () => {
                             const resData = res.data;
                             set_is_success_sendVideo(undefined);
                             if (resData?.isSuccess && resData.data) {
+                                messageId_videoTd_current.current = resData.data.id;
                                 dispatch(
                                     setData_toastMessage({
                                         type: toastMessageType_enum.SUCCESS,

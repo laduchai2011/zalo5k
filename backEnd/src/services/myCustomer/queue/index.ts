@@ -19,6 +19,7 @@ const serviceRedis = ServiceRedis.getInstance();
 
 function checkMyCustommer() {
     consumeMessage(zalo_event_name_enum_messageQueue.user_send_text, (messageZalo) => {
+        console.log('user_send_text', messageZalo);
         main(messageZalo);
     });
 
@@ -79,7 +80,7 @@ function sendToMember() {
 
 function updateEvent_MemberSend() {
     consumeMessage(zalo_event_name_enum_messageQueue.oa_send_text, (messageZalo) => {
-        // console.log('updateEvent_MemberSend', 'oa_send_text', messageZalo);
+        console.log('updateEvent_MemberSend', 'oa_send_text', messageZalo);
         update(messageZalo);
     });
     consumeMessage(zalo_event_name_enum_messageQueue.oa_send_image, (messageZalo) => {
@@ -91,7 +92,8 @@ function updateEvent_MemberSend() {
     const update = (messageZalo: MessageZaloField) => {
         const handle_getAMyCustomer = new Handle_GetAMyCustomer();
 
-        handle_getAMyCustomer.main({ senderId: messageZalo.data.sender.id }, async (myCustomer) => {
+        handle_getAMyCustomer.main({ senderId: messageZalo.data.recipient.id }, async (myCustomer) => {
+            console.log(111111111111, myCustomer);
             const messageZalo1 = { ...messageZalo };
             if (myCustomer) {
                 messageZalo1.accountId = myCustomer.accountId;
@@ -122,6 +124,7 @@ function updateEvent_MemberSend() {
             messageStatus: messageStatus_enum.SENT,
             accountId: message.accountId,
         };
+        console.log(22222222, updateEventMemberSendBody);
 
         console.log('receiveId', message.data.recipient);
 

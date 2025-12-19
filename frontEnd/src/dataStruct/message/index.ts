@@ -24,6 +24,7 @@ export interface MessagesHasFilterBodyField {
     page: number;
     size: number;
     receiveId: string;
+    sender: sender_type;
     messageStatus: string;
     accountId?: number;
 }
@@ -87,4 +88,12 @@ export interface UpdateMessageStatusBodyField {
     timestamp: string;
     messageStatus: messageStatus_type;
     accountId: number;
+}
+
+export interface SendVideoTdFailureBodyField {
+    id: number;
+}
+
+export interface SendVideoTdSuccessBodyField {
+    id: number;
 }

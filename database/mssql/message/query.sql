@@ -28,10 +28,11 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetMessagesHasFilter
+ALTER PROCEDURE GetMessagesHasFilter
 	@page INT,
     @size INT,
 	@receiveId NVARCHAR(255),
+	@sender NVARCHAR(255),
 	@messageStatus NVARCHAR(255),
     @accountId INT
 AS
@@ -44,6 +45,7 @@ BEGIN
 		WHERE 
 			status = 'normal' 
 			AND (@receiveId IS NULL OR m.receiveId = @receiveId) 
+			AND (@sender IS NULL OR m.sender = @sender) 
 			AND (@messageStatus IS NULL OR m.messageStatus = @messageStatus) 
 			AND (@accountId IS NULL OR m.accountId = @accountId) 
     )
@@ -57,6 +59,7 @@ BEGIN
 		WHERE 
 			status = 'normal' 
 			AND (@receiveId IS NULL OR m.receiveId = @receiveId) 
+			AND (@sender IS NULL OR m.sender = @sender) 
 			AND (@messageStatus IS NULL OR m.messageStatus = @messageStatus) 
 			AND (@accountId IS NULL OR m.accountId = @accountId) 
 END
