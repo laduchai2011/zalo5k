@@ -22,3 +22,16 @@ BEGIN
 		AND (@addedById IS NULL OR ai.addedById = @addedById) 
 END
 GO
+
+CREATE PROCEDURE GetAccountInformation
+    @id INT
+AS
+BEGIN
+	SELECT ai.*
+	FROM accountInformation ai
+	JOIN account a ON a.id = ai.accountId
+	WHERE 
+		a.status = 'normal' 
+		AND (@id IS NULL OR ai.accountId = @id) 
+END
+GO

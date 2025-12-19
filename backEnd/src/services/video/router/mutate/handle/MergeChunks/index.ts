@@ -14,7 +14,7 @@ const folderOutputPath = path.join(imagePath, 'output');
 class Handle_MergeChunks {
     constructor() {}
 
-    main = (req: Request, res: Response) => {
+    main = async (req: Request, res: Response) => {
         const myResponse: MyResponse<unknown> = {
             isSuccess: false,
             message: 'Khởi tạo Merge Chunks !',
@@ -32,18 +32,18 @@ class Handle_MergeChunks {
         for (const chunk of sorted) {
             const chunkPath = path.join(chunkDir, chunk);
             const data = fs.readFileSync(chunkPath);
-            writeStream.write(data);
+            await writeStream.write(data);
         }
 
-        writeStream.end();
+        await writeStream.end();
 
         fs.rmSync(chunkDir, { recursive: true, force: true });
 
         const inputImagePath = path.join(folderInputPath, `${filename}.jpg`);
         const outputImagePath = path.join(folderOutputPath, `${filename}.jpg`);
         this.captureFrame(inputVideoPath, inputImagePath, 1)
-            .then(() => {
-                compressImageFromUrl(inputImagePath, outputImagePath);
+            .then(async () => {
+                await compressImageFromUrl(inputImagePath, outputImagePath);
                 myResponse.message = 'Đăng tải thước phim thành công !';
                 myResponse.isSuccess = true;
                 myResponse.data = { filename: filename };

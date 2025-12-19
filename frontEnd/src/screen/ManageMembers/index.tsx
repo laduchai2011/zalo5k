@@ -1,14 +1,22 @@
 import { useRef, useState, useEffect } from 'react';
 import style from './style.module.scss';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 import { MANAGE_MEMBERS, ADD_MEMBER, ADD } from '@src/const/text';
 import { useAddMemberMutation, useGetAllMembersQuery } from '@src/redux/query/accountRTK';
-import { AddMemberBodyField, AccountField } from '@src/dataStruct/account';
+import { AddMemberBodyField, AccountField, AccountInformationField, accountType_enum } from '@src/dataStruct/account';
 import { member_enum, member_field_type } from './type';
 import { isSpace, isFirstNumber, containsSpecialCharacters, isValidPhoneNumber } from '@src/utility/string';
+import MyToastMessage from './component/MyToastMessage';
+import MyLoading from './component/MyLoading';
+import { setData_toastMessage } from '@src/redux/slice/ManageMembers';
+import { messageType_enum as toastMessageType_enum } from '@src/component/ToastMessage/type';
 
 const ManageMembers = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const inputContainer_element = useRef<HTMLDivElement>(null);
-
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [accountInformation, setAccountInformation] = useState<AccountInformationField | null>(null);
     const [allMembers, setAllMembers] = useState<AccountField[]>([]);
     const [note, setNote] = useState('');
     const [addMemberBody, setAddMemberBody] = useState<AddMemberBodyField>({
@@ -27,6 +35,12 @@ const ManageMembers = () => {
 
     const [addMember] = useAddMemberMutation();
 
+    useEffect(() => {
+        const accountInformationStorage = sessionStorage.getItem('accountInformation');
+        if (!accountInformationStorage) return;
+        setAccountInformation(JSON.parse(accountInformationStorage));
+    }, []);
+
     const {
         data: data_allMembers,
         // isFetching,
@@ -37,16 +51,16 @@ const ManageMembers = () => {
     useEffect(() => {
         if (isError_allMembers && error_allMembers) {
             console.error(error_allMembers);
-            // dispatch(
-            //     setData_toastMessage({
-            //         type: messageType_enum.SUCCESS,
-            //         message: 'Lấy dữ liệu KHÔNG thành công !',
-            //     })
-            // );
+            dispatch(
+                setData_toastMessage({
+                    type: toastMessageType_enum.ERROR,
+                    message: 'Lấy dữ liệu KHÔNG thành công !',
+                })
+            );
         }
-    }, [isError_allMembers, error_allMembers]);
+    }, [dispatch, isError_allMembers, error_allMembers]);
     useEffect(() => {
-        // setIsLoading(isLoading_medication);
+        setIsLoading(isLoading_allMembers);
     }, [isLoading_allMembers]);
     useEffect(() => {
         const resData = data_allMembers;
@@ -57,8 +71,17 @@ const ManageMembers = () => {
     }, [data_allMembers]);
 
     const showInputContainer = () => {
-        if (inputContainer_element.current) {
-            inputContainer_element.current.classList.toggle(style.show);
+        if (accountInformation?.accountType === accountType_enum.ADMIN) {
+            if (inputContainer_element.current) {
+                inputContainer_element.current.classList.toggle(style.show);
+            }
+        } else {
+            dispatch(
+                setData_toastMessage({
+                    type: toastMessageType_enum.WARN,
+                    message: 'Bạn không có quyền thực hiện thao tác này !',
+                })
+            );
         }
     };
 
@@ -206,19 +229,28 @@ const ManageMembers = () => {
     };
 
     const handleAdd = () => {
-        if (ischeckString()) {
-            addMember(addMemberBody)
-                .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData?.data) {
-                        setNote('Đã thêm thành viên thành công!');
-                    } else {
-                        setNote(resData?.message || 'Lỗi không xác định !');
-                    }
-                })
-                .catch((err) => console.error(err));
+        if (accountInformation?.accountType === accountType_enum.ADMIN) {
+            if (ischeckString()) {
+                addMember(addMemberBody)
+                    .then((res) => {
+                        const resData = res.data;
+                        if (resData?.isSuccess && resData?.data) {
+                            setNote('Đã thêm thành viên thành công!');
+                        } else {
+                            setNote(resData?.message || 'Lỗi không xác định !');
+                        }
+                    })
+                    .catch((err) => console.error(err));
+            } else {
+                setNote('Dữ liệu nhập không hợp lệ, vui lòng kiểm tra lại !');
+            }
         } else {
-            setNote('Dữ liệu nhập không hợp lệ, vui lòng kiểm tra lại !');
+            dispatch(
+                setData_toastMessage({
+                    type: toastMessageType_enum.WARN,
+                    message: 'Bạn không có quyền thực hiện thao tác này !',
+                })
+            );
         }
     };
 
@@ -274,6 +306,10 @@ const ManageMembers = () => {
                     </div>
                     <div className={style.list}>{list_members}</div>
                 </div>
+            </div>
+            <div>
+                <MyToastMessage />
+                <MyLoading isLoading={isLoading} />
             </div>
         </div>
     );

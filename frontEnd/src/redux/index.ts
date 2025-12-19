@@ -1,31 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import CommentBoxReducer from '@src/redux/slice/CommentBox';
-// import ExamineReducer from '@src/redux/slice/Examine';
-// import MedicationReducer from '@src/redux/slice/Medication';
-// import MedicationsReducer from '@src/redux/slice/Medications';
-// import CreateMedicationReducer from '@src/redux/slice/CreateMedication';
 import AppReducer from '@src/redux/slice/App';
 import MessageReducer from '@src/redux/slice/Message';
+import ManageMembersReducer from '@src/redux/slice/ManageMembers';
+import MemberReceiveMessageReducer from '@src/redux/slice/MemberReceiveMessage';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
-// import { shoppingCartRTK } from './query/shoppingCartRTK';
 
 export const store = configureStore({
     reducer: {
         dummy: (state = {}) => state,
-        // CommentBoxSlice: CommentBoxReducer,
-        // ExamineSlice: ExamineReducer,
-        // MedicationSlice: MedicationReducer,
-        // MedicationsSlice: MedicationsReducer,
-        // CreateMedicationSlice: CreateMedicationReducer,
-        // DoctorsSlice: DoctorsReducer,
         AppSlice: AppReducer,
         MessageSlice: MessageReducer,
+        ManageMembersSlice: ManageMembersReducer,
+        MemberReceiveMessageSlice: MemberReceiveMessageReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageRTK.reducerPath]: messageRTK.reducer,
-        // [shoppingCartRTK.reducerPath]: shoppingCartRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(accountRTK.middleware, myCustomerRTK.middleware, messageRTK.middleware),

@@ -28,6 +28,28 @@ const App = () => {
         }
     }, []);
 
+    useEffect(() => {
+        const getAccountInformation = async () => {
+            try {
+                const response = await axiosInstance.get<MyResponse<number>>(
+                    `/service_account/query/getAccountInformation`
+                );
+                const resData = response.data;
+                if (resData.isSuccess) {
+                    if (resData.data) {
+                        sessionStorage.setItem('accountInformation', `${JSON.stringify(resData.data)}`);
+                    } else {
+                        sessionStorage.removeItem('accountInformation');
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        getAccountInformation();
+    }, []);
+
     return (
         <div>
             <AppRouter />

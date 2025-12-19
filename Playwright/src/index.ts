@@ -17,30 +17,30 @@ interface PageField {
 
 const basePath = 'D:/zalo5k/backEnd/data/video/input';
 
-class LockKey {
-    private locked = false;
-    private waiting: Array<() => void> = [];
+// class LockKey {
+//     private locked = false;
+//     private waiting: Array<() => void> = [];
 
-    async waitLock(): Promise<void> {
-        if (!this.locked) {
-            this.locked = true;
-            return;
-        }
+//     async waitLock(): Promise<void> {
+//         if (!this.locked) {
+//             this.locked = true;
+//             return;
+//         }
 
-        return new Promise((resolve) => {
-            this.waiting.push(resolve);
-        });
-    }
+//         return new Promise((resolve) => {
+//             this.waiting.push(resolve);
+//         });
+//     }
 
-    openLock() {
-        if (this.waiting.length > 0) {
-            const next = this.waiting.shift()!;
-            next(); // đánh thức task tiếp theo
-        } else {
-            this.locked = false;
-        }
-    }
-}
+//     openLock() {
+//         if (this.waiting.length > 0) {
+//             const next = this.waiting.shift()!;
+//             next(); // đánh thức task tiếp theo
+//         } else {
+//             this.locked = false;
+//         }
+//     }
+// }
 
 (async () => {
     try {
@@ -87,7 +87,7 @@ class LockKey {
         //     timeout: 60000,
         // });
 
-        const lockKey = new LockKey();
+        // const lockKey = new LockKey();
 
         consumeMessageTD('chatRoom_tadao_dev', async ({ status, oaid, uid, accountId }) => {
             switch (status) {
@@ -95,8 +95,6 @@ class LockKey {
                     const OAID = oaid;
                     const UID = uid;
                     try {
-                        await lockKey.waitLock();
-
                         let i_page: number = -1;
                         let page: Page | null = null;
                         for (let i: number = 0; i < pages.length; i++) {
@@ -123,13 +121,14 @@ class LockKey {
                             }
                         }
 
-                        if (!page) return;
+                        if (!page) {
+                            my_log.withRed('Không lấy được page trong chatRoom_tadao');
+                            return;
+                        }
 
                         // await page.waitForTimeout(3000);
 
                         sendMessageTD('open_chatRoom_tadao_success_dev', { oaid, uid, accountId });
-
-                        lockKey.openLock();
                     } catch (error) {
                         sendMessageTD('open_chatRoom_tadao_failure_dev', { oaid, uid, accountId });
                         console.error(error);
@@ -137,22 +136,17 @@ class LockKey {
                     break;
                 }
                 case 'close': {
-                    await lockKey.waitLock();
-
                     for (let i: number = 0; i < pages.length; i++) {
                         if (pages[i].oaid === oaid && pages[i].uid === uid) {
-                            if (pages[i].page) {
-                                pages[i].page.close();
-                                break;
-                            }
+                            pages[i].page.close();
+                            break;
                         }
                     }
 
-                    const newArr = pages.filter((item) => item.oaid === oaid && item.uid === uid);
+                    const newArr = pages.filter((item) => !(item.oaid === oaid && item.uid === uid));
 
                     pages = newArr;
 
-                    lockKey.openLock();
                     break;
                 }
                 default: {
@@ -162,72 +156,7 @@ class LockKey {
             }
         });
 
-        consumeMessageTD('open_chatRoom_tadao_dev', async ({ oaid, uid, accountId }) => {
-            const OAID = oaid;
-            const UID = uid;
-            console.log(111111111, accountId);
-            try {
-                await lockKey.waitLock();
-
-                let i_page: number = -1;
-                let page: Page | null = null;
-                for (let i: number = 0; i < pages.length; i++) {
-                    if (pages[i].oaid === oaid && pages[i].uid === uid) {
-                        i_page = i;
-                        page = pages[i].page;
-                        break;
-                    }
-                }
-
-                if (i_page === -1) {
-                    page = await context.newPage();
-                    pages.push({ oaid: oaid, uid: uid, page: page, accountId: accountId });
-                    await page.goto(`https://oa.zalo.me/chat?uid=${UID}&oaid=${OAID}`, { timeout: 0 });
-                    await page.waitForTimeout(1000);
-
-                    const btn = page.getByRole('button', { name: 'Tìm hiểu thêm' });
-                    if ((await btn.count()) > 0) {
-                        await btn.click();
-                        const btn2 = page.getByRole('button', { name: 'Hủy' });
-                        if ((await btn2.count()) > 0) {
-                            await btn2.click();
-                        }
-                    }
-                }
-
-                if (!page) return;
-
-                // await page.waitForTimeout(3000);
-
-                sendMessageTD('open_chatRoom_tadao_success_dev', { oaid, uid, accountId });
-
-                lockKey.openLock();
-            } catch (error) {
-                sendMessageTD('open_chatRoom_tadao_failure_dev', { oaid, uid, accountId });
-                console.error(error);
-            }
-        });
-
-        consumeMessageTD('close_chatRoom_tadao_dev', async ({ oaid, uid, accountId }) => {
-            await lockKey.waitLock();
-
-            for (let i: number = 0; i < pages.length; i++) {
-                if (pages[i].oaid === oaid && pages[i].uid === uid) {
-                    if (pages[i].page) {
-                        pages[i].page.close();
-                        break;
-                    }
-                }
-            }
-
-            const newArr = pages.filter((item) => item.oaid === oaid && item.uid === uid);
-
-            pages = newArr;
-
-            lockKey.openLock();
-        });
-
-        consumeMessageTD('senMes_dev', async (mes) => {
+        consumeMessageTD('send_videoTD_dev', async (mes) => {
             if (!isVideoTDBodyField(mes)) {
                 my_log.withRed('Body không đúng cấu trúc VideoTDBodyField');
             }
@@ -243,7 +172,16 @@ class LockKey {
                 }
             }
 
-            if (!page) return;
+            if (!page) {
+                my_log.withRed('Không lấy được page trong send_videoTD');
+                sendMessageTD('send_videoTD_failure_dev', {
+                    oaid: videoTDBody.oaid,
+                    uid: videoTDBody.receiveId,
+                    accountId: videoTDBody.accountId,
+                    name: videoTDBody.name,
+                });
+                return;
+            }
 
             const NAME = videoTDBody.name;
 
@@ -265,7 +203,20 @@ class LockKey {
                 // Optional: chờ video upload xong, có thể bấm nút gửi nếu cần
                 await page.waitForTimeout(3000); // đợi 3s upload hoàn tất
                 await page.keyboard.press('Enter'); // gửi tin nhắn
+
+                sendMessageTD('send_videoTD_success_dev', {
+                    oaid: videoTDBody.oaid,
+                    uid: videoTDBody.receiveId,
+                    accountId: videoTDBody.accountId,
+                    name: videoTDBody.name,
+                });
             } catch (error) {
+                sendMessageTD('send_videoTD_failure_dev', {
+                    oaid: videoTDBody.oaid,
+                    uid: videoTDBody.receiveId,
+                    accountId: videoTDBody.accountId,
+                    name: videoTDBody.name,
+                });
                 console.error(error);
             }
         });

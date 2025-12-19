@@ -41,6 +41,16 @@ consumeMessageTD('open_chatRoom_tadao_failure_dev', async ({ oaid, uid, accountI
     io.to(myRoom).emit('open_chatRoom_tadao_failure', {});
 });
 
+consumeMessageTD('send_videoTD_success_dev', async ({ oaid, uid, accountId, name }) => {
+    const myRoom = accountId + uid;
+    io.to(myRoom).emit('send_videoTD_success', {});
+});
+
+consumeMessageTD('send_videoTD_failure_dev', async ({ oaid, uid, accountId, name }) => {
+    const myRoom = accountId + uid;
+    io.to(myRoom).emit('send_videoTD_failure', {});
+});
+
 // consumeMessage('test', (data) => {
 // });
 

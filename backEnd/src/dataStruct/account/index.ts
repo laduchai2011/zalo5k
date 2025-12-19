@@ -11,6 +11,12 @@ export interface AccountField {
     createTime: string;
 }
 
+export interface AccountInformationField {
+    addedById: number;
+    accountType: string;
+    accountId: number;
+}
+
 export interface AddMemberBodyField {
     userName: string;
     password: string;
