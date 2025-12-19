@@ -3,6 +3,7 @@ import { consumeMessageTD } from './messageQueue/Consumer';
 import { sendMessageTD } from './messageQueue/Producer';
 import { isVideoTDBodyField, VideoTDBodyField } from './dataStruct/video';
 import { my_log } from './log';
+import path from 'path';
 
 const SESSION_PATH = 'sessions/zalo-oa.json';
 
@@ -18,7 +19,8 @@ interface PageField {
     accountId: number;
 }
 
-const basePath = 'D:/zalo5k/backEnd/data/video/input';
+const videoPath = path.join(process.cwd(), 'data', 'video', 'input');
+const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
 
 // class LockKey {
 //     private locked = false;
