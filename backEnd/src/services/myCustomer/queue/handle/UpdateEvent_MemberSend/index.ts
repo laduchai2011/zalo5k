@@ -25,7 +25,6 @@ class Handle_UpdateEvent_MemberSend {
 
         try {
             const result = await mutateDB_updateEvent_memberSend.run();
-            console.log(3333333333, result?.recordset);
             let data: MessageField | null = null;
             if (result?.recordset.length && result?.recordset.length > 0) {
                 data = result?.recordset[0];

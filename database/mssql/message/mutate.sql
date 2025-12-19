@@ -59,15 +59,18 @@ BEGIN
         BEGIN TRANSACTION;
 		DECLARE @messageId INT;
 
+		SELECT @messageId = id
+        FROM dbo.message
+        WHERE 
+			receiveId = @receiveId 
+			AND accountId = @accountId
+			AND messageStatus = 'SENDING'
+
 		UPDATE dbo.message
 		SET eventName = @eventName,
 			timestamp = @timestamp,
 			messageStatus = @messageStatus
-		WHERE receiveId = @receiveId 
-			AND accountId = @accountId
-			AND messageStatus = 'SENDING'
-
-		SET @messageId = SCOPE_IDENTITY();
+		WHERE id = @messageId;
 
 		SELECT * FROM dbo.message WHERE id = @messageId;
 

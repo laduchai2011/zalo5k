@@ -93,7 +93,6 @@ function updateEvent_MemberSend() {
         const handle_getAMyCustomer = new Handle_GetAMyCustomer();
 
         handle_getAMyCustomer.main({ senderId: messageZalo.data.recipient.id }, async (myCustomer) => {
-            console.log(111111111111, myCustomer);
             const messageZalo1 = { ...messageZalo };
             if (myCustomer) {
                 messageZalo1.accountId = myCustomer.accountId;
@@ -124,7 +123,6 @@ function updateEvent_MemberSend() {
             messageStatus: messageStatus_enum.SENT,
             accountId: message.accountId,
         };
-        console.log(22222222, updateEventMemberSendBody);
 
         console.log('receiveId', message.data.recipient);
 
