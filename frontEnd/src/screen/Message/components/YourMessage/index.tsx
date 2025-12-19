@@ -13,7 +13,8 @@ import {
 } from '@src/dataStruct/hookData';
 import LinkifyText from '@src/component/LinkifyText';
 import LazyImage from '@src/component/LazyImage';
-import LazyVideo from '@src/component/LazyVideo';
+// import LazyVideo from '@src/component/LazyVideo';
+import Thumbnail from './component/Thumbnail';
 import { useGetInforCustomerOnZaloQuery, useDelIsNewMessageMutation } from '@src/redux/query/myCustomerRTK';
 import { useUpdateMessageStatusMutation } from '@src/redux/query/messageRTK';
 import { UpdateMessageStatusBodyField, messageStatus_enum } from '@src/dataStruct/message';
@@ -147,6 +148,29 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                 </div>
             );
         }
+        // case messageType_enum.VIDEOS: {
+        //     const messageVideo = hookData.message as MessageVideosField;
+        //     return (
+        //         <div className={style.parent}>
+        //             <div className={style.main}>
+        //                 <div className={style.avatarContainer}>
+        //                     {zaloCustomer?.data.avatar && (
+        //                         <LazyImage className={style.avatar} src={zaloCustomer?.data.avatar} alt="avatar" />
+        //                     )}
+        //                 </div>
+        //                 <div className={style.contentContainer}>
+        //                     <div className={style.content}>
+        //                         <LazyVideo className={style.image} src={messageVideo.attachments[0].payload.url} />
+        //                         <div className={style.text}>
+        //                             {messageVideo.text && <LinkifyText text={messageVideo.text} />}
+        //                         </div>
+        //                     </div>
+        //                     {/* <div className={style.status}>{data.messageStatus}</div> */}
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     );
+        // }
         case messageType_enum.VIDEOS: {
             const messageVideo = hookData.message as MessageVideosField;
             return (
@@ -159,12 +183,8 @@ const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
                         </div>
                         <div className={style.contentContainer}>
                             <div className={style.content}>
-                                <LazyVideo className={style.image} src={messageVideo.attachments[0].payload.url} />
-                                <div className={style.text}>
-                                    {messageVideo.text && <LinkifyText text={messageVideo.text} />}
-                                </div>
+                                <Thumbnail data={messageVideo} />
                             </div>
-                            {/* <div className={style.status}>{data.messageStatus}</div> */}
                         </div>
                     </div>
                 </div>

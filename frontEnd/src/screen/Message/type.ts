@@ -4,4 +4,8 @@ export interface state_props {
     toastMessage: {
         data: ToastMessage_Data_Props;
     };
+    playVideo: {
+        isPlay: boolean;
+        src: string;
+    };
 }

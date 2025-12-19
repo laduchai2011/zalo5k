@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { consumeMessage } from '@src/messageQueue/Consumer';
-import { sendMessage } from '@src/messageQueue/Producer';
+import { consumeMessage, consumeMessageTD } from '@src/messageQueue/Consumer';
+import { sendMessage, sendMessageTD } from '@src/messageQueue/Producer';
 import { MessageZaloField } from './messageQueue/type';
 import process from 'process';
 import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
@@ -31,6 +31,16 @@ consumeMessage(customerSend_sendToMember, (data) => {
     io.to(room).emit('roomMessage', JSON.stringify(data));
 });
 
+consumeMessageTD('open_chatRoom_tadao_success_dev', async ({ oaid, uid, accountId }) => {
+    const myRoom = accountId + uid;
+    io.to(myRoom).emit('open_chatRoom_tadao_success', {});
+});
+
+consumeMessageTD('open_chatRoom_tadao_failure_dev', async ({ oaid, uid, accountId }) => {
+    const myRoom = accountId + uid;
+    io.to(myRoom).emit('open_chatRoom_tadao_failure', {});
+});
+
 // consumeMessage('test', (data) => {
 // });
 
@@ -45,6 +55,16 @@ io.on('connection', (socket) => {
 
         // Thông báo cho tất cả trong phòng
         // io.to(roomName).emit('systemMessage', `User ${socket.id} joined the room`);
+    });
+
+    socket.on('open_chatRoom_tadao', ({ oaid, uid, accountId }) => {
+        const status: string = 'open';
+        sendMessageTD('chatRoom_tadao_dev', { status, oaid, uid, accountId });
+    });
+
+    socket.on('close_chatRoom_tadao', ({ oaid, uid, accountId }) => {
+        const status: string = 'close';
+        sendMessageTD('chatRoom_tadao_dev', { status, oaid, uid, accountId });
     });
 
     // Gửi tin nhắn trong phòng

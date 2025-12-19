@@ -92,7 +92,6 @@ const MessageBox: FC<{ data: MyCustomerField; newMes: any }> = ({ data, newMes }
     }, [data_IsNewMessage]);
 
     useEffect(() => {
-        console.log(1111111);
         getMessagesHasFilter({
             page: 1,
             size: 100,
@@ -136,7 +135,7 @@ const MessageBox: FC<{ data: MyCustomerField; newMes: any }> = ({ data, newMes }
                     });
             }
         }
-    }, [newMes]);
+    }, [newMes, data.senderId, getMessagesHasFilter, myId]);
 
     const handleGoToMessage = () => {
         if (data_isNewMes) {

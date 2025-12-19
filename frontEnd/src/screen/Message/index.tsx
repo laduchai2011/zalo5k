@@ -19,12 +19,13 @@ import MyToastMessage from './components/MyToastMessage';
 import MyLoading from './components/MyLoading';
 import MyImageInput from './components/MyImageInput';
 import MyVideoInput from './components/MyVideoInput';
+import PlayVideo from './components/PlayVideo';
 import axiosInstance from '@src/api/axiosInstance';
 import { IMAGE_API } from '@src/const/api/image';
-import { VIDEO_API } from '@src/const/api/video';
+// import { VIDEO_API } from '@src/const/api/video';
 import { setData_toastMessage } from '@src/redux/slice/Message';
 import { messageType_enum as toastMessageType_enum } from '@src/component/ToastMessage/type';
-import { AImageFileField, AVideoFileField } from '@src/dataStruct/photo';
+import { AImageFileField } from '@src/dataStruct/photo';
 import { MyResponse } from '@src/dataStruct/response';
 import { BASE_URL, isProduct } from '@src/const/api/baseUrl';
 import {
@@ -49,9 +50,10 @@ import { useGetMessagesQuery } from '@src/redux/query/messageRTK';
 import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
 import { uploadVideo } from './handle';
 
-let socket: SocketType;
+// let socket: SocketType;
 
 const apiString = isProduct ? '' : '/api';
+const OAID = '2018793888801741529';
 
 const Message = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -70,8 +72,18 @@ const Message = () => {
     const input_element = useRef<HTMLInputElement | null>(null);
     const videoInput_element = useRef<HTMLInputElement | null>(null);
     const [isSending, setIsSending] = useState<boolean>(false);
-
+    const [is_open_chatRoom_tadao, set_is_open_chatRoom_tadao] = useState<boolean | undefined>(undefined);
+    const socketRef = useRef<SocketType | undefined>(undefined);
     const [createMessage] = useCreateMessageMutation();
+
+    useEffect(() => {
+        dispatch(
+            setData_toastMessage({
+                type: toastMessageType_enum.NORMAL,
+                message: '',
+            })
+        );
+    }, [dispatch]);
 
     useEffect(() => {
         setMessages([]);
@@ -148,11 +160,13 @@ const Message = () => {
         const myRoom = myId + id;
 
         // Kết nối server
-        socket = io(SOCKET_URL || '');
+        socketRef.current = io(SOCKET_URL || '');
         // socket = io('wss://socketapp.5kaquarium.com', {
         //     path: '/socket.io/',
         // });
 
+        if (!socketRef.current) return;
+        const socket = socketRef.current;
         socket.on('connect', () => {
             console.log('Connected:', socket.id);
         });
@@ -267,13 +281,45 @@ const Message = () => {
         // console.log('myRoom', myRoom);
         socket.emit('joinRoom', myRoom);
 
+        const oaid = OAID;
+        const uid = id;
+        const accountId = myId;
+        socket.on('open_chatRoom_tadao_success', () => {
+            set_is_open_chatRoom_tadao(true);
+        });
+        socket.on('open_chatRoom_tadao_failure', () => {
+            set_is_open_chatRoom_tadao(false);
+        });
+        socket.emit('open_chatRoom_tadao', { oaid, uid, accountId });
+
         // socket.emit('roomMessage', { roomName: myId, message: 'client hello' });
 
         return () => {
+            console.log('unmount');
+            socket.emit('close_chatRoom_tadao', { oaid, uid, accountId });
             socket.emit('leaveRoom', myId);
             socket.disconnect();
         };
     }, [myId, id]);
+
+    useEffect(() => {
+        if (is_open_chatRoom_tadao === true) {
+            dispatch(
+                setData_toastMessage({
+                    type: toastMessageType_enum.SUCCESS,
+                    message: 'Mở phòng chat tà đạo thành công !',
+                })
+            );
+        }
+        if (is_open_chatRoom_tadao === false) {
+            dispatch(
+                setData_toastMessage({
+                    type: toastMessageType_enum.ERROR,
+                    message: 'Mở phòng chat tà đạo thất bại !',
+                })
+            );
+        }
+    }, [is_open_chatRoom_tadao, dispatch]);
 
     const handleScroll = () => {
         const contentContainerElement = contentContainer_element.current;
@@ -367,6 +413,7 @@ const Message = () => {
         (message: ZaloMessage | undefined, messageType: messageType_type) => {
             if (!myId) return;
             if (!id) return;
+
             const myRoom = myId + id;
             const newMes = newMessage.trim();
             if (messageType === messageType_enum.TEXT && newMes.length === 0) return;
@@ -403,7 +450,10 @@ const Message = () => {
                     if (resData?.isSuccess && resData.data) {
                         const newData: MessageField = resData.data;
                         setMessages((prev) => [...prev, newData]);
-                        socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
+                        socketRef.current?.emit('roomMessage', {
+                            roomName: myRoom,
+                            message: JSON.stringify(resData.data),
+                        });
                     }
                 })
                 .catch((err) => console.error(err));
@@ -536,15 +586,16 @@ const Message = () => {
                         messageStatus: messageStatus_enum.SENDING,
                         accountId: -1,
                     };
-                    // console.log('handleSendCommon', createMessageBody);
                     createMessage(createMessageBody)
                         .then((res) => {
                             const resData = res.data;
-                            console.log('createMessage Video', resData);
                             if (resData?.isSuccess && resData.data) {
                                 const newData: MessageField = resData.data;
-                                setMessages((prev) => [...prev, newData]);
-                                socket.emit('roomMessage', { roomName: myRoom, message: JSON.stringify(resData.data) });
+                                setMessages((prev) => [newData, ...prev]);
+                                socketRef.current?.emit('roomMessage', {
+                                    roomName: myRoom,
+                                    message: JSON.stringify(resData.data),
+                                });
                             }
                         })
                         .catch((err) => console.error(err))
@@ -714,7 +765,7 @@ const Message = () => {
                 <div className={style.iconContainer}>
                     <FaImage id={id_folderInput} onClick={handleIconClick} />
                     <input ref={input_element} onChange={handleFolderChange} type="file" id={id_folderInput} multiple />
-                    <MdOndemandVideo id={id_videoInput} onClick={handleVideoIconClick} />
+                    {is_open_chatRoom_tadao && <MdOndemandVideo id={id_videoInput} onClick={handleVideoIconClick} />}
                     <input ref={videoInput_element} onChange={handleVideoChange} type="file" id={id_videoInput} />
                 </div>
                 <div className={style.photoContainer}>
@@ -728,6 +779,7 @@ const Message = () => {
                 <div>
                     <MyToastMessage />
                     <MyLoading isLoading={isSending} />
+                    <PlayVideo />
                 </div>
             </div>
         </div>

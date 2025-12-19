@@ -1,4 +1,4 @@
-import { FC, memo, useRef, useEffect, useState } from 'react';
+import { FC, memo, useRef, useEffect } from 'react';
 import style from './style.module.scss';
 import Loading from '@src/component/Loading';
 import { LoadProps, LineCircleLoadProps } from '@src/component/Loading/type';
