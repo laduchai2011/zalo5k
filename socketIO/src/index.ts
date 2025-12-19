@@ -10,6 +10,7 @@ import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const
 dotenv.config();
 
 const isProduct = process.env.NODE_ENV === 'production';
+const dev_prefix = isProduct ? '' : 'dev';
 
 const httpServer = createServer(); // ❗ Không dùng Express
 
@@ -31,22 +32,22 @@ consumeMessage(customerSend_sendToMember, (data) => {
     io.to(room).emit('roomMessage', JSON.stringify(data));
 });
 
-consumeMessageTD('open_chatRoom_tadao_success_dev', async ({ oaid, uid, accountId }) => {
+consumeMessageTD(`open_chatRoom_tadao_success_${dev_prefix}`, async ({ oaid, uid, accountId }) => {
     const myRoom = accountId + uid;
     io.to(myRoom).emit('open_chatRoom_tadao_success', {});
 });
 
-consumeMessageTD('open_chatRoom_tadao_failure_dev', async ({ oaid, uid, accountId }) => {
+consumeMessageTD(`open_chatRoom_tadao_failure_${dev_prefix}`, async ({ oaid, uid, accountId }) => {
     const myRoom = accountId + uid;
     io.to(myRoom).emit('open_chatRoom_tadao_failure', {});
 });
 
-consumeMessageTD('send_videoTD_success_dev', async ({ oaid, uid, accountId, name }) => {
+consumeMessageTD(`send_videoTD_success_${dev_prefix}`, async ({ oaid, uid, accountId, name }) => {
     const myRoom = accountId + uid;
     io.to(myRoom).emit('send_videoTD_success', {});
 });
 
-consumeMessageTD('send_videoTD_failure_dev', async ({ oaid, uid, accountId, name }) => {
+consumeMessageTD(`send_videoTD_failure_${dev_prefix}`, async ({ oaid, uid, accountId, name }) => {
     const myRoom = accountId + uid;
     io.to(myRoom).emit('send_videoTD_failure', {});
 });
@@ -69,12 +70,12 @@ io.on('connection', (socket) => {
 
     socket.on('open_chatRoom_tadao', ({ oaid, uid, accountId }) => {
         const status: string = 'open';
-        sendMessageTD('chatRoom_tadao_dev', { status, oaid, uid, accountId });
+        sendMessageTD(`chatRoom_tadao_${dev_prefix}`, { status, oaid, uid, accountId });
     });
 
     socket.on('close_chatRoom_tadao', ({ oaid, uid, accountId }) => {
         const status: string = 'close';
-        sendMessageTD('chatRoom_tadao_dev', { status, oaid, uid, accountId });
+        sendMessageTD(`chatRoom_tadao_${dev_prefix}`, { status, oaid, uid, accountId });
     });
 
     // Gửi tin nhắn trong phòng

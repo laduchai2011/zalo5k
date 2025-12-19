@@ -6,6 +6,9 @@ import { my_log } from './log';
 
 const SESSION_PATH = 'sessions/zalo-oa.json';
 
+const isProduct = process.env.NODE_ENV === 'production';
+const dev_prefix = isProduct ? '' : 'dev';
+
 // const UID = '5324785107455488962'; // user nhận
 // const OAID_TOP = '2018793888801741529'; // OA ID
 interface PageField {
@@ -89,7 +92,7 @@ const basePath = 'D:/zalo5k/backEnd/data/video/input';
 
         // const lockKey = new LockKey();
 
-        consumeMessageTD('chatRoom_tadao_dev', async ({ status, oaid, uid, accountId }) => {
+        consumeMessageTD(`chatRoom_tadao_${dev_prefix}`, async ({ status, oaid, uid, accountId }) => {
             switch (status) {
                 case 'open': {
                     const OAID = oaid;
@@ -128,9 +131,9 @@ const basePath = 'D:/zalo5k/backEnd/data/video/input';
 
                         // await page.waitForTimeout(3000);
 
-                        sendMessageTD('open_chatRoom_tadao_success_dev', { oaid, uid, accountId });
+                        sendMessageTD(`open_chatRoom_tadao_success_${dev_prefix}`, { oaid, uid, accountId });
                     } catch (error) {
-                        sendMessageTD('open_chatRoom_tadao_failure_dev', { oaid, uid, accountId });
+                        sendMessageTD(`open_chatRoom_tadao_failure_${dev_prefix}`, { oaid, uid, accountId });
                         console.error(error);
                     }
                     break;
@@ -156,7 +159,7 @@ const basePath = 'D:/zalo5k/backEnd/data/video/input';
             }
         });
 
-        consumeMessageTD('send_videoTD_dev', async (mes) => {
+        consumeMessageTD(`send_videoTD_${dev_prefix}`, async (mes) => {
             if (!isVideoTDBodyField(mes)) {
                 my_log.withRed('Body không đúng cấu trúc VideoTDBodyField');
             }
@@ -174,7 +177,7 @@ const basePath = 'D:/zalo5k/backEnd/data/video/input';
 
             if (!page) {
                 my_log.withRed('Không lấy được page trong send_videoTD');
-                sendMessageTD('send_videoTD_failure_dev', {
+                sendMessageTD(`send_videoTD_failure_${dev_prefix}`, {
                     oaid: videoTDBody.oaid,
                     uid: videoTDBody.receiveId,
                     accountId: videoTDBody.accountId,
@@ -204,14 +207,14 @@ const basePath = 'D:/zalo5k/backEnd/data/video/input';
                 await page.waitForTimeout(3000); // đợi 3s upload hoàn tất
                 await page.keyboard.press('Enter'); // gửi tin nhắn
 
-                sendMessageTD('send_videoTD_success_dev', {
+                sendMessageTD(`send_videoTD_success_${dev_prefix}`, {
                     oaid: videoTDBody.oaid,
                     uid: videoTDBody.receiveId,
                     accountId: videoTDBody.accountId,
                     name: videoTDBody.name,
                 });
             } catch (error) {
-                sendMessageTD('send_videoTD_failure_dev', {
+                sendMessageTD(`send_videoTD_failure_${dev_prefix}`, {
                     oaid: videoTDBody.oaid,
                     uid: videoTDBody.receiveId,
                     accountId: videoTDBody.accountId,
