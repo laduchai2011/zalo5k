@@ -1,10 +1,11 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
+import authentication from '@src/auth';
 import Handle_IsSignin from './handle/IsSignin';
 import Handle_GetAllMembers from './handle/GetAllMembers';
 import Handle_GetMemberReceiveMessage from './handle/GetMemberReceiveMessage';
 import Handle_GetAccountInformation from './handle/GetAccountInformation';
-import authentication from '@src/auth';
+import Handle_GetMe from './handle/GetMe';
 
 dotenv.config();
 const router_query_account: Router = express.Router();
@@ -13,6 +14,7 @@ const handle_isSignin = new Handle_IsSignin();
 const handle_getAllMembers = new Handle_GetAllMembers();
 const handle_getMemberReceiveMessage = new Handle_GetMemberReceiveMessage();
 const handle_getAccountInformation = new Handle_GetAccountInformation();
+const handle_getMe = new Handle_GetMe();
 
 router_query_account.get('/isSignin', authentication, handle_isSignin.main);
 
@@ -26,5 +28,7 @@ router_query_account.get(
     handle_getAccountInformation.setup,
     handle_getAccountInformation.main
 );
+
+router_query_account.get('/getMe', authentication, handle_getMe.setup, handle_getMe.main);
 
 export default router_query_account;

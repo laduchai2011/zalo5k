@@ -50,6 +50,26 @@ const App = () => {
         getAccountInformation();
     }, []);
 
+    useEffect(() => {
+        const getAccount = async () => {
+            try {
+                const response = await axiosInstance.get<MyResponse<number>>(`/service_account/query/getMe`);
+                const resData = response.data;
+                if (resData.isSuccess) {
+                    if (resData.data) {
+                        sessionStorage.setItem('account', `${JSON.stringify(resData.data)}`);
+                    } else {
+                        sessionStorage.removeItem('account');
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        getAccount();
+    }, []);
+
     return (
         <div>
             <AppRouter />

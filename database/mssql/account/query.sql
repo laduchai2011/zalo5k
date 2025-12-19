@@ -35,3 +35,15 @@ BEGIN
 		AND (@id IS NULL OR ai.accountId = @id) 
 END
 GO
+
+CREATE PROCEDURE GetMe
+    @id INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.account
+	WHERE 
+		status = 'normal' 
+		AND id = @id
+END
+GO

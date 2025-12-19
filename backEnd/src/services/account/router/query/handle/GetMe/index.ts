@@ -1,19 +1,19 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { AccountInformationField } from '@src/dataStruct/account';
-import QueryDB_GetAccountInformation from '../../queryDB/GetAccountInformation';
+import { AccountField } from '@src/dataStruct/account';
+import QueryDB_GetMe from '../../queryDB/GetMe';
 import { verifyRefreshToken } from '@src/token';
 
-class Handle_GetAccountInformation {
+class Handle_GetMe {
     private _mssql_server = mssql_server;
 
     constructor() {}
 
     setup = (req: Request, res: Response, next: NextFunction) => {
-        const myResponse: MyResponse<AccountInformationField> = {
+        const myResponse: MyResponse<AccountField> = {
             isSuccess: false,
-            message: 'Bắt đầu Handle_GetAccountInformation để lấy tài khoản admin hay thành viên (setup) !',
+            message: 'Bắt đầu Handle_GetMe để lấy tài khoản admin hay thành viên (setup) !',
         };
 
         const { refreshToken } = req.cookies;
@@ -47,19 +47,19 @@ class Handle_GetAccountInformation {
     main = async (_: Request, res: Response) => {
         const accountId = res.locals.accountId as number;
 
-        const myResponse: MyResponse<AccountInformationField> = {
+        const myResponse: MyResponse<AccountField> = {
             isSuccess: false,
-            message: 'Bắt đầu Handle_GetAccountInformation để lấy tài khoản admin hay thành viên (main) !',
+            message: 'Bắt đầu Handle_GetMe để lấy tài khoản admin hay thành viên (main) !',
         };
 
         await this._mssql_server.init();
 
-        const queryDB_getAccountInformation = new QueryDB_GetAccountInformation();
-        queryDB_getAccountInformation.setAccountId(accountId);
+        const queryDB_getMe = new QueryDB_GetMe();
+        queryDB_getMe.setAccountId(accountId);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
-            queryDB_getAccountInformation.set_connection_pool(connection_pool);
+            queryDB_getMe.set_connection_pool(connection_pool);
         } else {
             myResponse.message = 'Kết nối cơ sở dữ liệu không thành công !';
             res.status(500).json(myResponse);
@@ -67,9 +67,12 @@ class Handle_GetAccountInformation {
         }
 
         try {
-            const result = await queryDB_getAccountInformation.run();
+            const result = await queryDB_getMe.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                myResponse.data = result?.recordset[0];
+                const account: AccountField = { ...result?.recordset[0] };
+                account.userName = '';
+                account.password = '';
+                myResponse.data = account;
                 myResponse.message = 'Lấy thông tin thành viên thành công !';
                 myResponse.isSuccess = true;
                 res.status(200).json(myResponse);
@@ -88,4 +91,4 @@ class Handle_GetAccountInformation {
     };
 }
 
-export default Handle_GetAccountInformation;
+export default Handle_GetMe;
