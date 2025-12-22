@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateNote
+﻿CREATE PROCEDURE CreateNote
 	@note NVARCHAR(MAX),
 	@customerId NVARCHAR(255),
 	@accountId INT
@@ -27,28 +27,6 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE DeleteIsNewMessage
-	@id NVARCHAR(255)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-    DECLARE @myCustomerId INT;
-
-    -- Lấy myCustomerId từ bảng isNewMessage
-    SELECT @myCustomerId = myCustomerId
-    FROM dbo.isNewMessage
-    WHERE id = @id;
-
-    -- Nếu không tìm thấy id thì exit
-    IF @myCustomerId IS NULL
-        RETURN;
-
-    -- Xóa tất cả bản ghi có cùng myCustomerId
-    DELETE dbo.isNewMessage
-    WHERE myCustomerId = @myCustomerId;
-END;
-GO
 
 delete dbo.isNewMessage
 go

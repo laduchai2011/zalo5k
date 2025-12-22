@@ -82,12 +82,16 @@ export class RabbitMQ {
     }
 
     private async connect(): Promise<void> {
-        const url = process.env.RABBIT_URL || 'amqp://guest:guest@5kaquarium.com:5672';
+        const url = process.env.RABBIT_URL || 'amqp://admin:admin123@5kaquarium.com:5672';
 
         const conn: Connection = await connect(url);
         this.connection = conn;
 
         my_log.withGreen('RabbitMQ connected (1 connection only).');
+
+        this.connection.on('error', (err) => {
+            console.error('RabbitMQ connection error:', err);
+        });
 
         // Tự reconnect khi connection bị đóng
         this.connection.on('close', () => {

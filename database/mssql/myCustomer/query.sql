@@ -101,7 +101,7 @@ BEGIN
 END
 GO
 
-create PROCEDURE GetAIsNewMessage
+ALTER PROCEDURE GetAIsNewMessage
 	@myCustomerId INT
 AS
 BEGIN

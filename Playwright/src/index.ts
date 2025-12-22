@@ -4,6 +4,9 @@ import { sendMessageTD } from './messageQueue/Producer';
 import { isVideoTDBodyField, VideoTDBodyField } from './dataStruct/video';
 import { my_log } from './log';
 import path from 'path';
+import fs from 'fs';
+// import { pipeline } from 'stream/promises';
+// import { Readable } from 'stream';
 
 const SESSION_PATH = 'sessions/zalo-oa.json';
 
@@ -47,6 +50,71 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
 //     }
 // }
 
+// async function cutQrLogTerminal(page: Page) {
+//     // Chờ QR xuất hiện
+//     const qrImg = page.locator('.qr-container img');
+//     await qrImg.waitFor({ timeout: 15000 });
+
+//     // Lấy src base64
+//     const base64 = await qrImg.getAttribute('src');
+
+//     if (!base64) throw new Error('Không lấy được QR');
+
+//     // Cắt prefix
+//     const base64Data = base64.replace(/^data:image\/png;base64,/, '');
+
+//     // Lưu file
+//     fs.writeFileSync('zalo-qr.png', base64Data, 'base64');
+
+//     console.log('✅ QR saved: zalo-qr.png');
+// }
+
+// function webStreamToNode(stream: ReadableStream<Uint8Array>) {
+//     const reader = stream.getReader();
+
+//     return new Readable({
+//         async read() {
+//             try {
+//                 const { done, value } = await reader.read();
+//                 if (done) {
+//                     this.push(null);
+//                 } else {
+//                     this.push(Buffer.from(value));
+//                 }
+//             } catch (err) {
+//                 this.destroy(err as Error);
+//             }
+//         },
+//     });
+// }
+
+// export async function downloadVideo(url: string, outputDir: string, fileName?: string) {
+//     const res = await fetch(url);
+
+//     const body = res.body;
+//     if (!res.ok || !body) {
+//         // throw new Error(`Download failed: ${res.status}`);
+//         console.error(`Download failed: ${res.status}`);
+//         return;
+//     }
+
+//     fs.mkdirSync(outputDir, { recursive: true });
+
+//     const urlObj = new URL(url);
+//     const nameFromUrl = path.basename(urlObj.pathname);
+//     const finalName = fileName || (nameFromUrl && nameFromUrl.includes('.') ? nameFromUrl : 'video.mp4');
+
+//     const filePath = path.join(outputDir, finalName);
+
+//     const fileStream = fs.createWriteStream(filePath);
+
+//     const readable = webStreamToNode(body);
+
+//     await pipeline(readable, fileStream);
+
+//     return filePath;
+// }
+
 (async () => {
     try {
         const browser = await chromium.launch({
@@ -76,6 +144,8 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
 
         console.log('👉 Login Zalo OA thủ công (QR / password)...');
 
+        // cutQrLogTerminal(pagetop);
+
         // ⏳ đợi bạn login xong
         await pagetop.waitForURL('https://oa.zalo.me/**', {
             timeout: 0,
@@ -95,6 +165,7 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
         // const lockKey = new LockKey();
 
         consumeMessageTD(`chatRoom_tadao_${dev_prefix}`, async ({ status, oaid, uid, accountId }) => {
+            console.log('chatRoom_tadao', status);
             switch (status) {
                 case 'open': {
                     const OAID = oaid;
@@ -164,7 +235,9 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
             }
         });
 
-        consumeMessageTD(`send_videoTD_${dev_prefix}`, async (mes) => {
+        // consumeMessageTD(`send_videoTD_${dev_prefix}`, async (mes) => {
+        consumeMessageTD(`send_videoTD`, async (mes) => {
+            console.log('send_videoTD', mes);
             if (!isVideoTDBodyField(mes)) {
                 my_log.withRed('Body không đúng cấu trúc VideoTDBodyField');
             }
@@ -192,6 +265,41 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
             }
 
             const NAME = videoTDBody.name;
+
+            const urlvideo = `http://api.5kaquarium.com/service_video/query/streamVideo?id=${NAME}`;
+            try {
+                const res = await fetch(urlvideo);
+                const body = res.body;
+                console.log('✅ Video downloaded:', body);
+                if (!res.ok || !body) {
+                    sendMessageTD(`send_videoTD_failure_${dev_prefix}`, {
+                        oaid: videoTDBody.oaid,
+                        uid: videoTDBody.receiveId,
+                        accountId: videoTDBody.accountId,
+                        name: videoTDBody.name,
+                    });
+                    return;
+                } else {
+                    // await pipeline(
+                    //     Readable.fromWeb(body as unknown as globalThis.ReadableStream<Uint8Array>),
+                    //     fs.createWriteStream(path.join(basePath, NAME))
+                    // );
+                    const buffer = Buffer.from(await res.arrayBuffer());
+                    fs.writeFileSync(path.join(basePath, NAME), buffer);
+                }
+            } catch (error) {
+                console.error('❌ Lỗi khi tải video:', error);
+                sendMessageTD(`send_videoTD_failure_${dev_prefix}`, {
+                    oaid: videoTDBody.oaid,
+                    uid: videoTDBody.receiveId,
+                    accountId: videoTDBody.accountId,
+                    name: videoTDBody.name,
+                });
+                return;
+            }
+
+            // const resvideo = await downloadVideo(urlvideo, basePath, NAME);
+            // console.log(11111, resvideo);
 
             try {
                 const [fileChooser] = await Promise.all([

@@ -14,9 +14,9 @@ import service_message from './services/message';
 import service_note from './services/note';
 
 const app: Express = express();
-const port = process.env.PORT || 3007;
 
 const isProduct = process.env.NODE_ENV === 'production';
+const port = isProduct ? process.env.PORT : 3007;
 
 const apiString = isProduct ? '' : '/api';
 

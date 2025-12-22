@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import MSSQL_Server from './mssql';
-import MSSQL_Change_History_Server from './mssql_change_history';
+// import MSSQL_Change_History_Server from './mssql_change_history';
 import REDIS_Server from './redis';
 import { serviceRedlock } from './redlock';
 import { RabbitMQ } from '@src/connect/rabbitMQ';
@@ -12,7 +12,7 @@ const NODE_ENV = process.env.NODE_ENV;
 const isProduct = NODE_ENV === 'production';
 
 const mssql_server = MSSQL_Server.getInstance();
-const mssql_change_history_server = new MSSQL_Change_History_Server();
+// const mssql_change_history_server = new MSSQL_Change_History_Server();
 const redis_server = REDIS_Server.getInstance();
 const rabbit_server = RabbitMQ.getInstance();
 
@@ -37,4 +37,4 @@ if (isProduct) {
     process.on('SIGINT', () => shutdown('SIGINT')); // khi nhấn Ctrl+C
 }
 
-export { mssql_server, mssql_change_history_server, redis_server, serviceRedlock, rabbit_server };
+export { mssql_server, redis_server, serviceRedlock, rabbit_server };

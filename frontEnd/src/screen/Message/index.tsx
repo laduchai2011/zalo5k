@@ -348,7 +348,7 @@ const Message = () => {
             socket.emit('leaveRoom', myId);
             socket.disconnect();
         };
-    }, [myId, id]);
+    }, [dispatch, myId, id]);
 
     useEffect(() => {
         if (is_open_chatRoom_tadao === true) {

@@ -32,10 +32,20 @@ class Handle_MergeChunks {
         for (const chunk of sorted) {
             const chunkPath = path.join(chunkDir, chunk);
             const data = fs.readFileSync(chunkPath);
-            await writeStream.write(data);
+            // await writeStream.write(data);
+            if (!writeStream.write(data)) {
+                await new Promise<void>((resolve) => {
+                    writeStream.once('drain', () => resolve());
+                });
+            }
         }
 
-        await writeStream.end();
+        await new Promise<void>((resolve, reject) => {
+            writeStream.end(() => resolve());
+            writeStream.on('error', reject);
+        });
+
+        // await writeStream.end();
 
         fs.rmSync(chunkDir, { recursive: true, force: true });
 
