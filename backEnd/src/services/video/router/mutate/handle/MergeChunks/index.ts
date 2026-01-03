@@ -104,20 +104,10 @@
 // export default Handle_MergeChunks;
 
 import { Request, Response } from 'express';
-// import { exec } from 'child_process';
-// import path from 'path';
-// import fs from 'fs';
 import { MyResponse } from '@src/dataStruct/response';
-// import sharp from 'sharp';
-// import { pipeline } from 'stream/promises';
-import { MinioService } from '@src/connect/minio/minio.service';
+import { MinioService } from '@src/connect/minio/service';
 import { PassThrough } from 'stream';
-
-// const uploadsDir = path.join(process.cwd(), 'data', 'video', 'uploads');
-// const videoPath = path.join(process.cwd(), 'data', 'video', 'input');
-// const imagePath = path.join(process.cwd(), 'data', 'image');
-// const folderInputPath = path.join(imagePath, 'input');
-// const folderOutputPath = path.join(imagePath, 'output');
+import { pipeline } from 'stream/promises';
 
 class Handle_MergeChunks {
     constructor() {}
@@ -129,6 +119,7 @@ class Handle_MergeChunks {
         };
 
         const { fileId, totalChunks, finalFileName } = req.body;
+
         if (!fileId || !totalChunks || !finalFileName) {
             res.status(400).json({ message: 'Missing params' });
             return;
@@ -137,15 +128,21 @@ class Handle_MergeChunks {
         try {
             const finalObjectName = `videos/${finalFileName}`;
             const mergedStream = new PassThrough();
-            const uploadPromise = MinioService.uploadStream(finalObjectName, mergedStream);
+            let totalSize = 0;
 
-            // Ghép từng chunk
+            // 1️⃣ TÍNH SIZE TRƯỚC
+            for (let i = 0; i < totalChunks; i++) {
+                const stat = await MinioService.stat(`chunks/${fileId}/${i}`);
+                totalSize += stat.size;
+            }
+
+            const uploadPromise = MinioService.uploadStream(finalObjectName, mergedStream, totalSize);
+
             for (let i = 0; i < totalChunks; i++) {
                 const chunkStream = await MinioService.getStream(`chunks/${fileId}/${i}`);
+
                 await new Promise<void>((resolve, reject) => {
-                    chunkStream.pipe(mergedStream, { end: false });
-                    chunkStream.on('end', resolve);
-                    chunkStream.on('error', reject);
+                    chunkStream.once('error', reject).once('end', resolve).pipe(mergedStream, { end: false });
                 });
             }
 
@@ -156,6 +153,13 @@ class Handle_MergeChunks {
             for (let i = 0; i < totalChunks; i++) {
                 await MinioService.remove(`chunks/${fileId}/${i}`);
             }
+
+            // setInterval(() => {
+            //     console.log('Video MergeChunks:', {
+            //         heap: Math.round((process as any).memoryUsage().heapUsed / 1024 / 1024),
+            //         handles: (process as any)._getActiveHandles().length,
+            //     });
+            // }, 5000);
 
             myResponse.message = 'Đăng tải thước phim thành công !';
             myResponse.isSuccess = true;

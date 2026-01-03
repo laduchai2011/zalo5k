@@ -21,6 +21,9 @@ const cookieDomain = 'zalo5k.local.com';
 
 const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
 
+const serviceRedis = ServiceRedis.getInstance();
+serviceRedis.init();
+
 class Handle_Signin {
     private _mssql_server = mssql_server;
 
@@ -89,9 +92,6 @@ class Handle_Signin {
                     };
 
                     const keyServiceRedis = `token-storeAuthToken-${id}`;
-
-                    const serviceRedis = ServiceRedis.getInstance();
-                    await serviceRedis.init();
 
                     await serviceRedis.setData<StoreAuthToken>(keyServiceRedis, storeAuthToken, timeExpireat);
 

@@ -1,2 +1,4 @@
+docker stop webapp_container
+docker rm webapp_container
 docker build -t webapp .
 docker run -dit --name webapp_container --network network_zalo_5kaquarium -p 3000:3000 webapp

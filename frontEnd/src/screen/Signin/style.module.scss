@@ -10,6 +10,10 @@
         height: 100vh;
         @include center-of-rectangle;
 
+        @include responsive(sm) {
+            width: 100%;
+        }
+
         > .main1 {
             box-sizing: border-box;
             width: 100%;

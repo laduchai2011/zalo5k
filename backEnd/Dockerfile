@@ -16,7 +16,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && cu
 # Sao chép package.json trước để tận dụng cache Docker
 COPY package*.json ./
 
-ENV NODE_OPTIONS="--max-old-space-size=2048"
+ENV NODE_OPTIONS="--max-old-space-size=1024"
 
 # Cài đặt dependencies
 RUN npm install

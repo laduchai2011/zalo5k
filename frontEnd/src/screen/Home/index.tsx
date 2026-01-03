@@ -28,10 +28,10 @@ const Home = () => {
 
     useEffect(() => {
         // Kết nối server
-        socket = io(SOCKET_URL || '');
-        // socket = io('wss://socketapp.5kaquarium.com', {
-        //     path: "/socket.io/",
-        // });
+        // socket = io(SOCKET_URL || '');
+        socket = io('wss://socketapp.5kaquarium.com', {
+            path: "/socket.io/",
+        });
 
         socket.on('connect', () => {
             console.log('Connected:', socket.id);

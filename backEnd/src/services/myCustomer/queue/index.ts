@@ -19,7 +19,7 @@ const serviceRedis = ServiceRedis.getInstance();
 
 function checkMyCustommer() {
     consumeMessage(zalo_event_name_enum_messageQueue.user_send_text, (messageZalo) => {
-        console.log('user_send_text', messageZalo);
+        // console.log('user_send_text', messageZalo);
         main(messageZalo);
     });
 
@@ -45,6 +45,10 @@ function checkMyCustommer() {
                 try {
                     await serviceRedis.init();
                     const result = await serviceRedis.getData<AccountField>(key);
+                    if (result === null) {
+                        console.error('Could not get account from Redis');
+                        return;
+                    }
                     messageZalo1.accountId = result.id;
                     messageZalo1.isNewCustom = false;
 
@@ -80,7 +84,7 @@ function sendToMember() {
 
 function updateEvent_MemberSend() {
     consumeMessage(zalo_event_name_enum_messageQueue.oa_send_text, (messageZalo) => {
-        console.log('updateEvent_MemberSend', 'oa_send_text', messageZalo);
+        // console.log('updateEvent_MemberSend', 'oa_send_text', messageZalo);
         update(messageZalo);
     });
     consumeMessage(zalo_event_name_enum_messageQueue.oa_send_image, (messageZalo) => {
@@ -102,6 +106,10 @@ function updateEvent_MemberSend() {
                 try {
                     await serviceRedis.init();
                     const result = await serviceRedis.getData<AccountField>(key);
+                    if (result === null) {
+                        console.error('Could not get account from Redis');
+                        return;
+                    }
                     messageZalo1.accountId = result.id;
                     messageZalo1.isNewCustom = false;
                 } catch (error) {
@@ -124,7 +132,7 @@ function updateEvent_MemberSend() {
             accountId: message.accountId,
         };
 
-        console.log('receiveId', message.data.recipient);
+        // console.log('receiveId', message.data.recipient);
 
         handle_updateEvent_memberSend.main(updateEventMemberSendBody, (message) => {
             if (message) {

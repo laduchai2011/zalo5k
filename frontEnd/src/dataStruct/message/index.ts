@@ -96,4 +96,5 @@ export interface SendVideoTdFailureBodyField {
 
 export interface SendVideoTdSuccessBodyField {
     id: number;
+    message: string;
 }

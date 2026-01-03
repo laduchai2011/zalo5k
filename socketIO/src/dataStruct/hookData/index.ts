@@ -9,13 +9,22 @@
 // }
 
 export enum zalo_event_name_enum {
-    user_send_text = 'user_send_text_dev',
-    user_send_image = 'user_send_image_dev',
-    oa_send_text = 'oa_send_text_dev',
-    oa_send_image = 'oa_send_image_dev',
-    user_received_message = 'user_received_message_dev',
-    user_seen_message = 'user_seen_message_dev',
-    member_sending = 'member_sending_dev',
+    // user_send_text = 'user_send_text_dev',
+    // user_send_image = 'user_send_image_dev',
+    // user_send_video = 'user_send_video_dev',
+    // oa_send_text = 'oa_send_text_dev',
+    // oa_send_image = 'oa_send_image_dev',
+    // user_received_message = 'user_received_message_dev',
+    // user_seen_message = 'user_seen_message_dev',
+    // member_sending = 'member_sending_dev',
+    user_send_text = 'user_send_text',
+    user_send_image = 'user_send_image',
+    user_send_video = 'user_send_video',
+    oa_send_text = 'oa_send_text',
+    oa_send_image = 'oa_send_image',
+    user_received_message = 'user_received_message',
+    user_seen_message = 'user_seen_message',
+    member_sending = 'member_sending',
 }
 
 type zalo_event_name_type =

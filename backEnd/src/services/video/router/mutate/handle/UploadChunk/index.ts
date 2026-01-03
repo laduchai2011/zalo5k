@@ -54,17 +54,18 @@
 
 import { Request, Response } from 'express';
 import multer from 'multer';
-import { MinioService } from '@src/connect/minio/minio.service';
+import { MinioService } from '@src/connect/minio/service';
 import { MyResponse } from '@src/dataStruct/response';
-import { Readable } from 'stream';
+import fs from 'fs';
 
-const CHUNK_SIZE = 2 * 1024 * 1024;
+const CHUNK_SIZE = 5 * 1024 * 1024;
 class Handle_UploadChunk {
     constructor() {}
 
     upload = (): multer.Multer => {
-        // const upload = multer({ dest: 'temp/' });
-        const storage = multer.memoryStorage(); // hoặc diskStorage
+        const storage = multer.diskStorage({
+            destination: 'tmp/chunks',
+        });
         const upload = multer({
             storage,
             limits: { fileSize: CHUNK_SIZE }, // giới hạn size
@@ -74,32 +75,66 @@ class Handle_UploadChunk {
     };
 
     main = async (req: Request, res: Response) => {
-        const { fileId, chunkIndex } = req.body;
-
         const myResponse: MyResponse<unknown> = {
             isSuccess: false,
             message: 'Khởi tạo upload chunk !',
         };
 
-        if (!req.file || !fileId || chunkIndex === undefined) {
-            res.status(400).json({ message: 'Missing params' });
-            return;
-        }
+        // let stream: fs.ReadStream | null = null;
 
         try {
-            const objectName = `chunks/${fileId}/${chunkIndex}`;
+            if (!req.file) {
+                res.status(400).json({ message: 'No chunk uploaded' });
+                return;
+            }
 
-            // ✅ Buffer → Stream
-            const stream = Readable.from(req.file.buffer);
+            const { fileId, chunkIndex } = req.body;
 
-            await MinioService.uploadStream(objectName, stream, req.file.size, req.file.mimetype);
+            if (!fileId || chunkIndex === undefined) {
+                res.status(400).json({ message: 'Missing params' });
+                return;
+            }
+
+            const index = Number(chunkIndex);
+            if (!Number.isInteger(index) || index < 0) {
+                res.status(400).json({ message: 'Invalid chunkIndex' });
+                return;
+            }
+
+            const filePath = req.file.path;
+            const objectName = `chunks/${fileId}/${index}`;
+
+            const stream = fs.createReadStream(filePath);
+
+            // stream.on('close', () => console.log('stream closed'));
+            // stream.on('error', err => console.log('stream error', err));
+
+            const result = await MinioService.uploadStream(objectName, stream, req.file.size, req.file.mimetype);
+
+            // 🔥 xoá file tạm
+            // fs.unlinkSync(filePath);
+            await fs.promises.unlink(filePath);
+
+            // setInterval(() => {
+            //     console.log('Video UploadChunks:', {
+            //         heap: Math.round((process as any).memoryUsage().heapUsed / 1024 / 1024),
+            //         handles: (process as any)._getActiveHandles().length,
+            //     });
+            // }, 5000);
 
             myResponse.isSuccess = true;
-            myResponse.message = 'Đăng tải những mẩu thước phim thành công !';
+            myResponse.message = 'Upload chunk thành công';
+            myResponse.data = {
+                chunkIndex: index,
+                etag: result.etag,
+            };
+
             res.json(myResponse);
-        } catch (error: any) {
+            return;
+        } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Upload chunk failed' });
+            return;
         }
     };
 }

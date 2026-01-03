@@ -13,22 +13,45 @@ const Profile = () => {
     const [accountInformation, setAccountInformation] = useState<AccountInformationField | null>(null);
     const [accountType, setAccountType] = useState<accountType_type>(accountType_enum.MEMBER);
 
+    // const accountStorage = sessionStorage.getItem('account');
+    // let account: AccountField | null = accountStorage ? JSON.parse(accountStorage) : null;
+
+    // const accountInformationStorage = sessionStorage.getItem('accountInformation');
+    // let accountInformation: AccountInformationField | null = accountInformationStorage ? JSON.parse(accountInformationStorage) : null;
+
+    // let accountType: accountType_type = accountType_enum.MEMBER
+    // if (accountInformation?.accountType === accountType_enum.ADMIN) {
+    //     accountType = accountType_enum.ADMIN;
+    // }
+    // if (accountInformation?.accountType === accountType_enum.MEMBER) {
+    //     accountType = accountType_enum.MEMBER;
+    // }
+
     useEffect(() => {
-        const accountStorage = sessionStorage.getItem('account');
-        if (!accountStorage) return;
-        setAccount(JSON.parse(accountStorage));
+        const interval = setInterval(() => {
+            const accountStorage = sessionStorage.getItem('account');
+            if (accountStorage) {
+                setAccount(JSON.parse(accountStorage));
+                clearInterval(interval);
+            };
+        }, 50);
+        
     }, []);
     useEffect(() => {
-        const accountInformationStorage = sessionStorage.getItem('account');
-        if (!accountInformationStorage) return;
-        setAccountInformation(JSON.parse(accountInformationStorage));
+        const interval = setInterval(() => {
+            const accountInformationStorage = sessionStorage.getItem('accountInformation');
+            if (accountInformationStorage) {
+                setAccountInformation(JSON.parse(accountInformationStorage));
+                clearInterval(interval);
+            };
+        }, 50);
     }, []);
     useEffect(() => {
         if (accountInformation?.accountType === accountType_enum.ADMIN) {
-            setAccountType(accountType_enum.ADMIN);
+            setAccountType(ADMIN);
         }
         if (accountInformation?.accountType === accountType_enum.MEMBER) {
-            setAccountType(accountType_enum.MEMBER);
+            setAccountType(MEMBER);
         }
     }, [accountInformation]);
 

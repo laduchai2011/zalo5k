@@ -29,7 +29,7 @@ const AMyCustomer: FC<{ data: MyCustomerField; onSelect?: () => void }> = ({ dat
     }, [isLoading_zaloInforCustomer]);
     useEffect(() => {
         const resData = data_zaloInforCustomer;
-        // console.log('MessageBox', data_zaloInforCustomer);
+        console.log('MessageBox', data_zaloInforCustomer);
         if (resData?.isSuccess && resData.data && resData.data.error === 0) {
             setZaloCustomer(resData.data);
         }

@@ -10,9 +10,11 @@ import {
 } from '@src/dataStruct/hookData';
 import LinkifyText from '@src/component/LinkifyText';
 import LazyImage from '@src/component/LazyImage';
-import Thumbnail from './component/Thumbnail';
+// import Thumbnail from './component/Thumbnail';
+import LazyVideo from '@src/component/LazyVideo';
 
-const MyMessage: FC<{ data: MessageField }> = ({ data }) => {
+const MyMessage: FC<{ data: MessageField, root_LazyVideo?: HTMLDivElement | null }> = ({ data, root_LazyVideo }) => {
+    console.log('MyMessage', data.type)
     const message = data.message;
     const hookData: HookDataField<ZaloMessage> = JSON.parse(message);
 
@@ -70,7 +72,17 @@ const MyMessage: FC<{ data: MessageField }> = ({ data }) => {
                                     // src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlnhFBNw9Io0hHvtv8QzH_euzwGbRJv_IC9A&s"
                                     alt="img"
                                 /> */}
-                                <Thumbnail data={messageVideo} />
+                                {/* <Thumbnail data={messageVideo} /> */}
+                                {/* <video
+                                    className={style.video}
+                                    src={messageVideo.attachment.payload.elements[0].url}
+                                    controls
+                                /> */}
+                                <LazyVideo 
+                                    className={style.video}
+                                    src={messageVideo.attachment.payload.elements[0].url}
+                                    root={root_LazyVideo}
+                                />
                                 {/* <div className={style.text}>
                                     <div>{messageImage.text && <LinkifyText text={messageImage.text} />}</div>
                                 </div> */}

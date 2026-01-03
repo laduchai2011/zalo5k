@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 
 const YourMessage: FC<{ data: MessageField }> = ({ data }) => {
+    console.log('YourMessage', data.type)
     const { id } = useParams<{ id: string }>();
     const message = data.message;
     const hookData: HookDataField<ZaloMessage> = JSON.parse(message);

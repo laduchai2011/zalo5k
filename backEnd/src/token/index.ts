@@ -55,10 +55,14 @@ export function generateRefreshToken(payload: MyJwtPayload, signOptions: SignOpt
 //         return null;
 //     }
 // }
+// const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
 export function verifyAccessToken(token: string): TokenState {
     try {
-        return jwt.verify(token, ACCESS_TOKEN_SECRET as Secret) as MyJwtPayload;
-    } catch (error) {
+        const result = jwt.verify(token, ACCESS_TOKEN_SECRET as Secret) as MyJwtPayload;
+        // console.log(111111, result);
+        return result;
+    } catch (error: any) {
+        // console.error(11111, 'error', new TokenExpiredError('TokenExpiredError', error), error, error instanceof TokenExpiredError)
         if (error instanceof TokenExpiredError) {
             return 'expired';
         }
@@ -70,8 +74,11 @@ export function verifyAccessToken(token: string): TokenState {
 }
 export function verifyRefreshToken(token: string): TokenState {
     try {
-        return jwt.verify(token, REFRESH_TOKEN_SECRET as Secret) as MyJwtPayload;
-    } catch (error) {
+        const result = jwt.verify(token, REFRESH_TOKEN_SECRET as Secret) as MyJwtPayload;
+        // console.log(222222, result);
+        return result;
+    } catch (error: any) {
+        // console.error(22222, 'error', new TokenExpiredError('TokenExpiredError', error), error, error instanceof TokenExpiredError)
         if (error instanceof TokenExpiredError) {
             return 'expired';
         }

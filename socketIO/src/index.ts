@@ -14,16 +14,7 @@ const dev_prefix = isProduct ? '' : 'dev';
 
 const httpServer = createServer(); // ❗ Không dùng Express
 
-const io = new Server(httpServer, {
-    // cors: {
-    //     origin: "https://5kaquarium.com", // domain client
-    //     methods: ["GET", "POST"],
-    //     // credentials: true, // BỎ ĐI nếu client không dùng cookies / Authorization
-    // }
-    cors: {
-        origin: '*',
-    },
-});
+const io = new Server(httpServer);
 
 consumeMessage(customerSend_sendToMember, (data) => {
     const room = data.accountId.toString() + data.data.sender.id;
@@ -50,6 +41,11 @@ consumeMessageTD(`send_videoTD_success_${dev_prefix}`, async ({ oaid, uid, accou
 consumeMessageTD(`send_videoTD_failure_${dev_prefix}`, async ({ oaid, uid, accountId, name }) => {
     const myRoom = accountId + uid;
     io.to(myRoom).emit('send_videoTD_failure', {});
+});
+
+consumeMessageTD(`getUrl_videoTd_${dev_prefix}`, async ({ oaid, uid, accountId, name }) => {
+    const myRoom = accountId + uid;
+    io.to(myRoom).emit('getUrl_videoTd', { oaid, uid, accountId, name });
 });
 
 // consumeMessage('test', (data) => {
@@ -91,6 +87,15 @@ io.on('connection', (socket) => {
         sendMessage(memberSend_sendToCustomer, messageZalo);
         // io.to(roomName).emit('roomMessage', `server hello: ${message}`);
     });
+
+    socket.on('send_videoTD', ({receiveId, oaid, name, accountId}) => {
+        sendMessageTD('send_videoTD', {
+            receiveId: receiveId,
+            oaid: oaid,
+            name: name,
+            accountId: accountId
+        })
+    })
 
     // Rời phòng
     socket.on('leaveRoom', (roomName: string) => {

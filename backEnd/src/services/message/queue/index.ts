@@ -14,7 +14,7 @@ import { customerSend_sendToMember_storeDB, customerSend_sendToMember_storeDB_fe
 
 export function createMessageFromCustomerSend() {
     consumeMessage(customerSend_sendToMember_storeDB, (messageZalo) => {
-        console.log('consumeMessage', customerSend_sendToMember_storeDB);
+        // console.log('consumeMessage', customerSend_sendToMember_storeDB);
         const data = messageZalo.data as HookDataField<any>;
         const message = data.message;
 

@@ -35,9 +35,11 @@ import { sender_enum, CreateMessageBodyField, messageStatus_enum, messageType_en
 import { useGetMessagesQuery } from '@src/redux/query/messageRTK';
 import { useGetInforCustomerOnZaloQuery } from '@src/redux/query/myCustomerRTK';
 import { uploadVideo, uploadImage, handleSendVideoTdFailure, handleSendVideoTdSuccess } from './handle';
+import { VideoTDBodyField } from '@src/dataStruct/video';
 
 const apiString = isProduct ? '' : '/api';
 const OAID = '2018793888801741529';
+const MAX_SIZE = 25 * 1024 * 1024; // 25MB
 
 const Message = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -57,7 +59,15 @@ const Message = () => {
     const [is_success_sendVideo, set_is_success_sendVideo] = useState<boolean | undefined>(undefined);
     const socketRef = useRef<SocketType | undefined>(undefined);
     const messageId_videoTd_current = useRef<number>(-1);
+    const messageVideo_current = useRef<MessageField | null>(null);
     const [createMessage] = useCreateMessageMutation();
+    const [root_LazyVideo, set_root_LazyVideo] = useState<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (contentContainer_element.current) {
+            set_root_LazyVideo(contentContainer_element.current);
+        }
+    }, []);
 
     useEffect(() => {
         dispatch(
@@ -162,10 +172,10 @@ const Message = () => {
         const myRoom = myId + id;
 
         // Kết nối server
-        socketRef.current = io(SOCKET_URL || '');
-        // socket = io('wss://socketapp.5kaquarium.com', {
-        //     path: '/socket.io/',
-        // });
+        // socketRef.current = io(SOCKET_URL || '');
+        socketRef.current = io('wss://socketapp.5kaquarium.com', {
+            path: '/socket.io/',
+        });
 
         if (!socketRef.current) return;
         const socket = socketRef.current;
@@ -292,26 +302,6 @@ const Message = () => {
             set_is_open_chatRoom_tadao(false);
         });
         socket.on('send_videoTD_success', () => {
-            handleSendVideoTdSuccess({ id: messageId_videoTd_current.current })
-                .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData?.data) {
-                        dispatch(
-                            setData_toastMessage({
-                                type: toastMessageType_enum.SUCCESS,
-                                message: 'Cập nhật tin nhắn videoTd khi gửi thành công !',
-                            })
-                        );
-                    } else {
-                        dispatch(
-                            setData_toastMessage({
-                                type: toastMessageType_enum.ERROR,
-                                message: 'Cập nhật tin nhắn videoTd khi gửi thất bại !',
-                            })
-                        );
-                    }
-                })
-                .catch((err) => console.error(err));
             set_is_success_sendVideo(true);
         });
         socket.on('send_videoTD_failure', () => {
@@ -340,6 +330,58 @@ const Message = () => {
                 })
                 .catch((err) => console.error(err));
             set_is_success_sendVideo(false);
+        });
+        socket.on('getUrl_videoTd', ({ oaid, uid, accountId, name }: VideoTDBodyField) => {
+            if (!messageVideo_current.current) {
+                setData_toastMessage({
+                    type: toastMessageType_enum.ERROR,
+                    message: 'Cập nhật tin nhắn videoTd khi gửi thất bại !',
+                });
+                return;
+            } else if (messageVideo_current.current) {
+                const message = messageVideo_current.current.message;
+                const hookData: HookDataField<MessageVideoField> =
+                    typeof message === 'string' ? JSON.parse(message) : structuredClone(message);
+                hookData.message.attachment.payload.elements[0].url = name;
+                messageVideo_current.current = { ...messageVideo_current.current, message: JSON.stringify(hookData) };
+                handleSendVideoTdSuccess({
+                    id: messageVideo_current.current.id,
+                    message: messageVideo_current.current.message,
+                })
+                    .then((res) => {
+                        const resData = res.data;
+                        if (resData?.isSuccess && resData?.data) {
+                            dispatch(
+                                setData_toastMessage({
+                                    type: toastMessageType_enum.SUCCESS,
+                                    message: 'Cập nhật tin nhắn videoTd khi gửi thành công !',
+                                })
+                            );
+                            setMessages((prev) => {
+                                if (messageVideo_current.current) {
+                                    const new_mes = prev.filter(
+                                        (item) =>
+                                            messageVideo_current.current && item.id !== messageVideo_current.current.id
+                                    );
+                                    new_mes.unshift(messageVideo_current.current);
+                                    return new_mes;
+                                }
+                                return prev;
+                            });
+                        } else {
+                            dispatch(
+                                setData_toastMessage({
+                                    type: toastMessageType_enum.ERROR,
+                                    message: 'Cập nhật tin nhắn videoTd khi gửi thất bại !',
+                                })
+                            );
+                        }
+                    })
+                    .catch((err) => console.error(err))
+                    .finally(() => {
+                        messageVideo_current.current = null
+                    })
+            }
         });
         socket.emit('open_chatRoom_tadao', { oaid, uid, accountId });
 
@@ -466,16 +508,14 @@ const Message = () => {
     const handlePreVideo = useCallback(
         async (localVideo: File) => {
             if (!myId) return;
-            const pathUrls: string[] = [];
-            const videoUrls: MessageVideoUrlField[] = [];
             dispatch(
                 setData_toastMessage({
                     type: toastMessageType_enum.NORMAL,
                     message: 'Bắt đầu đăng tải thước phim !',
                 })
             );
-            const resData_video = await uploadVideo(localVideo, myId);
-            if (resData_video === null) {
+            const objectName = await uploadVideo(localVideo, myId);
+            if (!objectName) {
                 dispatch(
                     setData_toastMessage({
                         type: toastMessageType_enum.ERROR,
@@ -484,24 +524,7 @@ const Message = () => {
                 );
                 return;
             }
-            dispatch(
-                setData_toastMessage({
-                    type: toastMessageType_enum.SUCCESS,
-                    message: 'Đăng tải thước phim thành công !',
-                })
-            );
-            const filename = resData_video.filename;
-            const imageUrl = `${BASE_URL}${apiString}/service_image/store/${filename}.jpg`;
-            const url = `${BASE_URL}${apiString}/service_video/query/streamVideo?id=${filename}`;
-            const aVideo: MessageVideoUrlField = {
-                media_type: 'video',
-                url: url,
-                thumbnail: imageUrl,
-            };
-            videoUrls.push(aVideo);
-            pathUrls.push(url);
-
-            return { videoUrls: videoUrls, pathUrls: pathUrls };
+            return objectName;
         },
         [dispatch, myId]
     );
@@ -509,7 +532,7 @@ const Message = () => {
         async (event: React.ChangeEvent<HTMLInputElement>) => {
             if (!myId) return;
             if (!id) return;
-            const myRoom = myId + id;
+            // const myRoom = myId + id;
             const files = event.target.files;
             if (files) {
                 const videos: File[] = [];
@@ -518,13 +541,27 @@ const Message = () => {
                         videos.push(file);
                     }
                 });
+                if (videos[0].size > MAX_SIZE) {
+                    alert('File quá lớn! Chỉ cho phép tối đa 25MB');
+                    return;
+                }
                 setIsSending(true);
-                const resPreVideo = await handlePreVideo(videos[0]);
-                if (resPreVideo) {
-                    const videoUrls = [resPreVideo.videoUrls[0]];
-                    const pathUrls = [resPreVideo.pathUrls[0]];
+                const objectName = await handlePreVideo(videos[0]);
+                if (objectName) {
+                    dispatch(
+                        setData_toastMessage({
+                            type: toastMessageType_enum.NORMAL,
+                            message: 'Bắt đầu gửi video !',
+                        })
+                    );
+                    const aVideo: MessageVideoUrlField = {
+                        media_type: 'video',
+                        url: '',
+                        thumbnail: '',
+                    };
+                    const videoUrls = [aVideo];
                     const messageVideos: MessageVideoField = {
-                        text: pathUrls[0],
+                        text: '',
                         attachment: {
                             type: 'template',
                             payload: {
@@ -572,10 +609,13 @@ const Message = () => {
                                     })
                                 );
                                 const newData: MessageField = resData.data;
+                                messageVideo_current.current = newData;
                                 setMessages((prev) => [newData, ...prev]);
-                                socketRef.current?.emit('roomMessage', {
-                                    roomName: myRoom,
-                                    message: JSON.stringify(resData.data),
+                                socketRef.current?.emit('send_videoTD', {
+                                    receiveId: id,
+                                    oaid: OAID,
+                                    name: objectName,
+                                    accountId: myId,
                                 });
                             }
                         })
@@ -645,6 +685,10 @@ const Message = () => {
                         images.push(file);
                     }
                 });
+                if (images[0].size > MAX_SIZE) {
+                    alert('File quá lớn! Chỉ cho phép tối đa 25MB');
+                    return;
+                }
                 setIsSending(true);
                 const resPreImage = await handlePreImage(images[0]);
                 if (resPreImage) {
@@ -704,31 +748,13 @@ const Message = () => {
         [handlePreImage, createMessage, id, myId]
     );
 
-    // const handleDeleteImage = (data: File) => {
-    //     const newImages = localImages.filter((image) => image !== data);
-    //     setLocalImages(newImages);
-    // };
-
-    // const handleDeleteVideo = (data: File) => {
-    //     const newVideos = localVideos.filter((video) => video !== data);
-    //     setLocalVideos(newVideos);
-    // };
-
-    // const list_image = localImages.map((data, index) => {
-    //     return <MyImageInput key={index} index={index} data={data} onClose={() => handleDeleteImage(data)} />;
-    // });
-
-    // const list_video = localVideos.map((data, index) => {
-    //     return <MyVideoInput key={index} index={index} data={data} onClose={() => handleDeleteVideo(data)} />;
-    // });
-
     const list_mes = messages.map((item, index) => {
         const sender = item.sender;
         if (sender === sender_enum.MEMBER) {
-            return <MyMessage key={index} data={item} />;
+            return <MyMessage key={item.id} data={item} root_LazyVideo={root_LazyVideo} />;
         }
         if (sender === sender_enum.CUSTOMER) {
-            return <YourMessage key={index} data={item} />;
+            return <YourMessage key={item.id} data={item} />;
         }
     });
 
@@ -742,14 +768,22 @@ const Message = () => {
                 </div>
                 <div className={style.iconContainer}>
                     <FaImage id={id_imageInput} onClick={handleImageIconClick} />
-                    <input ref={imageInput_element} onChange={handleImageChange} type="file" id={id_imageInput} />
+                    <input
+                        ref={imageInput_element}
+                        onChange={handleImageChange}
+                        type="file"
+                        id={id_imageInput}
+                        accept="image/*"
+                    />
                     {is_open_chatRoom_tadao && <MdOndemandVideo id={id_videoInput} onClick={handleVideoIconClick} />}
-                    <input ref={videoInput_element} onChange={handleVideoChange} type="file" id={id_videoInput} />
+                    <input
+                        ref={videoInput_element}
+                        onChange={handleVideoChange}
+                        type="file"
+                        id={id_videoInput}
+                        accept="video/*"
+                    />
                 </div>
-                {/* <div className={style.photoContainer}>
-                    <div>{list_image}</div>
-                    <div>{list_video}</div>
-                </div> */}
                 <div className={style.inputContainer}>
                     <input value={newMessage} onChange={(e) => handleNewMessageChange(e)} placeholder="Viết tin nhắn" />
                     <IoMdSend onClick={() => handleSend()} size={30} color="blue" />

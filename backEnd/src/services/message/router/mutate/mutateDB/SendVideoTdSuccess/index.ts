@@ -24,6 +24,7 @@ class MutateDB_SendVideoTdSuccess extends MutateDB {
                 const result = await this._connectionPool
                     .request()
                     .input('id', sql.Int, this._sendVideoTdSuccessBody.id)
+                    .input('message', sql.NVarChar(sql.MAX), this._sendVideoTdSuccessBody.message)
                     .execute('SendVideoTdSuccess');
 
                 return result;

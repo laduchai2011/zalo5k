@@ -35,6 +35,7 @@ const App = () => {
                     `/service_account/query/getAccountInformation`
                 );
                 const resData = response.data;
+                // console.log('getAccountInformation', resData);
                 if (resData.isSuccess) {
                     if (resData.data) {
                         sessionStorage.setItem('accountInformation', `${JSON.stringify(resData.data)}`);
@@ -55,6 +56,7 @@ const App = () => {
             try {
                 const response = await axiosInstance.get<MyResponse<number>>(`/service_account/query/getMe`);
                 const resData = response.data;
+                // console.log('getAccount', resData);
                 if (resData.isSuccess) {
                     if (resData.data) {
                         sessionStorage.setItem('account', `${JSON.stringify(resData.data)}`);
