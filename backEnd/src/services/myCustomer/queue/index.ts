@@ -16,6 +16,7 @@ import {
 } from './const';
 
 const serviceRedis = ServiceRedis.getInstance();
+serviceRedis.init();
 
 function checkMyCustommer() {
     consumeMessage(zalo_event_name_enum_messageQueue.user_send_text, (messageZalo) => {
@@ -43,7 +44,6 @@ function checkMyCustommer() {
             } else {
                 const key = redisKey_memberReceiveMessage;
                 try {
-                    await serviceRedis.init();
                     const result = await serviceRedis.getData<AccountField>(key);
                     if (result === null) {
                         console.error('Could not get account from Redis');
@@ -104,7 +104,6 @@ function updateEvent_MemberSend() {
             } else {
                 const key = redisKey_memberReceiveMessage;
                 try {
-                    await serviceRedis.init();
                     const result = await serviceRedis.getData<AccountField>(key);
                     if (result === null) {
                         console.error('Could not get account from Redis');

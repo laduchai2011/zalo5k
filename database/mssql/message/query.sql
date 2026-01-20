@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetMessages
+﻿CREATE PROCEDURE GetMessages
 	@page INT,
     @size INT,
 	@receiveId NVARCHAR(255),
@@ -28,7 +28,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetMessagesHasFilter
+CREATE PROCEDURE GetMessagesHasFilter
 	@page INT,
     @size INT,
 	@receiveId NVARCHAR(255),

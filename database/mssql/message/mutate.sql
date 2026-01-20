@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateMessage
+﻿CREATE PROCEDURE CreateMessage
 	@eventName NVARCHAR(255),
 	@sender NVARCHAR(255),
 	@senderId NVARCHAR(255),
@@ -45,7 +45,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateEvent_MemberSend
+CREATE PROCEDURE UpdateEvent_MemberSend
 	@eventName NVARCHAR(255),
 	@receiveId NVARCHAR(255),
 	@timestamp NVARCHAR(255),
@@ -83,7 +83,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateMessageStatus
+CREATE PROCEDURE UpdateMessageStatus
 	@eventName NVARCHAR(255),
 	@receiveId NVARCHAR(255),
 	@timestamp NVARCHAR(255),
@@ -156,7 +156,8 @@ END;
 GO
 
 CREATE PROCEDURE SendVideoTdSuccess
-	@id NVARCHAR(255)
+	@id NVARCHAR(255), 
+	@message NVARCHAR(MAX)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -172,7 +173,9 @@ BEGIN
 			AND status = 'normal' ;
 
 		UPDATE dbo.message
-		SET messageStatus = 'SENT'
+		SET 
+			messageStatus = 'SENT',
+			message = @message
 		WHERE 
 			id = @id
 			AND status = 'normal' ;

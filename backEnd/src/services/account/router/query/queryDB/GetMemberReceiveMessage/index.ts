@@ -4,6 +4,7 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { redisKey_memberReceiveMessage } from '@src/const/redisKey';
 
 const serviceRedis = ServiceRedis.getInstance();
+serviceRedis.init();
 
 class QueryDB_GetMemberReceiveMessage extends QueryDB {
     constructor() {
@@ -14,7 +15,6 @@ class QueryDB_GetMemberReceiveMessage extends QueryDB {
         const key = redisKey_memberReceiveMessage;
 
         try {
-            await serviceRedis.init();
             const result = await serviceRedis.getData<AccountField>(key);
 
             if (result) {

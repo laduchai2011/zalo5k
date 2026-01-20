@@ -73,11 +73,16 @@ sudo apt install python3-certbot-nginx
 
 -cài chứng chỉ
 sudo certbot certonly --webroot -w /root/nginx/html -d 5kaquarium.com -d www.5kaquarium.com
+sudo certbot certonly --webroot -d zalowebhookdev.5kaquarium.com
 sudo certbot --nginx -d 5kaquarium.com -d www.5kaquarium.com
 
 - vị trí chứng chỉ
 /etc/letsencrypt/live/5kaquarium.com/fullchain.pem
 /etc/letsencrypt/live/5kaquarium.com/privkey.pem
+
+
+docker run -d --name nginx_server --network network_zalo_5kaquarium -v ~/nginx/conf:/etc/nginx/conf.d -v /var/www/certbot:/var/www/certbot -p 80:80 nginx
+docker run --rm -v /etc/letsencrypt:/etc/letsencrypt -v /var/www/certbot:/var/www/certbot certbot/certbot certonly --webroot -w /var/www/certbot -d socketapp.5kaquarium.com --non-interactive --agree-tos -m laduchai20111995@gmail.com
 
 
 

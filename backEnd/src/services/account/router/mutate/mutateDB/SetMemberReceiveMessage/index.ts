@@ -4,6 +4,7 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { redisKey_memberReceiveMessage } from '@src/const/redisKey';
 
 const serviceRedis = ServiceRedis.getInstance();
+serviceRedis.init();
 const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
 
 class MutateDB_SetMemberReceiveMessage extends MutateDB {
@@ -22,7 +23,6 @@ class MutateDB_SetMemberReceiveMessage extends MutateDB {
 
         if (this._member !== undefined) {
             try {
-                await serviceRedis.init();
                 const result = await serviceRedis.setData<AccountField>(key, this._member, timeExpireat);
 
                 if (result) {

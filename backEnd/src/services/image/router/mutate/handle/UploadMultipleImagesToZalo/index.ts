@@ -6,7 +6,7 @@ import FormData from 'form-data';
 import fs from 'fs';
 import { ZaloOaAImageField } from '@src/dataStruct/photo';
 import { my_log } from '@src/log';
-import { MyResponse } from '@src/dataStruct/response';
+// import { MyResponse } from '@src/dataStruct/response';
 import { getAccessToken, refreshAccessToken } from '@src/services/zalo_webhook/handle/TokenZaloOA';
 
 // const OA_ACCESS_TOKEN = process.env.ZALO_OA_ACCESS_TOKEN!;
@@ -52,9 +52,9 @@ class Handle_UploadMultipleImagesToZalo {
     };
 
     main = async (req: Request, res: Response) => {
-        const myResponse: MyResponse<ZaloOaAImageField[]> = {
-            isSuccess: false,
-        };
+        // const myResponse: MyResponse<ZaloOaAImageField[]> = {
+        //     isSuccess: false,
+        // };
 
         try {
             const files = req.files as Express.Multer.File[];
@@ -119,7 +119,7 @@ async function uploadToZalo(filePath: string) {
 
     my_log.withMagenta(res);
     if (res?.error !== 0) {
-        const newToken = await refreshAccessToken();
+        const newToken = await refreshAccessToken({ repeat: 5 });
         const res1: any = await axios.post(`${API_UPLOAD}?access_token=${newToken}`, form, {
             headers: form.getHeaders(),
         });

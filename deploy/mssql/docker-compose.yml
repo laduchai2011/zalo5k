@@ -1,0 +1,34 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_container
+    hostname: mssql_container
+    restart: unless-stopped
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "201195laducHai"
+      MSSQL_PID: "Evaluation"
+
+    ports:
+      - "1433:1433"
+
+    networks:
+      - network_zalo_5kaquarium
+
+    volumes:
+      # - /root/sql_data:/var/opt/mssql
+      - sql_data:/var/opt/mssql
+
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 2G
+
+networks:
+  network_zalo_5kaquarium:
+    external: true
+
+volumes:
+  sql_data:

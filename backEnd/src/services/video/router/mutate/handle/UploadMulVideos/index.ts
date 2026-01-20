@@ -181,7 +181,7 @@ async function uploadToZalo(filePath: string, imageThumbPath: string) {
 
     if (res?.error !== 0) {
         const form2 = buildForm();
-        const newToken = await refreshAccessToken();
+        const newToken = await refreshAccessToken({ repeat: 5 });
         const res1: any = await axios.post(API_UPLOAD, form2, {
             headers: {
                 ...form2.getHeaders(),

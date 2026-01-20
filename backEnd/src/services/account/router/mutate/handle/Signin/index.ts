@@ -9,6 +9,8 @@ import { MyJwtPayload } from '@src/token';
 import { StoreAuthToken } from '@src/auth/type';
 import { signin_infor_type } from './type';
 import { AccountField } from '@src/dataStruct/account';
+import { mssqlGetValue, mssqlUpdateValue, mssqlSetValue } from '@src/cache/cacheMssql';
+import { dev_prefix } from '@src/mode';
 
 let secure_cookie = false;
 if (process.env.NODE_ENV !== 'development') {
@@ -17,7 +19,8 @@ if (process.env.NODE_ENV !== 'development') {
 
 const sameSite = process.env.NODE_ENV === 'development' ? 'lax' : 'none';
 // const sameSite = 'none';
-const cookieDomain = 'zalo5k.local.com';
+const isProduct = process.env.NODE_ENV === 'production';
+const cookieDomain = isProduct ? '.5kaquarium.com' : 'zalo5k.local.com';
 
 const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
 
@@ -70,6 +73,8 @@ class Handle_Signin {
                         return;
                     }
 
+                    const keyServiceRedis = `token-storeAuthToken-${id}_${dev_prefix}`;
+
                     const myJwtPayload: MyJwtPayload = {
                         id: id,
                     };
@@ -84,6 +89,24 @@ class Handle_Signin {
                     const accessToken = generateAccessToken(myJwtPayload, signOptions_accessToken);
                     const refreshToken = generateRefreshToken(myJwtPayload, signOptions_refreshToken);
 
+                    const resultget = await mssqlGetValue(keyServiceRedis);
+
+                    if (resultget?.isSuccess) {
+                        const resultupdate = await mssqlUpdateValue(keyServiceRedis, refreshToken);
+                        if (!resultupdate?.isSuccess) {
+                            myResponse.message = 'Login NOT successly, account or password is incorrect !';
+                            res.status(200).json(myResponse);
+                            return;
+                        }
+                    } else {
+                        const resultset = await mssqlSetValue(keyServiceRedis, refreshToken);
+                        if (!resultset?.isSuccess) {
+                            myResponse.message = 'Login NOT successly, account or password is incorrect !';
+                            res.status(200).json(myResponse);
+                            return;
+                        }
+                    }
+
                     const storeAuthToken: StoreAuthToken = {
                         accessToken: accessToken,
                         refreshToken: refreshToken,
@@ -91,57 +114,30 @@ class Handle_Signin {
                         blackList: [],
                     };
 
-                    const keyServiceRedis = `token-storeAuthToken-${id}`;
-
                     await serviceRedis.setData<StoreAuthToken>(keyServiceRedis, storeAuthToken, timeExpireat);
 
-                    if (process.env.NODE_ENV === 'development') {
-                        res.cookie('id', id, {
+                    res.cookie('id', id, {
+                        httpOnly: true,
+                        secure: secure_cookie,
+                        sameSite: sameSite,
+                        expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                        // signed: true
+                        domain: cookieDomain,
+                    })
+                        .cookie('accessToken', accessToken, {
                             httpOnly: true,
                             secure: secure_cookie,
                             sameSite: sameSite,
                             expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                            // signed: true
                             domain: cookieDomain,
                         })
-                            .cookie('accessToken', accessToken, {
-                                httpOnly: true,
-                                secure: secure_cookie,
-                                sameSite: sameSite,
-                                expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                domain: cookieDomain,
-                            })
-                            .cookie('refreshToken', refreshToken, {
-                                httpOnly: true,
-                                secure: secure_cookie,
-                                sameSite: sameSite,
-                                expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                domain: cookieDomain,
-                            });
-                    } else {
-                        res.cookie('id', id, {
+                        .cookie('refreshToken', refreshToken, {
                             httpOnly: true,
                             secure: secure_cookie,
                             sameSite: sameSite,
                             expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                            domain: '.5kaquarium.com',
-                            // signed: true
-                        })
-                            .cookie('accessToken', accessToken, {
-                                httpOnly: true,
-                                secure: secure_cookie,
-                                sameSite: sameSite,
-                                expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                domain: '.5kaquarium.com',
-                            })
-                            .cookie('refreshToken', refreshToken, {
-                                httpOnly: true,
-                                secure: secure_cookie,
-                                sameSite: sameSite,
-                                expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                domain: '.5kaquarium.com',
-                            });
-                    }
+                            domain: cookieDomain,
+                        });
 
                     myResponse.message = 'Login successly !';
                     myResponse.isSuccess = true;

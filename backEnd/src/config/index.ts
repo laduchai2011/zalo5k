@@ -14,28 +14,28 @@ const mssql_config: my_interface['mssql']['config'] = isProduct
           password: process.env.MSSQL_SERVER_PASSWORD,
       }
     : {
-          host: '127.0.0.1',
-          port: 1434,
-          database: 'zalo5k',
+          host: '103.249.200.80',
+          port: 1433,
+          database: 'zalo5kdev',
           username: 'sa',
           password: '201195laducHai',
       };
 
-const mssql_change_history_config: my_interface['mssql']['config'] = isProduct
-    ? {
-          host: process.env.MSSQL_CHANGE_HISTORY_SERVER_HOST,
-          port: Number(process.env.MSSQL_CHANGE_HISTORY_SERVER_PORT),
-          database: process.env.MSSQL_CHANGE_HISTORY_SERVER_DATABASE,
-          username: process.env.MSSQL_CHANGE_HISTORY_SERVER_USERNAME,
-          password: process.env.MSSQL_CHANGE_HISTORY_SERVER_PASSWORD,
-      }
-    : {
-          host: '127.0.0.1',
-          port: 1434,
-          database: 'zalo5k_change_history',
-          username: 'sa',
-          password: '201195laducHai',
-      };
+// const mssql_change_history_config: my_interface['mssql']['config'] = isProduct
+//     ? {
+//           host: process.env.MSSQL_CHANGE_HISTORY_SERVER_HOST,
+//           port: Number(process.env.MSSQL_CHANGE_HISTORY_SERVER_PORT),
+//           database: process.env.MSSQL_CHANGE_HISTORY_SERVER_DATABASE,
+//           username: process.env.MSSQL_CHANGE_HISTORY_SERVER_USERNAME,
+//           password: process.env.MSSQL_CHANGE_HISTORY_SERVER_PASSWORD,
+//       }
+//     : {
+//           host: '127.0.0.1',
+//           port: 1433,
+//           database: 'zalo5k_change_history',
+//           username: 'sa',
+//           password: '201195laducHai',
+//       };
 
 const redis_config: my_interface['redis']['config'] = isProduct
     ? {
@@ -47,22 +47,22 @@ const redis_config: my_interface['redis']['config'] = isProduct
     : {
           host: '103.249.200.80',
           port: 6379,
-          username: '',
-          password: '',
+          username: 'zalo5k',
+          password: 'hai20111995',
       };
 
-// const rabbitmq_config: my_interface['rabbitmq']['config'] = isProduct
-//     ? {
-//           host: process.env.RABBITMQ_SERVER_HOST,
-//           port: Number(process.env.RABBITMQ_SERVER_PORT),
-//           username: process.env.RABBITMQ_SERVER_USERNAME,
-//           password: process.env.RABBITMQ_SERVER_PASSWORD,
-//       }
-//     : {
-//           host: '127.0.0.1',
-//           port: 5672,
-//           username: 'laduchai',
-//           password: '201195',
-//       };
+const rabbitmq_config: my_interface['rabbitmq']['config'] = isProduct
+    ? {
+          host: process.env.RABBITMQ_SERVER_HOST,
+          port: Number(process.env.RABBITMQ_SERVER_PORT),
+          username: process.env.RABBITMQ_SERVER_USERNAME,
+          password: process.env.RABBITMQ_SERVER_PASSWORD,
+      }
+    : {
+          host: '103.249.200.80',
+          port: 5672,
+          username: 'admin',
+          password: 'admin123',
+      };
 
-export { mssql_config, mssql_change_history_config, redis_config };
+export { mssql_config, redis_config, rabbitmq_config };

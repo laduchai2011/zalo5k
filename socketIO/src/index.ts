@@ -88,14 +88,14 @@ io.on('connection', (socket) => {
         // io.to(roomName).emit('roomMessage', `server hello: ${message}`);
     });
 
-    socket.on('send_videoTD', ({receiveId, oaid, name, accountId}) => {
+    socket.on('send_videoTD', ({ receiveId, oaid, name, accountId }) => {
         sendMessageTD('send_videoTD', {
             receiveId: receiveId,
             oaid: oaid,
             name: name,
-            accountId: accountId
-        })
-    })
+            accountId: accountId,
+        });
+    });
 
     // Rời phòng
     socket.on('leaveRoom', (roomName: string) => {
@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
 });
 
 // Chạy server
-const port = isProduct ? process.env.PORT : 1000;
+const port = isProduct ? process.env.PORT : 6000;
 httpServer.listen(port, () => {
     console.log(`Socket.IO server running on port ${port}`);
 });

@@ -53,7 +53,7 @@ async function getZaloUserInfo(customerId: string): Promise<ZaloCustomerField | 
         const resData = res.data as ZaloCustomerField;
 
         if (resData.error !== 0) {
-            const newToken = await refreshAccessToken();
+            const newToken = await refreshAccessToken({ repeat: 5 });
             if (!newToken) {
                 console.error('Could not refresh Zalo access token');
                 return;

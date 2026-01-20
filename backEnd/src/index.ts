@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import process from 'process';
-// import cors from 'cors';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ import service_note from './services/note';
 const app: Express = express();
 
 const isProduct = process.env.NODE_ENV === 'production';
-const port = isProduct ? process.env.PORT : 3007;
+const port = isProduct ? process.env.PORT : 4000;
 
 const apiString = isProduct ? '' : '/api';
 
@@ -42,14 +42,14 @@ app.use(apiString, express.urlencoded({ extended: true }));
 
 //     next();
 // });
-// const originArray: string[] = ['http://zalo5k.local.com:3000'];
-// app.use(
-//     cors({
-//         origin: originArray,
-//         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//         credentials: true,
-//     })
-// );
+const originArray: string[] = ['http://zalo5k.local.com:3000'];
+app.use(
+    cors({
+        origin: originArray,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        credentials: true,
+    })
+);
 
 app.use(`${apiString}/hello`, (req, res) => {
     res.send('hello');

@@ -64,6 +64,11 @@ const rollup_dev = isDev && [
             //     sourcemap: isDev,
             // },
             {
+                file: 'dist/index.js',
+                format: 'es',
+                sourcemap: false,
+            },
+            {
                 file: 'dist/index.mjs',
                 format: 'es',
                 sourcemap: true,
@@ -149,11 +154,11 @@ const rollup_prod = isProd && [
     {
         input: 'src/index.tsx',
         output: [
-            // {
-            //     file: 'dist/index.cjs',
-            //     format: 'cjs',
-            //     sourcemap: false,
-            // },
+            {
+                file: 'dist/index.js',
+                format: 'es',
+                sourcemap: false,
+            },
             {
                 file: 'dist/index.mjs',
                 format: 'es',

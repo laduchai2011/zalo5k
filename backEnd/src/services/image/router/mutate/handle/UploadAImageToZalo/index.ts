@@ -77,7 +77,7 @@ async function uploadToZalo(filePath: string) {
 
     console.log('res', res.data);
     if (res?.data.error !== 0) {
-        const newToken = await refreshAccessToken();
+        const newToken = await refreshAccessToken({ repeat: 5 });
         const res1: any = await axios.post(`${API_UPLOAD}`, form, {
             // headers: form.getHeaders(),
             headers: {

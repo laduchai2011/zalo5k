@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_container
+    hostname: mssql_container
+    restart: unless-stopped
+
+    networks:
+      - network_zalo_5kaquarium
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+      RABBITMQ_ERLANG_COOKIE: ZALO_5K_AQUARIUMSUPERSECRETCOOKIE123456
+
+    volumes:
+      # - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq_data:/var/lib/rabbitmq
+
+networks:
+  network_zalo_5kaquarium:
+    external: true
+
+volumes:
+  rabbitmq_data:

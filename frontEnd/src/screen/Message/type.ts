@@ -1,4 +1,5 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
+import { MessageField } from '@src/dataStruct/message';
 
 export interface state_props {
     toastMessage: {
@@ -8,4 +9,5 @@ export interface state_props {
         isPlay: boolean;
         src: string;
     };
+    messages: MessageField[];
 }

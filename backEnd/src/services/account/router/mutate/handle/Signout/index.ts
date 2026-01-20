@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { MyResponse } from '@src/dataStruct/response';
 
+const serviceRedis = ServiceRedis.getInstance();
+serviceRedis.init();
+
 const isProduct = process.env.NODE_ENV === 'production';
 
 let secure_cookie = false;
@@ -24,9 +27,6 @@ class Handle_Signout {
             const id = req.cookies?.id;
             if (id) {
                 // Xóa dữ liệu token trong Redis
-                const serviceRedis = ServiceRedis.getInstance();
-                await serviceRedis.init();
-
                 const keyServiceRedis = `token-storeAuthToken-${id}`;
                 await serviceRedis.deleteData(keyServiceRedis);
             }

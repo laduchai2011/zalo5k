@@ -6,6 +6,7 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import LockError from 'redlock';
 import { MyResponse } from '@src/dataStruct/response';
 import { StoreAuthToken } from './type';
+import { dev_prefix } from '@src/mode';
 
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
@@ -24,8 +25,8 @@ const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
 
 async function authentication(req: Request, res: Response, next: NextFunction) {
     const { refreshToken, accessToken, id } = req.cookies;
-    const keyServiceRedis = `token-storeAuthToken-${id}`;
-    const lockKey = `redlock-for-refresh-accessToken-${id}`;
+    const keyServiceRedis = `token-storeAuthToken-${id}_${dev_prefix}`;
+    const lockKey = `redlock-for-refresh-accessToken-${id}_${dev_prefix}`;
     // console.log(111111111, refreshToken, accessToken, id);
 
     const myResponse: MyResponse<unknown> = {
@@ -35,7 +36,7 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
     };
 
     if (!refreshToken || !accessToken || !id) {
-        myResponse.message = 'Đầu vào không hợp lệ !'
+        myResponse.message = 'Đầu vào không hợp lệ !';
         res.json(myResponse);
         return;
     }
@@ -50,7 +51,7 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
         // console.log("3. Đã verify refreshToken:", verify_refreshToken);
 
         if (!verify_accessToken || !verify_refreshToken) {
-            myResponse.message = 'Xác thực token không thành công !'
+            myResponse.message = 'Xác thực token không thành công !';
             res.json(myResponse);
             return;
         }
@@ -80,7 +81,7 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
             return;
         } else {
             const storeAuthToken = await serviceRedis.getData<StoreAuthToken>(keyServiceRedis);
-            console.log("4. Lấy storeAuthToken từ Redis:", storeAuthToken);
+            // console.log('4. Lấy storeAuthToken từ Redis:', storeAuthToken);
             if (!storeAuthToken) {
                 myResponse.isSignin = false;
                 myResponse.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';
@@ -124,7 +125,11 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
                         domain: cookieDomain,
                     });
 
-                    const isSet = await serviceRedis.setData<StoreAuthToken>(keyServiceRedis, storeAuthToken, timeExpireat);
+                    const isSet = await serviceRedis.setData<StoreAuthToken>(
+                        keyServiceRedis,
+                        storeAuthToken,
+                        timeExpireat
+                    );
                     if (!isSet) {
                         console.error('Failed to set new token in cookie in Redis');
                         return;

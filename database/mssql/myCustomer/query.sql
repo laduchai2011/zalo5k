@@ -1,4 +1,4 @@
-﻿ALTER FUNCTION GetMyCustemerIdWithSenderId (@senderId NVARCHAR(255)) RETURNS TABLE AS RETURN (
+﻿CREATE FUNCTION GetMyCustemerIdWithSenderId (@senderId NVARCHAR(255)) RETURNS TABLE AS RETURN (
     SELECT
         *
     FROM
@@ -9,7 +9,7 @@
 );
 GO
 
-ALTER PROCEDURE GetMyCustomers
+CREATE PROCEDURE GetMyCustomers
 	@page INT,
     @size INT,
     @accountId INT
@@ -70,7 +70,7 @@ END
 GO
 
 
-ALTER PROCEDURE GetAllMyCustomers
+CREATE PROCEDURE GetAllMyCustomers
     @accountId INT
 AS
 BEGIN
@@ -90,7 +90,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetAMyCustomer
+CREATE PROCEDURE GetAMyCustomer
 	@senderId NVARCHAR(255)
 AS
 BEGIN
@@ -101,7 +101,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetAIsNewMessage
+CREATE PROCEDURE GetAIsNewMessage
 	@myCustomerId INT
 AS
 BEGIN

@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateMyCustomer
+﻿CREATE PROCEDURE CreateMyCustomer
 	@senderId NVARCHAR(255),
 	@accountId INT
 AS
@@ -26,7 +26,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE DeleteIsNewMessage
+CREATE PROCEDURE DeleteIsNewMessage
 	@id NVARCHAR(255)
 AS
 BEGIN

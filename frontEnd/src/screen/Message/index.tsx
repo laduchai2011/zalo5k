@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect, useCallback, useId } from 'react';
 import { useParams } from 'react-router-dom';
 import style from './style.module.scss';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@src/redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
 import TopIcons from './components/TopIcons';
 import YourMessage from './components/YourMessage';
 import MyMessage from './components/MyMessage';
@@ -18,7 +18,14 @@ import { MdOndemandVideo } from 'react-icons/md';
 import MyToastMessage from './components/MyToastMessage';
 import MyLoading from './components/MyLoading';
 import PlayVideo from './components/PlayVideo';
-import { setData_toastMessage } from '@src/redux/slice/Message';
+import {
+    setData_toastMessage,
+    setData_messages,
+    loadData_messages,
+    addNew_message,
+    delA_message,
+    updateA_message,
+} from '@src/redux/slice/Message';
 import { messageType_enum as toastMessageType_enum } from '@src/component/ToastMessage/type';
 import { BASE_URL, isProduct } from '@src/const/api/baseUrl';
 import {
@@ -47,7 +54,7 @@ const Message = () => {
     const { id } = useParams<{ id: string }>();
     // const [hasMore, setHasMore] = useState(true);
     const contentContainer_element = useRef<HTMLDivElement | null>(null);
-    const [messages, setMessages] = useState<MessageField[]>([]);
+    // const [messages, setMessages] = useState<MessageField[]>([]);
     // const [index_mes, set_index_mes] = useState<number>(6);
     const [newMessage, setNewMessage] = useState<string>('');
     const id_imageInput = useId();
@@ -62,6 +69,7 @@ const Message = () => {
     const messageVideo_current = useRef<MessageField | null>(null);
     const [createMessage] = useCreateMessageMutation();
     const [root_LazyVideo, set_root_LazyVideo] = useState<HTMLDivElement | null>(null);
+    const messages: MessageField[] = useSelector((state: RootState) => state.MessageSlice.messages);
 
     useEffect(() => {
         if (contentContainer_element.current) {
@@ -98,8 +106,9 @@ const Message = () => {
     }, [is_success_sendVideo, dispatch]);
 
     useEffect(() => {
-        setMessages([]);
-    }, [id]);
+        // setMessages([]);
+        // dispatch(setData_messages([]));
+    }, [id, dispatch]);
 
     const [zaloCustomer, setZaloCustomer] = useState<ZaloCustomerField | undefined>(undefined);
     const {
@@ -137,7 +146,7 @@ const Message = () => {
         isError: isError_messages,
         error: error_messages,
     } = useGetMessagesQuery(
-        { page: 1, size: 1000, receiveId: id || '', accountId: Number(myId) },
+        { page: 1, size: 2000, receiveId: id || '', accountId: Number(myId) },
         { skip: myId === null || id === undefined }
     );
     useEffect(() => {
@@ -156,11 +165,13 @@ const Message = () => {
     }, [isLoading_messages]);
     useEffect(() => {
         const resData = data_messages;
-        if (resData?.isSuccess && resData.data) {
+        console.log(11111, messages.length);
+        if (resData?.isSuccess && resData.data && messages.length === 0) {
             const mes = resData.data.items;
-            setMessages((prev) => mes.concat(prev));
+            // setMessages((prev) => mes.concat(prev));
+            dispatch(loadData_messages(mes));
         }
-    }, [data_messages]);
+    }, [data_messages, dispatch, messages]);
 
     useEffect(() => {
         // loadMore();
@@ -218,7 +229,8 @@ const Message = () => {
                         updateTime: '',
                         createTime: '',
                     };
-                    setMessages((prev) => [newMessage, ...prev]);
+                    // setMessages((prev) => [newMessage, ...prev]);
+                    addNew_message(newMessage);
                     break;
                 }
                 case zalo_event_name_enum.user_send_image: {
@@ -249,7 +261,8 @@ const Message = () => {
                         updateTime: '',
                         createTime: '',
                     };
-                    setMessages((prev) => [newMessage, ...prev]);
+                    // setMessages((prev) => [newMessage, ...prev]);
+                    addNew_message(newMessage);
                     break;
                 }
                 case zalo_event_name_enum.user_send_video: {
@@ -280,7 +293,8 @@ const Message = () => {
                         updateTime: '',
                         createTime: '',
                     };
-                    setMessages((prev) => [newMessage, ...prev]);
+                    // setMessages((prev) => [newMessage, ...prev]);
+                    addNew_message(newMessage);
                     break;
                 }
                 default: {
@@ -315,10 +329,11 @@ const Message = () => {
                                 message: 'Tin nhắn videoTd bị xóa do gửi thất bại !',
                             })
                         );
-                        setMessages((pre) => {
-                            const newArr = pre.filter((item) => item.id !== messageId_videoTd_current.current);
-                            return newArr;
-                        });
+                        // setMessages((pre) => {
+                        //     const newArr = pre.filter((item) => item.id !== messageId_videoTd_current.current);
+                        //     return newArr;
+                        // });
+                        dispatch(delA_message({ id: messageId_videoTd_current.current }));
                     } else {
                         dispatch(
                             setData_toastMessage({
@@ -331,7 +346,7 @@ const Message = () => {
                 .catch((err) => console.error(err));
             set_is_success_sendVideo(false);
         });
-        socket.on('getUrl_videoTd', ({ oaid, uid, accountId, name }: VideoTDBodyField) => {
+        socket.on('getUrl_videoTd', ({ oaid, receiveId, accountId, name }: VideoTDBodyField) => {
             if (!messageVideo_current.current) {
                 setData_toastMessage({
                     type: toastMessageType_enum.ERROR,
@@ -357,17 +372,20 @@ const Message = () => {
                                     message: 'Cập nhật tin nhắn videoTd khi gửi thành công !',
                                 })
                             );
-                            setMessages((prev) => {
-                                if (messageVideo_current.current) {
-                                    const new_mes = prev.filter(
-                                        (item) =>
-                                            messageVideo_current.current && item.id !== messageVideo_current.current.id
-                                    );
-                                    new_mes.unshift(messageVideo_current.current);
-                                    return new_mes;
-                                }
-                                return prev;
-                            });
+                            if (messageVideo_current.current) {
+                                dispatch(updateA_message(messageVideo_current.current));
+                            }
+                            // setMessages((prev) => {
+                            //     if (messageVideo_current.current) {
+                            //         const new_mes = prev.filter(
+                            //             (item) =>
+                            //                 messageVideo_current.current && item.id !== messageVideo_current.current.id
+                            //         );
+                            //         new_mes.unshift(messageVideo_current.current);
+                            //         return new_mes;
+                            //     }
+                            //     return prev;
+                            // });
                         } else {
                             dispatch(
                                 setData_toastMessage({
@@ -379,8 +397,8 @@ const Message = () => {
                     })
                     .catch((err) => console.error(err))
                     .finally(() => {
-                        messageVideo_current.current = null
-                    })
+                        messageVideo_current.current = null;
+                    });
             }
         });
         socket.emit('open_chatRoom_tadao', { oaid, uid, accountId });
@@ -490,7 +508,8 @@ const Message = () => {
                     const resData = res.data;
                     if (resData?.isSuccess && resData.data) {
                         const newData: MessageField = resData.data;
-                        setMessages((prev) => [newData, ...prev]);
+                        // setMessages((prev) => [newData, ...prev]);
+                        dispatch(addNew_message(newData));
                         socketRef.current?.emit('roomMessage', {
                             roomName: myRoom,
                             message: JSON.stringify(resData.data),
@@ -610,7 +629,8 @@ const Message = () => {
                                 );
                                 const newData: MessageField = resData.data;
                                 messageVideo_current.current = newData;
-                                setMessages((prev) => [newData, ...prev]);
+                                // setMessages((prev) => [newData, ...prev]);
+                                dispatch(addNew_message(newData));
                                 socketRef.current?.emit('send_videoTD', {
                                     receiveId: id,
                                     oaid: OAID,
@@ -733,7 +753,8 @@ const Message = () => {
                             const resData = res.data;
                             if (resData?.isSuccess && resData.data) {
                                 const newData: MessageField = resData.data;
-                                setMessages((prev) => [newData, ...prev]);
+                                // setMessages((prev) => [newData, ...prev]);
+                                dispatch(addNew_message(newData));
                                 socketRef.current?.emit('roomMessage', {
                                     roomName: myRoom,
                                     message: JSON.stringify(resData.data),
@@ -745,7 +766,7 @@ const Message = () => {
                 }
             }
         },
-        [handlePreImage, createMessage, id, myId]
+        [dispatch, handlePreImage, createMessage, id, myId]
     );
 
     const list_mes = messages.map((item, index) => {

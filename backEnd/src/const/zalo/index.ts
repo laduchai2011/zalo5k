@@ -1,10 +1,4 @@
-import dotenv from 'dotenv';
+import { dev_prefix } from '@src/mode';
 
-dotenv.config();
-
-const isProduct = process.env.NODE_ENV === 'production';
-
-export const redisKey_storeTokenZalo = isProduct ? 'redisKey_storeTokenZalo' : 'redisKey_storeTokenZalo_dev';
-export const redisKey_storeTokenZalo_lock = isProduct
-    ? 'redisKey_storeTokenZalo_lock'
-    : 'redisKey_storeTokenZalo_lock_dev';
+export const redisKey_storeTokenZalo = `redisKey_storeTokenZalo_${dev_prefix}`;
+export const redisKey_storeTokenZalo_lock = `redisKey_storeTokenZalo_lock_${dev_prefix}`;

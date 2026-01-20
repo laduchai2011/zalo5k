@@ -1,12 +1,12 @@
+import { execSync } from 'child_process';
 import { chromium, Page } from 'playwright';
 import { consumeMessageTD } from './messageQueue/Consumer';
 import { sendMessageTD } from './messageQueue/Producer';
 import { isVideoTDBodyField, VideoTDBodyField } from './dataStruct/video';
 import { my_log } from './log';
 import path from 'path';
-import fs from 'fs';
-// import { pipeline } from 'stream/promises';
-// import { Readable } from 'stream';
+// import fs from 'fs';
+import { downloadVideo, deleteVideo } from './connect/minio/service';
 
 const SESSION_PATH = 'sessions/zalo-oa.json';
 
@@ -115,6 +115,10 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
 //     return filePath;
 // }
 
+function isContain(base: string, full: string): boolean {
+    return full.includes(base);
+}
+
 (async () => {
     try {
         const browser = await chromium.launch({
@@ -128,6 +132,7 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             viewport: { width: 1280, height: 800 },
         });
+        // const context = await browser.newContext();
 
         const pagetop = await context.newPage();
 
@@ -155,17 +160,28 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
 
         await pagetop.waitForTimeout(5000);
 
-        let pages: PageField[] = [];
+        await context.storageState({ path: SESSION_PATH });
+        console.log('✅ Session saved to', SESSION_PATH);
 
-        // await pagetop.goto(`https://oa.zalo.me/manage/choose?pageid=${OAID_TOP}`, {
-        //     waitUntil: 'domcontentloaded',
-        //     timeout: 60000,
+        // pagetop.on('response', async (response) => {
+        //     const url = response.url();
+
+        //     console.log('Response URL:', url);
+
+        //     // Kiểm tra xem đây có phải request upload không
+        //     if (response.status() === 200) {
+        //         try {
+        //             const data = await response.json(); // lấy JSON trả về
+        //             console.log('Upload response:', data);
+        //         } catch (err) {
+        //             console.log('Không phải JSON:', err);
+        //         }
+        //     }
         // });
 
-        // const lockKey = new LockKey();
+        let pages: PageField[] = [];
 
         consumeMessageTD(`chatRoom_tadao_${dev_prefix}`, async ({ status, oaid, uid, accountId }) => {
-            console.log('chatRoom_tadao', status);
             switch (status) {
                 case 'open': {
                     const OAID = oaid;
@@ -205,7 +221,56 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
                             return;
                         }
 
-                        // await page.waitForTimeout(3000);
+                        await page.waitForTimeout(1500);
+                        page.on('response', async (response) => {
+                            const url = response.url();
+                            let isSendVideo: boolean | null = null;
+                            let sendType: string = '';
+
+                            if (url === 'https://oa.zalo.me/chatv2/message/send-video?platform=web') {
+                                if (response.status() === 200) {
+                                    try {
+                                        const data = await response.json(); // lấy JSON trả về
+                                        console.log('Upload response:', data);
+                                        if (data.error_code === 0) {
+                                            isSendVideo = true;
+                                        }
+                                    } catch (err) {
+                                        console.log('Không phải JSON:', err);
+                                    }
+                                }
+                            }
+                            const baseUrlVideo = '-zvc.dlmd.me/';
+                            if (isContain(baseUrlVideo, url)) {
+                                sendType = 'getUrl_videoTd';
+                            }
+
+                            if (isSendVideo === true) {
+                                sendMessageTD(`send_videoTD_success_${dev_prefix}`, {
+                                    oaid: oaid,
+                                    uid: uid,
+                                    accountId: accountId,
+                                    name: '',
+                                });
+                            } else if (isSendVideo === false) {
+                                sendMessageTD(`send_videoTD_failure_${dev_prefix}`, {
+                                    oaid: oaid,
+                                    uid: uid,
+                                    accountId: accountId,
+                                    name: '',
+                                });
+                            }
+
+                            console.log('sendType', sendType, url);
+                            if (sendType === 'getUrl_videoTd') {
+                                sendMessageTD(`getUrl_videoTd_${dev_prefix}`, {
+                                    oaid: oaid,
+                                    uid: uid,
+                                    accountId: accountId,
+                                    name: url,
+                                });
+                            }
+                        });
 
                         sendMessageTD(`open_chatRoom_tadao_success_${dev_prefix}`, { oaid, uid, accountId });
                     } catch (error) {
@@ -237,7 +302,6 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
 
         // consumeMessageTD(`send_videoTD_${dev_prefix}`, async (mes) => {
         consumeMessageTD(`send_videoTD`, async (mes) => {
-            console.log('send_videoTD', mes);
             if (!isVideoTDBodyField(mes)) {
                 my_log.withRed('Body không đúng cấu trúc VideoTDBodyField');
             }
@@ -264,44 +328,29 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
                 return;
             }
 
-            const NAME = videoTDBody.name;
-
-            const urlvideo = `http://api.5kaquarium.com/service_video/query/streamVideo?id=${NAME}`;
             try {
-                const res = await fetch(urlvideo);
-                const body = res.body;
-                console.log('✅ Video downloaded:', body);
-                if (!res.ok || !body) {
-                    sendMessageTD(`send_videoTD_failure_${dev_prefix}`, {
-                        oaid: videoTDBody.oaid,
-                        uid: videoTDBody.receiveId,
-                        accountId: videoTDBody.accountId,
-                        name: videoTDBody.name,
-                    });
-                    return;
-                } else {
-                    // await pipeline(
-                    //     Readable.fromWeb(body as unknown as globalThis.ReadableStream<Uint8Array>),
-                    //     fs.createWriteStream(path.join(basePath, NAME))
-                    // );
-                    const buffer = Buffer.from(await res.arrayBuffer());
-                    fs.writeFileSync(path.join(basePath, NAME), buffer);
+                const OBJECT_NAME = videoTDBody.name;
+                const DEST_PATH = `D:/zalo5k/Playwright/data/${OBJECT_NAME}`; // nơi lưu file trên máy
+                await downloadVideo(OBJECT_NAME, DEST_PATH);
+                await deleteVideo('videos', OBJECT_NAME);
+                let DEST_PATH_FINAL: string = DEST_PATH;
+
+                const isMov = DEST_PATH.toLowerCase().endsWith('.mov');
+                if (isMov) {
+                    const path = DEST_PATH;
+                    const newPath = path.replace(/\.mov$/i, '.mp4');
+                    const cmd = `ffmpeg -i ${path} -vcodec h264 -acodec aac ${newPath}`;
+                    try {
+                        execSync(cmd, { stdio: 'inherit' });
+
+                        console.log('✅ Convert xong');
+                    } catch (err) {
+                        console.error('❌ FFmpeg lỗi', err);
+                    }
+
+                    DEST_PATH_FINAL = newPath;
                 }
-            } catch (error) {
-                console.error('❌ Lỗi khi tải video:', error);
-                sendMessageTD(`send_videoTD_failure_${dev_prefix}`, {
-                    oaid: videoTDBody.oaid,
-                    uid: videoTDBody.receiveId,
-                    accountId: videoTDBody.accountId,
-                    name: videoTDBody.name,
-                });
-                return;
-            }
 
-            // const resvideo = await downloadVideo(urlvideo, basePath, NAME);
-            // console.log(11111, resvideo);
-
-            try {
                 const [fileChooser] = await Promise.all([
                     page.waitForEvent('filechooser'), // Playwright sẽ bắt sự kiện file chooser
                     // page.click('[aria-describedby="tippy-tooltip-11"]'), // click vào icon video để bật file chooser
@@ -314,18 +363,11 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
                 // await videoBtn.first().click();
 
                 // Gán video cần upload
-                await fileChooser.setFiles(`${basePath}/${NAME}`);
+                await fileChooser.setFiles(DEST_PATH_FINAL);
 
                 // Optional: chờ video upload xong, có thể bấm nút gửi nếu cần
                 await page.waitForTimeout(3000); // đợi 3s upload hoàn tất
                 await page.keyboard.press('Enter'); // gửi tin nhắn
-
-                sendMessageTD(`send_videoTD_success_${dev_prefix}`, {
-                    oaid: videoTDBody.oaid,
-                    uid: videoTDBody.receiveId,
-                    accountId: videoTDBody.accountId,
-                    name: videoTDBody.name,
-                });
             } catch (error) {
                 sendMessageTD(`send_videoTD_failure_${dev_prefix}`, {
                     oaid: videoTDBody.oaid,
