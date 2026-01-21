@@ -3,15 +3,23 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import process from 'process';
 import cors from 'cors';
+import { mssql_server } from '@src/connect';
+import { redis_server } from '@src/connect';
+import { rabbit_server } from '@src/connect';
+import ServiceRedis from '@src/cache/cacheRedis';
+import { getEnv } from './mode';
+import { myEnv } from './mode/type';
 
 dotenv.config();
 
-import service_image from './services/image';
-import service_video from './services/video';
-import service_account from '@src/services/account';
-import service_myCustomer from './services/myCustomer';
-import service_message from './services/message';
-import service_note from './services/note';
+const services = (process.env.SERVICES ?? '').split(',').map((s) => s.trim());
+
+// import service_image from './services/image';
+// import service_video from './services/video';
+// import service_account from '@src/services/account';
+// import service_myCustomer from './services/myCustomer';
+// import service_message from './services/message';
+// import service_note from './services/note';
 
 const app: Express = express();
 
@@ -19,6 +27,7 @@ const isProduct = process.env.NODE_ENV === 'production';
 const port = isProduct ? process.env.PORT : 4000;
 
 const apiString = isProduct ? '' : '/api';
+const prefix = getEnv() === myEnv.Dev ? '/api' : '';
 
 app.use(cookieParser());
 app.use(apiString, express.json());
@@ -55,12 +64,53 @@ app.use(`${apiString}/hello`, (req, res) => {
     res.send('hello');
 });
 
-app.use(`${apiString}/service_image`, service_image);
-app.use(`${apiString}/service_video`, service_video);
-app.use(`${apiString}/service_account`, service_account);
-app.use(`${apiString}/service_myCustomer`, service_myCustomer);
-app.use(`${apiString}/service_message`, service_message);
-app.use(`${apiString}/service_note`, service_note);
+// app.use(`${apiString}/service_image`, service_image);
+// app.use(`${apiString}/service_video`, service_video);
+// app.use(`${apiString}/service_account`, service_account);
+// app.use(`${apiString}/service_myCustomer`, service_myCustomer);
+// app.use(`${apiString}/service_message`, service_message);
+// app.use(`${apiString}/service_note`, service_note);
+
+(async () => {
+    await mssql_server.init();
+    await redis_server.init();
+    await rabbit_server.init();
+
+    const serviceRedis = ServiceRedis.getInstance();
+    await serviceRedis.init();
+
+    if (services.includes('image')) {
+        const service_image = (await import('./services/image')).default;
+        app.use(`${prefix}/service_image`, service_image);
+    }
+
+    if (services.includes('video')) {
+        const service_video = (await import('./services/video')).default;
+        app.use(`${prefix}/service_video`, service_video);
+    }
+
+    if (services.includes('account')) {
+        const service_account = (await import('@src/services/account')).default;
+        app.use(`${prefix}/service_account`, service_account);
+    }
+
+    if (services.includes('myCustomer')) {
+        const service_myCustomer = (await import('./services/myCustomer')).default;
+        app.use(`${prefix}/service_myCustomer`, service_myCustomer);
+    }
+
+    if (services.includes('message')) {
+        const service_message_v1 = (await import('./services/message_v1')).default;
+        const hookData = (await import('./services/message_v1/hookData')).hookData;
+        app.use(`${prefix}/service_message_v1`, service_message_v1);
+        hookData();
+    }
+
+    if (services.includes('note')) {
+        const service_note = (await import('@src/services/note')).default;
+        app.use(`${prefix}/service_note`, service_note);
+    }
+})();
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

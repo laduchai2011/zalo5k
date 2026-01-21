@@ -65,4 +65,20 @@ const rabbitmq_config: my_interface['rabbitmq']['config'] = isProduct
           password: 'admin123',
       };
 
-export { mssql_config, redis_config, rabbitmq_config };
+const mongo_config: my_interface['mongo']['config'] = isProduct
+    ? {
+          host: process.env.MONGO_SERVER_HOST,
+          port: Number(process.env.MONGO_SERVER_PORT),
+          username: process.env.MONGO_SERVER_USERNAME,
+          password: process.env.MONGO_SERVER_PASSWORD,
+          database: process.env.MONGO_SERVER_DATABASE,
+      }
+    : {
+          host: '103.249.200.80',
+          port: 27017,
+          username: 'admin',
+          password: 'admin123',
+          database: 'zalo5kdev',
+      };
+
+export { mssql_config, redis_config, rabbitmq_config, mongo_config };

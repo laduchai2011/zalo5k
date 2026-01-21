@@ -183,10 +183,10 @@ const Message = () => {
         const myRoom = myId + id;
 
         // Kết nối server
-        // socketRef.current = io(SOCKET_URL || '');
-        socketRef.current = io('wss://socketapp.5kaquarium.com', {
-            path: '/socket.io/',
-        });
+        socketRef.current = io(SOCKET_URL || '', { path: '/socket.io/' });
+        // socketRef.current = io('wss://socketapp.5kaquarium.com', {
+        //     path: '/socket.io/',
+        // });
 
         if (!socketRef.current) return;
         const socket = socketRef.current;

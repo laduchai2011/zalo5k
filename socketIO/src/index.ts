@@ -14,7 +14,14 @@ const dev_prefix = isProduct ? '' : 'dev';
 
 const httpServer = createServer(); // ❗ Không dùng Express
 
-const io = new Server(httpServer);
+// const io = new Server(httpServer);
+const io = new Server(httpServer, {
+    cors: {
+        origin: 'http://zalo5k.local.com:3000',
+        methods: ['GET', 'POST'],
+        credentials: true,
+    },
+});
 
 consumeMessage(customerSend_sendToMember, (data) => {
     const room = data.accountId.toString() + data.data.sender.id;
@@ -109,7 +116,7 @@ io.on('connection', (socket) => {
 });
 
 // Chạy server
-const port = isProduct ? process.env.PORT : 6000;
+const port = isProduct ? process.env.PORT : 1000;
 httpServer.listen(port, () => {
     console.log(`Socket.IO server running on port ${port}`);
 });

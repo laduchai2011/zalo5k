@@ -3,7 +3,7 @@ import { myEnv, MyEnv } from './type';
 
 dotenv.config();
 
-function getEnv(): MyEnv {
+export function getEnv(): MyEnv {
     const env = process.env.NODE_ENV as MyEnv;
     switch (env) {
         case myEnv.Dev: {
