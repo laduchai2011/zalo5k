@@ -23,7 +23,7 @@ export async function connectMongo(): Promise<Db> {
     return db;
 }
 
-export function getDb(): Db {
+export function getDbMonggo(): Db {
     if (!db) {
         throw new Error('MongoDB not connected. Call connectMongo() first.');
     }

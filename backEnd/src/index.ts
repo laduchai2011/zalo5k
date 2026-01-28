@@ -7,6 +7,7 @@ import { mssql_server } from '@src/connect';
 import { redis_server } from '@src/connect';
 import { rabbit_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
+import { connectMongo } from './connect/mongo';
 import { getEnv } from './mode';
 import { myEnv } from './mode/type';
 
@@ -79,6 +80,8 @@ app.use(`${apiString}/hello`, (req, res) => {
     const serviceRedis = ServiceRedis.getInstance();
     await serviceRedis.init();
 
+    await connectMongo();
+
     if (services.includes('image')) {
         const service_image = (await import('./services/image')).default;
         app.use(`${prefix}/service_image`, service_image);
@@ -100,15 +103,22 @@ app.use(`${apiString}/hello`, (req, res) => {
     }
 
     if (services.includes('message')) {
+        const service_message = (await import('./services/message')).default;
         const service_message_v1 = (await import('./services/message_v1')).default;
-        const hookData = (await import('./services/message_v1/hookData')).hookData;
+        app.use(`${prefix}/service_message`, service_message);
         app.use(`${prefix}/service_message_v1`, service_message_v1);
+        const hookData = (await import('./services/message_v1/hookData')).hookData;
         hookData();
     }
 
     if (services.includes('note')) {
         const service_note = (await import('@src/services/note')).default;
         app.use(`${prefix}/service_note`, service_note);
+    }
+
+    if (services.includes('zalo')) {
+        const service_zalo = (await import('@src/services/zalo')).default;
+        app.use(`${prefix}/service_zalo`, service_zalo);
     }
 })();
 

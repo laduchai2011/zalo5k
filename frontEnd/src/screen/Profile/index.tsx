@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { PROFILE, ADMIN, MEMBER, MEMBER_RECEIVE_MESSAGE, MANAGE_MEMBERS, SIGNOUT } from '@src/const/text';
+import { PROFILE, MEMBER_RECEIVE_MESSAGE, MANAGE_MEMBERS, SIGNOUT, OA } from '@src/const/text';
 import Header from '../Header';
 import { select_enum, route_enum } from '@src/router/type';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
@@ -33,9 +33,8 @@ const Profile = () => {
             if (accountStorage) {
                 setAccount(JSON.parse(accountStorage));
                 clearInterval(interval);
-            };
+            }
         }, 50);
-        
     }, []);
     useEffect(() => {
         const interval = setInterval(() => {
@@ -43,15 +42,15 @@ const Profile = () => {
             if (accountInformationStorage) {
                 setAccountInformation(JSON.parse(accountInformationStorage));
                 clearInterval(interval);
-            };
+            }
         }, 50);
     }, []);
     useEffect(() => {
         if (accountInformation?.accountType === accountType_enum.ADMIN) {
-            setAccountType(ADMIN);
+            setAccountType(accountType_enum.ADMIN);
         }
         if (accountInformation?.accountType === accountType_enum.MEMBER) {
-            setAccountType(MEMBER);
+            setAccountType(accountType_enum.MEMBER);
         }
     }, [accountInformation]);
 
@@ -61,6 +60,10 @@ const Profile = () => {
 
     const goToManageMembers = () => {
         navigate(route_enum.MANAGE_MEMBERS);
+    };
+
+    const goToOa = () => {
+        navigate(route_enum.OA);
     };
 
     const goToSignout = () => {
@@ -82,6 +85,9 @@ const Profile = () => {
                     </div>
                     <div className={style.option} onClick={() => goToManageMembers()}>
                         {MANAGE_MEMBERS}
+                    </div>
+                    <div className={style.option} onClick={() => goToOa()}>
+                        {OA}
                     </div>
                     <div className={style.option} onClick={() => goToSignout()}>
                         {SIGNOUT}

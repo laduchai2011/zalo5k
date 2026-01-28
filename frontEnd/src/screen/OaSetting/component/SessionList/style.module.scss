@@ -1,0 +1,36 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px 10px;
+
+    > .main {
+        > .header {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        > .list {
+            margin: 5px 0;
+
+            > div {
+                margin: 5px 0;
+                box-sizing: border-box;
+                padding: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                &:hover {
+                    background-color: rgb(247, 247, 247);
+                }
+
+                > div:nth-child(2) {
+                    > svg {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}
