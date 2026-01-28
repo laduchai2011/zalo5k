@@ -17,6 +17,13 @@ export interface AccountInformationField {
     accountId: number;
 }
 
+export enum accountType_enum {
+    ADMIN = 'admin',
+    MEMBER = 'member',
+}
+
+export type accountType_type = accountType_enum.ADMIN | accountType_enum.MEMBER;
+
 export interface AddMemberBodyField {
     userName: string;
     password: string;

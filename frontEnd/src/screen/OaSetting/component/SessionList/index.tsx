@@ -1,14 +1,23 @@
 import { memo } from 'react';
 import style from './style.module.scss';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 import { SESSION_LIST } from '@src/const/text';
 import { MdDelete } from 'react-icons/md';
+import { setIsShow_delDialog } from '@src/redux/slice/OaSetting';
 
 const SessionList = () => {
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleDel = () => {
+        dispatch(setIsShow_delDialog(true));
+    };
+
     const list = [1, 2, 3, 4].map((item, index) => (
         <div key={index}>
             <div>{item}</div>
             <div>
-                <MdDelete size={20} color="red" />
+                <MdDelete onClick={() => handleDel()} size={20} color="red" />
             </div>
         </div>
     ));

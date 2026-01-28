@@ -1,14 +1,9 @@
 import { memo, useState } from 'react';
 import style from './style.module.scss';
-import { useNavigate } from 'react-router-dom';
 import { FaRegEye, FaEyeSlash } from 'react-icons/fa';
 import { GoDotFill } from 'react-icons/go';
-import { IoMdSettings } from 'react-icons/io';
-import { SETTING } from '@src/const/text';
-import { route_enum } from '@src/router/type';
 
 const MyOa = () => {
-    const navigate = useNavigate();
     const [isShow_id, setIsShow_id] = useState(false);
     const [isShow_secret, setIsShow_secret] = useState(false);
 
@@ -18,10 +13,6 @@ const MyOa = () => {
 
     const handleShow_secret = (isShow: boolean) => {
         setIsShow_secret(isShow);
-    };
-
-    const gotoSetting = () => {
-        navigate(route_enum.OA_SETTING);
     };
 
     return (

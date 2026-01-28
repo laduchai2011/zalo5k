@@ -26,3 +26,6 @@ export const NOTE = 'Ghi chú';
 export const SEE_MORE = 'Xem thêm';
 export const SETTING = 'Cài đặt';
 export const SESSION_LIST = 'Danh sách phiên';
+export const CREATE_NEW_SESSION = 'Tạo phiên mới';
+export const AGREE = 'Đồng ý';
+export const EXIT = 'Thoát';

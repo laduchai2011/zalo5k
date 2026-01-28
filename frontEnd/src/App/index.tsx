@@ -2,8 +2,14 @@ import { useEffect } from 'react';
 import AppRouter from '@src/router';
 import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
+import { set_accountInformation, set_myAdmin } from '@src/redux/slice/App';
+import { AccountInformationField } from '@src/dataStruct/account';
 
 const App = () => {
+    const dispatch = useDispatch<AppDispatch>();
+
     useEffect(() => {
         const myId = sessionStorage.getItem('myId');
 
@@ -31,13 +37,15 @@ const App = () => {
     useEffect(() => {
         const getAccountInformation = async () => {
             try {
-                const response = await axiosInstance.get<MyResponse<number>>(
+                const response = await axiosInstance.get<MyResponse<AccountInformationField>>(
                     `/service_account/query/getAccountInformation`
                 );
                 const resData = response.data;
                 // console.log('getAccountInformation', resData);
                 if (resData.isSuccess) {
                     if (resData.data) {
+                        dispatch(set_accountInformation(resData.data));
+                        dispatch(set_myAdmin(resData.data.addedById));
                         sessionStorage.setItem('accountInformation', `${JSON.stringify(resData.data)}`);
                     } else {
                         sessionStorage.removeItem('accountInformation');
@@ -49,7 +57,7 @@ const App = () => {
         };
 
         getAccountInformation();
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         const getAccount = async () => {
