@@ -15,7 +15,7 @@ class Handle_GetZaloAppWithAccountId {
 
         const myResponse: MyResponse<ZaloAppField> = {
             isSuccess: false,
-            message: 'Bắt đầu Handle_GetMe để lấy tài khoản admin hay thành viên (setup) !',
+            message: 'Bắt đầu Handle_GetZaloAppWithAccountId (checkRole) !',
         };
 
         const { refreshToken } = req.cookies;
@@ -36,9 +36,8 @@ class Handle_GetZaloAppWithAccountId {
             }
 
             const { id } = verify_refreshToken;
-            const adminId = id as unknown as string;
             const accountId = zaloAppWithAccountIdBody.accountId;
-            if (adminId === accountId) {
+            if (id === accountId) {
                 res.locals.role = accountType_enum.ADMIN;
             } else {
                 res.locals.role = accountType_enum.MEMBER;
@@ -53,22 +52,22 @@ class Handle_GetZaloAppWithAccountId {
     };
 
     main = async (req: Request<any, any, ZaloAppWithAccountIdBodyField>, res: Response) => {
-        const role: accountType_type = req.query.role as accountType_type;
+        const role: accountType_type = res.locals.role as accountType_type;
         const zaloAppWithAccountIdBody: ZaloAppWithAccountIdBodyField = req.body;
 
         const myResponse: MyResponse<ZaloAppField> = {
             isSuccess: false,
-            message: 'Bắt đầu Handle_GetZaloAppWithAccountId để lấy thông tin Zalo App (main) !',
+            message: 'Bắt đầu Handle_GetZaloAppWithAccountId (main) !',
         };
 
         await this._mssql_server.init();
 
-        const queryDB_getMe = new QueryDB_GetZaloAppWithAccountId();
-        queryDB_getMe.setZaloAppWithAccountIdBody(zaloAppWithAccountIdBody);
+        const queryDB = new QueryDB_GetZaloAppWithAccountId();
+        queryDB.setZaloAppWithAccountIdBody(zaloAppWithAccountIdBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
-            queryDB_getMe.set_connection_pool(connection_pool);
+            queryDB.set_connection_pool(connection_pool);
         } else {
             myResponse.message = 'Kết nối cơ sở dữ liệu không thành công !';
             res.status(500).json(myResponse);
@@ -76,11 +75,11 @@ class Handle_GetZaloAppWithAccountId {
         }
 
         try {
-            const result = await queryDB_getMe.run();
+            const result = await queryDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const zaloApp: ZaloAppField = { ...result?.recordset[0] };
                 if (role === accountType_enum.MEMBER) {
-                    zaloApp.appId = 'Bạn không phải admin';
+                    // zaloApp.appId = 'Bạn không phải admin';
                     zaloApp.appSecret = 'Bạn không phải admin';
                 }
                 myResponse.data = zaloApp;

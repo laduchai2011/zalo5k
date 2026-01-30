@@ -5,7 +5,7 @@ export interface ZaloAppField {
     appName: string;
     appSecret: string;
     status: string;
-    accountId: string;
+    accountId: number;
     updateTime: string;
     createTime: string;
 }
@@ -18,8 +18,8 @@ export interface ZaloOaField {
     oaSecret: string;
     refreshToken: string;
     status: string;
-    zaloAppId: string;
-    accountId: string;
+    zaloAppId: number;
+    accountId: number;
     updateTime: string;
     createTime: string;
 }
@@ -29,7 +29,12 @@ export interface OaPermissionField {
     role: string;
     status: string;
     zaloOaId: string;
-    accountId: string;
+    accountId: number;
     updateTime: string;
     createTime: string;
+}
+
+export interface PagedZaloOaField {
+    items: ZaloOaField[];
+    totalCount: number;
 }

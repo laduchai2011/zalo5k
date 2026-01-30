@@ -120,6 +120,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_zalo = (await import('@src/services/zalo')).default;
         app.use(`${prefix}/service_zalo`, service_zalo);
     }
+
+    if (services.includes('chatSession')) {
+        const service_chatSession = (await import('@src/services/chatSession')).default;
+        app.use(`${prefix}/service_chatSession`, service_chatSession);
+    }
 })();
 
 app.listen(port, () => {

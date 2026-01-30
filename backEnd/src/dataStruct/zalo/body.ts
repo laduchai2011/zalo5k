@@ -1,4 +1,11 @@
 export interface ZaloAppWithAccountIdBodyField {
-    accountId: string;
+    accountId: number;
     role: string;
+}
+
+export interface ZaloOaListWith2FkBodyField {
+    page: number;
+    size: number;
+    zaloAppId: number;
+    accountId: number;
 }

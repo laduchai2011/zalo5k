@@ -1,6 +1,8 @@
 import style from './style.module.scss';
 import OaApp from './component/OaApp';
-import MyOa from './component/MyOa';
+import OaList from './component/OaList';
+import MyToastMessage from './component/MyToastMessage';
+import MyLoading from './component/MyLoading';
 import { OA_LIST } from '@src/const/text';
 
 const Oa = () => {
@@ -12,11 +14,11 @@ const Oa = () => {
                     <OaApp />
                 </div>
                 <div>
-                    <MyOa />
-                    <MyOa />
-                    <MyOa />
-                    <MyOa />
-                    <MyOa />
+                    <OaList />
+                </div>
+                <div>
+                    <MyToastMessage />
+                    <MyLoading />
                 </div>
             </div>
         </div>

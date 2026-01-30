@@ -16,10 +16,10 @@ const OaSetting = () => {
                     <MyOa />
                 </div>
                 <div>
-                    <SessionList />
+                    <CreateNewSession />
                 </div>
                 <div>
-                    <CreateNewSession />
+                    <SessionList />
                 </div>
                 <div>
                     <MyToastMessage />

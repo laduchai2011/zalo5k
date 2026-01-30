@@ -13,7 +13,8 @@ const CreateNewSession = () => {
                         thể nhắn tin cho bạn
                     </div>
                     <div className={style.inputContainer}>
-                        <input placeholder="Nhập phiên hội thoại" />
+                        <input placeholder="Nhãn" />
+                        <input placeholder="Mã" />
                     </div>
                     <div className={style.btnContainer}>
                         <button className={style.btn}>Tạo phiên mới</button>

@@ -2,13 +2,18 @@ import { useEffect } from 'react';
 import AppRouter from '@src/router';
 import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@src/redux';
-import { set_accountInformation, set_myAdmin } from '@src/redux/slice/App';
-import { AccountInformationField } from '@src/dataStruct/account';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
+import { set_account, set_accountInformation, set_myAdmin, set_zaloApp } from '@src/redux/slice/App';
+import { AccountField, AccountInformationField } from '@src/dataStruct/account';
+import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const accountInformation: AccountInformationField | undefined = useSelector(
+        (state: RootState) => state.AppSlice.accountInformation
+    );
+    const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
 
     useEffect(() => {
         const myId = sessionStorage.getItem('myId');
@@ -62,11 +67,12 @@ const App = () => {
     useEffect(() => {
         const getAccount = async () => {
             try {
-                const response = await axiosInstance.get<MyResponse<number>>(`/service_account/query/getMe`);
+                const response = await axiosInstance.get<MyResponse<AccountField>>(`/service_account/query/getMe`);
                 const resData = response.data;
                 // console.log('getAccount', resData);
                 if (resData.isSuccess) {
                     if (resData.data) {
+                        dispatch(set_account(resData.data));
                         sessionStorage.setItem('account', `${JSON.stringify(resData.data)}`);
                     } else {
                         sessionStorage.removeItem('account');
@@ -78,7 +84,38 @@ const App = () => {
         };
 
         getAccount();
-    }, []);
+    }, [dispatch]);
+
+    const {
+        data: data_zaloApp,
+        // isFetching,
+        isLoading: isLoading_zaloApp,
+        isError: isError_zaloApp,
+        error: error_zaloApp,
+    } = useGetZaloAppWithAccountIdQuery(
+        { role: accountInformation?.accountType || '', accountId: myAdmin || 0 },
+        { skip: myAdmin === undefined || accountInformation === undefined }
+    );
+    useEffect(() => {
+        if (isError_zaloApp && error_zaloApp) {
+            console.error(error_zaloApp);
+            // dispatch(
+            //     setData_toastMessage({
+            //         type: messageType_enum.ERROR,
+            //         message: 'Lấy dữ liệu zalo-app KHÔNG thành công !',
+            //     })
+            // );
+        }
+    }, [dispatch, isError_zaloApp, error_zaloApp]);
+    useEffect(() => {
+        // dispatch(set_isLoading(isLoading_zaloApp));
+    }, [dispatch, isLoading_zaloApp]);
+    useEffect(() => {
+        const resData = data_zaloApp;
+        if (resData?.isSuccess && resData.data) {
+            dispatch(set_zaloApp(resData.data));
+        }
+    }, [dispatch, data_zaloApp]);
 
     return (
         <div>

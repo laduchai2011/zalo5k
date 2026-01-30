@@ -12,23 +12,22 @@
 
         > .list {
             margin: 5px 0;
+        }
+
+        > .more {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+            height: 40px;
+            width: 100%;
 
             > div {
-                margin: 5px 0;
-                box-sizing: border-box;
-                padding: 5px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                user-select: none;
+                color: blue;
+                cursor: pointer;
 
                 &:hover {
-                    background-color: rgb(247, 247, 247);
-                }
-
-                > div:nth-child(2) {
-                    > svg {
-                        cursor: pointer;
-                    }
+                    text-decoration: underline;
                 }
             }
         }
