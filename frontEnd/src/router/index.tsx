@@ -27,7 +27,7 @@ const router = createBrowserRouter(
         { path: route_enum.MEMBER_RECEIVE_MESSAGE, element: <MemberReceiveMessage /> },
         { path: route_enum.MANAGE_MEMBERS, element: <ManageMembers /> },
         { path: route_enum.OA, element: <Oa /> },
-        { path: route_enum.OA_SETTING, element: <OaSetting /> },
+        { path: route_enum.OA_SETTING + '/:id', element: <OaSetting /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

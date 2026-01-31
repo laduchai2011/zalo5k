@@ -9,3 +9,13 @@ export interface ZaloOaListWith2FkBodyField {
     zaloAppId: number;
     accountId: number;
 }
+
+export interface IsMyOaBodyField {
+    id: number;
+    accountId: number;
+}
+
+export interface ZaloOaWithIdBodyField {
+    id: number;
+    accountId: number;
+}

@@ -5,6 +5,7 @@ export interface ChatSessionField {
     isReady: boolean;
     status: string;
     selectedAccountId: number;
+    zaloOaId: number;
     accountId: number;
     updateTime: string;
     createTime: string;

@@ -22,7 +22,7 @@ const MyOa: FC<{ index: number; data: ZaloOaField }> = ({ index, data }) => {
     };
 
     const gotoSetting = () => {
-        navigate(route_enum.OA_SETTING);
+        navigate(route_enum.OA_SETTING + '/' + `${data.id}`);
     };
 
     return (

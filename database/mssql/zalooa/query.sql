@@ -40,3 +40,31 @@ BEGIN
 			AND (@accountId IS NULL OR zo.accountId = @accountId) 
 END
 GO
+
+CREATE PROCEDURE IsMyOa
+	@id INT,
+    @accountId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOa
+	WHERE 
+		status = 'normal' 
+		AND id = @id
+		AND accountId = @accountId
+END
+GO
+
+ALTER PROCEDURE GetZaloOaWithId
+	@id INT,
+	@accountId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOa
+	WHERE 
+		status = 'normal' 
+		AND id = @id
+		AND accountId = @accountId
+END
+GO

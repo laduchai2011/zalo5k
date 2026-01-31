@@ -12,6 +12,7 @@ router_mutate_chatSession.post(
     '/createChatSession',
     authentication,
     handle_createChatSession.setup,
+    handle_createChatSession.isMyOa,
     handle_createChatSession.main
 );
 

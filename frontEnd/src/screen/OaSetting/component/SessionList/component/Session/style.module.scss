@@ -56,6 +56,10 @@
 
             > img {
                 height: 90%;
+                aspect-ratio: 1/1;
+                box-sizing: border-box;
+                border: 1px solid gray;
+                border-radius: 50%;
             }
         }
 

@@ -1,10 +1,13 @@
 import sql from 'mssql';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { ChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import { ZaloOaField } from '@src/dataStruct/zalo';
+import { IsMyOaBodyField } from '@src/dataStruct/zalo/body';
 
 class MutateDB_CreateChatSession {
     private _connectionPool: sql.ConnectionPool | undefined;
     private _chatSessionBody: ChatSessionBodyField | undefined;
+    private _isMyOaBody: IsMyOaBodyField | undefined;
 
     constructor() {}
 
@@ -14,6 +17,26 @@ class MutateDB_CreateChatSession {
 
     setChatSessionBody(chatSessionBody: ChatSessionBodyField): void {
         this._chatSessionBody = chatSessionBody;
+    }
+
+    setIsMyOaBody(isMyOaBody: IsMyOaBodyField): void {
+        this._isMyOaBody = isMyOaBody;
+    }
+
+    async isMyOa(): Promise<sql.IProcedureResult<ZaloOaField> | undefined> {
+        if (this._connectionPool !== undefined && this._isMyOaBody !== undefined) {
+            try {
+                const result = await this._connectionPool
+                    .request()
+                    .input('id', sql.Int, this._isMyOaBody.id)
+                    .input('accountId', sql.Int, this._isMyOaBody.accountId)
+                    .execute('IsMyOa');
+
+                return result;
+            } catch (error) {
+                console.error(error);
+            }
+        }
     }
 
     async run(): Promise<sql.IProcedureResult<ChatSessionField> | undefined> {

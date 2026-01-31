@@ -7,7 +7,7 @@ import { MyResponse } from '@src/dataStruct/response';
 export const chatSessionRTK = createApi({
     reducerPath: 'chatSessionRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: [],
+    tagTypes: ['ChatSessionList'],
     endpoints: (builder) => ({
         getChatSessionsWithAccountId: builder.query<
             MyResponse<PagedChatSessionField>,
@@ -18,6 +18,7 @@ export const chatSessionRTK = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: ['ChatSessionList'],
         }),
         createChatSession: builder.mutation<MyResponse<ChatSessionField>, ChatSessionBodyField>({
             query: (body) => ({
@@ -25,6 +26,7 @@ export const chatSessionRTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['ChatSessionList'],
         }),
     }),
 });
