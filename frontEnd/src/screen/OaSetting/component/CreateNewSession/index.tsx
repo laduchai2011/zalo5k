@@ -6,8 +6,9 @@ import { CREATE_NEW_SESSION } from '@src/const/text';
 import { useCreateChatSessionMutation } from '@src/redux/query/chatSessionRTK';
 import { ChatSessionBodyField } from '@src/dataStruct/chatSession/body';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/OaSetting';
+import { set_isLoading, setData_toastMessage, set_chatSessions } from '@src/redux/slice/OaSetting';
 import { ZaloOaField } from '@src/dataStruct/zalo';
+import { Crud_Enum } from '../../type';
 
 const CreateNewSession = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -65,6 +66,7 @@ const CreateNewSession = () => {
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
+                    dispatch(set_chatSessions({ chatSessions: [resData.data], crud_type: Crud_Enum.CREATE }));
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.SUCCESS,

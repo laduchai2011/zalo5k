@@ -52,7 +52,6 @@ const MemberReceiveMessage = () => {
     }, [isLoading_allMembers]);
     useEffect(() => {
         const resData = data_allMembers;
-
         if (resData?.isSuccess && resData?.data) {
             setAllMembers(resData.data);
         }

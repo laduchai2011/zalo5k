@@ -9,6 +9,9 @@ export const accountRTK = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
     tagTypes: ['Account', 'MemberList', 'MemberReceiveMessage'],
     endpoints: (builder) => ({
+        getAccountWithId: builder.query<MyResponse<AccountField>, { accountId: number }>({
+            query: ({ accountId }) => `${ACCOUNT_API.GET_ACCOUNT_WITH_ID}?accountId=${accountId}`,
+        }),
         getMemberReceiveMessage: builder.query<MyResponse<AccountField>, void>({
             query: () => ACCOUNT_API.GET_MEMBER_RECEIVE_MESSAGE,
             providesTags: ['MemberReceiveMessage'],
@@ -65,6 +68,7 @@ export const accountRTK = createApi({
 });
 
 export const {
+    useGetAccountWithIdQuery,
     useGetMemberReceiveMessageQuery,
     useGetAllMembersQuery,
     useSignupMutation,

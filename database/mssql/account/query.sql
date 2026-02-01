@@ -47,3 +47,15 @@ BEGIN
 		AND id = @id
 END
 GO
+
+CREATE PROCEDURE GetAccountWithId
+    @id INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.account
+	WHERE 
+		status = 'normal' 
+		AND id = @id
+END
+GO

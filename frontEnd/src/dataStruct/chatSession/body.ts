@@ -13,3 +13,15 @@ export interface ChatSessionWithAccountIdBodyField {
     zaloOaId: number;
     accountId: number;
 }
+
+export interface UpdateSelectedAccountIdOfChatSessionBodyField {
+    id: number;
+    selectedAccountId: number;
+    accountId: number;
+}
+
+export interface UpdateIsReadyOfChatSessionBodyField {
+    id: number;
+    isReady: boolean;
+    accountId: number;
+}

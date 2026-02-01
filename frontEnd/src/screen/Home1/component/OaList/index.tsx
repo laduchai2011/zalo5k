@@ -1,14 +1,14 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useState, useRef, useEffect } from 'react';
 import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
-import MyOa from './component/MyOa';
-import { SEE_MORE } from '@src/const/text';
+import { HiChevronDown, HiChevronUp } from 'react-icons/hi';
 import { useGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Oa';
+import { setData_toastMessage, set_isLoading, set_selectedOa } from '@src/redux/slice/Home1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import { SEE_MORE } from '@src/const/text';
 
 const OaList = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -16,6 +16,9 @@ const OaList = () => {
         (state: RootState) => state.AppSlice.accountInformation
     );
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
+    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.Home1Slice.selectedOa);
+    const list_element = useRef<HTMLDivElement | null>(null);
+    const [isShow, setIsShow] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const size: number = 5;
     const [zaloOaList, setZaloOaList] = useState<ZaloOaField[]>([]);
@@ -51,26 +54,55 @@ const OaList = () => {
             setZaloOaList((prev) => [...prev, ...(resData.data?.items ?? [])]);
             setTotal(resData.data.totalCount);
         }
-    }, [data_zaloOaList]);
+    }, [dispatch, data_zaloOaList]);
+
+    useEffect(() => {
+        if (!list_element.current) return;
+        const listElement = list_element.current;
+
+        if (isShow) {
+            listElement.classList.add(style.show);
+        } else {
+            listElement.classList.remove(style.show);
+        }
+    }, [isShow]);
+
+    const handleShowDown = () => {
+        setIsShow(true);
+    };
+
+    const handleShowUp = () => {
+        setIsShow(false);
+    };
+
+    const handleSelected = (item: ZaloOaField) => {
+        dispatch(set_selectedOa(item));
+    };
 
     const handleSeeMore = () => {
         setPage((prev) => prev + 1);
     };
 
-    const list_oa = zaloOaList.map((item, index) => {
-        return <MyOa key={item.id} index={index + 1} data={item} />;
+    const list_oa = zaloOaList.map((item) => {
+        return (
+            <div onClick={() => handleSelected(item)} key={item.id}>
+                {item.oaName}
+            </div>
+        );
     });
 
     return (
         <div className={style.parent}>
-            <div className={style.total}>{`Bạn có ${total} OA`}</div>
-            <div className={style.list}>{list_oa}</div>
-            <div className={style.btnContainer}>
-                {zaloOaList.length < total && (
-                    <div className={style.btn} onClick={() => handleSeeMore()}>
-                        {SEE_MORE}
-                    </div>
-                )}
+            <div className={style.selected}>
+                <div>{selectedOa?.oaName}</div>
+                <div>
+                    {!isShow && <HiChevronDown onClick={() => handleShowDown()} size={25} />}
+                    {isShow && <HiChevronUp onClick={() => handleShowUp()} size={25} />}
+                </div>
+            </div>
+            <div className={style.list} ref={list_element}>
+                <div>{list_oa}</div>
+                <div>{zaloOaList.length < total && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
             </div>
         </div>
     );

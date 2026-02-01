@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import AppReducer from '@src/redux/slice/App';
+import Home1Reducer from '@src/redux/slice/Home1';
 import MessageReducer from '@src/redux/slice/Message';
 import ManageMembersReducer from '@src/redux/slice/ManageMembers';
 import MemberReceiveMessageReducer from '@src/redux/slice/MemberReceiveMessage';
@@ -15,6 +16,7 @@ export const store = configureStore({
     reducer: {
         dummy: (state = {}) => state,
         AppSlice: AppReducer,
+        Home1Slice: Home1Reducer,
         MessageSlice: MessageReducer,
         ManageMembersSlice: ManageMembersReducer,
         MemberReceiveMessageSlice: MemberReceiveMessageReducer,

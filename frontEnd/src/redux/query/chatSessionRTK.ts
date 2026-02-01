@@ -1,13 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ChatSessionField, PagedChatSessionField } from '@src/dataStruct/chatSession';
-import { ChatSessionWithAccountIdBodyField, ChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import {
+    ChatSessionWithAccountIdBodyField,
+    ChatSessionBodyField,
+    UpdateSelectedAccountIdOfChatSessionBodyField,
+    UpdateIsReadyOfChatSessionBodyField,
+} from '@src/dataStruct/chatSession/body';
 import { CHAT_SESSION_API } from '@src/const/api/chatSession';
 import { MyResponse } from '@src/dataStruct/response';
 
 export const chatSessionRTK = createApi({
     reducerPath: 'chatSessionRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['ChatSessionList'],
+    tagTypes: ['ChatSession'],
     endpoints: (builder) => ({
         getChatSessionsWithAccountId: builder.query<
             MyResponse<PagedChatSessionField>,
@@ -18,7 +23,16 @@ export const chatSessionRTK = createApi({
                 method: 'POST',
                 body,
             }),
-            providesTags: ['ChatSessionList'],
+            // providesTags: (result) =>
+            //     result?.data?.items
+            //         ? [
+            //               ...result.data.items.map((item) => ({
+            //                   type: 'ChatSession' as const,
+            //                   id: item.id,
+            //               })),
+            //               { type: 'ChatSession', id: 'LIST' },
+            //           ]
+            //         : [{ type: 'ChatSession', id: 'LIST' }],
         }),
         createChatSession: builder.mutation<MyResponse<ChatSessionField>, ChatSessionBodyField>({
             query: (body) => ({
@@ -26,9 +40,34 @@ export const chatSessionRTK = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['ChatSessionList'],
+            // invalidatesTags: [{ type: 'ChatSessionList', id: 'LIST' }],
+            // invalidatesTags: [{ type: 'ChatSession', id: 'LIST' }],
+        }),
+        updateSelectedAccountIdOfChatSession: builder.mutation<
+            MyResponse<ChatSessionField>,
+            UpdateSelectedAccountIdOfChatSessionBodyField
+        >({
+            query: (body) => ({
+                url: CHAT_SESSION_API.UPDATE_SELECTED_ACCOUNT_ID,
+                method: 'PATCH',
+                body,
+            }),
+            // invalidatesTags: (result) => [{ type: 'ChatSession', id: result?.data?.id }],
+        }),
+        updateIsReayOfChatSession: builder.mutation<MyResponse<ChatSessionField>, UpdateIsReadyOfChatSessionBodyField>({
+            query: (body) => ({
+                url: CHAT_SESSION_API.UPDATE_ISREADY_ID,
+                method: 'PATCH',
+                body,
+            }),
+            // invalidatesTags: (result) => [{ type: 'ChatSession', id: result?.data?.id }],
         }),
     }),
 });
 
-export const { useCreateChatSessionMutation, useGetChatSessionsWithAccountIdQuery } = chatSessionRTK;
+export const {
+    useCreateChatSessionMutation,
+    useGetChatSessionsWithAccountIdQuery,
+    useUpdateSelectedAccountIdOfChatSessionMutation,
+    useUpdateIsReayOfChatSessionMutation,
+} = chatSessionRTK;

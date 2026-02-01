@@ -29,3 +29,64 @@ BEGIN
 	END CATCH
 END;
 GO
+
+ALTER PROCEDURE UpdateSelectedAccountIdOfChatSession
+	@id INT,
+	@selectedAccountId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+		DECLARE @chatSessionId INT;
+
+		UPDATE dbo.chatSession
+		SET selectedAccountId = @selectedAccountId
+		WHERE 
+			status = 'normal'
+			AND id = @id
+			AND accountId = @accountId;
+
+		SELECT * FROM dbo.chatSession WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE UpdateIsReadyOfChatSession
+	@id INT,
+	@isReady BIT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+		DECLARE @chatSessionId INT;
+
+		UPDATE dbo.chatSession
+		SET isReady = @isReady
+		WHERE 
+			status = 'normal'
+			AND id = @id
+			AND accountId = @accountId;
+
+		SELECT * FROM dbo.chatSession WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+

@@ -56,7 +56,7 @@ const originArray: string[] = ['http://zalo5k.local.com:3000'];
 app.use(
     cors({
         origin: originArray,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
         credentials: true,
     })
 );

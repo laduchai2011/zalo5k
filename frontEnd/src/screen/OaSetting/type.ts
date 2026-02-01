@@ -1,5 +1,6 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { ZaloOaField } from '@src/dataStruct/zalo';
+import { ChatSessionField } from '@src/dataStruct/chatSession';
 
 export interface state_props {
     isLoading: boolean;
@@ -13,4 +14,12 @@ export interface state_props {
         isShow: boolean;
     };
     zaloOa?: ZaloOaField;
+    chatSessions: ChatSessionField[];
 }
+
+export enum Crud_Enum {
+    CREATE = 'CREATE',
+    LOAD_MORE = 'LOAD_MORE',
+}
+
+export type Crud_Type = Crud_Enum.CREATE | Crud_Enum.LOAD_MORE;
