@@ -1,0 +1,27 @@
+﻿CREATE PROCEDURE CreateChatRoom
+	@userIdByApp NVARCHAR(255),
+	@zaloOaId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+		DECLARE @newChatRoomId INT;
+
+        INSERT INTO dbo.chatRoom (userIdByApp, status, zaloOaId, accountId, updateTime, createTime)
+        VALUES (@userIdByApp, 'normal', @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+
+		SET @newChatRoomId = SCOPE_IDENTITY();
+
+		SELECT * FROM dbo.chatRoom WHERE id = @newChatRoomId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO

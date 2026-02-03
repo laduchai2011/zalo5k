@@ -19,3 +19,11 @@ export interface ZaloOaWithIdBodyField {
     id: number;
     accountId: number;
 }
+
+export interface CheckZaloAppWithAppIdBodyField {
+    appId: string;
+}
+
+export interface CheckZaloOaListWithZaloAppIdBodyField {
+    zaloAppId: number;
+}

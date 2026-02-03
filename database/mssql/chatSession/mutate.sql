@@ -13,7 +13,6 @@ BEGIN
         BEGIN TRANSACTION;
 		DECLARE @newChatSessionId INT;
 
-		-- Thêm medication
         INSERT INTO dbo.chatSession (label, code, isReady, status, selectedAccountId, zaloOaId, accountId, updateTime, createTime)
         VALUES (@label, @code, @isReady, 'normal', @selectedAccountId, @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 

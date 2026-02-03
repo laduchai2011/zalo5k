@@ -68,3 +68,27 @@ BEGIN
 		AND accountId = @accountId
 END
 GO
+
+ALTER PROCEDURE CheckZaloAppWithAppId
+    @appId NVARCHAR(255)
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloApp
+	WHERE 
+		status = 'normal' 
+		AND appId = @appId
+END
+GO
+
+CREATE PROCEDURE CheckZaloOaListWithZaloAppId
+    @zaloAppId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOa
+	WHERE 
+		status = 'normal' 
+		AND zaloAppId = @zaloAppId
+END
+GO

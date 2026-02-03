@@ -28,3 +28,18 @@ BEGIN
 			AND (@accountId IS NULL OR cs.accountId = @accountId) 
 END
 GO
+
+ALTER PROCEDURE UserTakeSessionToChat
+	@code NVARCHAR(255),
+	@zaloOaId INT
+AS
+BEGIN
+	
+    SELECT * FROM dbo.chatSession AS cs
+		WHERE 
+			status = 'normal' 
+			AND isReady = 1
+			AND (@code IS NULL OR cs.code = @code)
+			AND (@zaloOaId IS NULL OR cs.zaloOaId = @zaloOaId) 
+END
+GO

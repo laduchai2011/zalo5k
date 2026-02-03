@@ -1,7 +1,8 @@
 import type { ConsumeMessage } from '@src/types/amqp';
 import { rabbit_server } from '@src/connect';
 import { MessageZaloField } from '../type';
-import { MessageInput } from '@src/schema/message';
+// import { MessageInput } from '@src/schema/message';
+import { HookDataField } from '@src/dataStruct/zalo/hookData';
 
 rabbit_server.init();
 
@@ -30,7 +31,7 @@ export async function consumeMessage(queue: string, callback: (messageZalo: Mess
     );
 }
 
-export async function consumeHookData(queue: string, callback: (data: MessageInput) => void) {
+export async function consumeHookData(queue: string, callback: (data: HookDataField) => void) {
     const channel = await rabbit_server.createChannel();
 
     await channel.assertQueue(queue, { durable: true });

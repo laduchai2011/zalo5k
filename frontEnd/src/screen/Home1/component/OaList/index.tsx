@@ -9,6 +9,8 @@ import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { setData_toastMessage, set_isLoading, set_selectedOa } from '@src/redux/slice/Home1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { SEE_MORE } from '@src/const/text';
+import { getCookie, setCookie } from '@src/utility/cookie';
+import { OA_KEY } from '@src/const/key';
 
 const OaList = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -57,6 +59,24 @@ const OaList = () => {
     }, [dispatch, data_zaloOaList]);
 
     useEffect(() => {
+        const selected_oa_cookie = getCookie(OA_KEY.SELECTED_OA);
+        if (!selected_oa_cookie) return;
+        const selected_oa_js = JSON.parse(selected_oa_cookie) as ZaloOaField;
+        let isExist: boolean = false;
+
+        for (let i: number = 0; i < zaloOaList.length; i++) {
+            if (zaloOaList[i].id === selected_oa_js.id) {
+                isExist = true;
+                break;
+            }
+        }
+
+        if (isExist) {
+            dispatch(set_selectedOa(selected_oa_js));
+        }
+    }, [dispatch, zaloOaList]);
+
+    useEffect(() => {
         if (!list_element.current) return;
         const listElement = list_element.current;
 
@@ -76,6 +96,7 @@ const OaList = () => {
     };
 
     const handleSelected = (item: ZaloOaField) => {
+        setCookie(OA_KEY.SELECTED_OA, JSON.stringify(item), 365);
         dispatch(set_selectedOa(item));
     };
 
