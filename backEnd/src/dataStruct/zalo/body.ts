@@ -10,6 +10,20 @@ export interface ZaloOaListWith2FkBodyField {
     accountId: number;
 }
 
+export interface GetZaloOaTokenWithFkBodyField {
+    zaloOaId: number;
+}
+
+export interface ZaloOaTokenBodyField {
+    refreshToken: string;
+    zaloOaId: number;
+}
+
+export interface UpdateRefreshTokenOfZaloOaBodyField {
+    refreshToken: string;
+    zaloOaId: number;
+}
+
 export interface IsMyOaBodyField {
     id: number;
     accountId: number;

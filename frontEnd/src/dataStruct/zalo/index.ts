@@ -16,7 +16,6 @@ export interface ZaloOaField {
     oaId: string;
     oaName: string;
     oaSecret: string;
-    refreshToken: string;
     status: string;
     zaloAppId: number;
     accountId: number;

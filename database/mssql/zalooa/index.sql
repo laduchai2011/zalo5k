@@ -21,7 +21,6 @@ CREATE TABLE zaloOa (
     oaId NVARCHAR(255) NOT NULL UNIQUE,
 	oaName NVARCHAR(255) NOT NULL UNIQUE,
 	oaSecret NVARCHAR(255) NOT NULL,
-	refreshToken NVARCHAR(255) NOT NULL,
     status NVARCHAR(255) NOT NULL,
 	zaloAppId INT NOT NULL,
     accountId INT NOT NULL,
@@ -37,6 +36,13 @@ GO
 CREATE NONCLUSTERED INDEX idx_account_id ON zaloOa(accountId);
 GO
 
+CREATE TABLE zaloOaToken (
+	refreshToken NVARCHAR(MAX) NOT NULL,
+	zaloOaId INT NOT NULL UNIQUE,
+
+	CONSTRAINT FK_zaloOaToken_ZaloOa FOREIGN KEY (zaloOaId) REFERENCES zaloOa(id),
+)
+GO
 
 CREATE TABLE oaPermission (
     id INT PRIMARY KEY IDENTITY(1,1),

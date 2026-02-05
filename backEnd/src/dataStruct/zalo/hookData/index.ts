@@ -1,5 +1,18 @@
 import { Zalo_Event_Name_Enum } from './common';
 
+export interface HookDataSchema<T = ZaloMessageType> {
+    event_name: Zalo_Event_Name_Enum;
+    app_id: string;
+    oa_id: string;
+    chat_room_id: number;
+    user_id_by_app: string;
+    sender_id: string;
+    recipient_id: string;
+    reply_account_id: number;
+    message: T;
+    timestamp: string;
+}
+
 export interface HookDataField<T = ZaloMessageType> {
     app_id: string;
     user_id_by_app: string;
@@ -14,7 +27,8 @@ export interface HookDataField<T = ZaloMessageType> {
     timestamp: string;
 }
 
-interface MessageTextField {
+export interface MessageTextField {
+    quote_msg_id?: string;
     msg_id: string;
     text: string;
 }

@@ -92,3 +92,13 @@ BEGIN
 		AND zaloAppId = @zaloAppId
 END
 GO
+
+CREATE PROCEDURE GetZaloOaTokenWithFk
+    @zaloOaId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOaToken
+	WHERE zaloOaId = @zaloOaId
+END
+GO

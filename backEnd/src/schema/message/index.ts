@@ -21,7 +21,7 @@ const UserSendTextZodSchema = z.object({
 
 export const MessageZodSchema = z.discriminatedUnion('event_name', [UserSendTextZodSchema]);
 
-export type MessageInput = z.infer<typeof MessageZodSchema>;
+export type MessageSchemaType = z.infer<typeof MessageZodSchema>;
 
 // const MessageSchema = new mongoose.Schema({
 //     event_name: String,
