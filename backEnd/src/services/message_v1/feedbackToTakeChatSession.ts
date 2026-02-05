@@ -9,6 +9,7 @@ import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { UserTakeSessionToChatBodyField } from '@src/dataStruct/chatSession/body';
 import QueryDB_UserTakeSessionToChat from './queryDB/UserTakeSessionToChat';
 import { my_log } from '@src/log';
+import { prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp } from '@src/const/redisKey';
 
 mssql_server.init();
 
@@ -17,8 +18,12 @@ serviceRedis.init();
 
 const timeExpireat = 60 * 1; // 1p
 
-export async function feedbackToTakeChatSession(zaloApp: ZaloAppField, zaloOa: ZaloOaField, hookData: HookDataField) {
-    const cacheMsgWaitSession_key = `cacheMsgWaitSession_key_${zaloOa.id}_${hookData.user_id_by_app}_10`;
+export async function feedbackToTakeChatSession(
+    zaloApp: ZaloAppField,
+    zaloOa: ZaloOaField,
+    hookData: HookDataField
+): Promise<WaitSessionField | undefined> {
+    const cacheMsgWaitSession_key = `${prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp}_${zaloOa.id}_${hookData.user_id_by_app}`;
     const eventName = hookData.event_name;
     const isUserSend = eventName.startsWith('user_send');
     // const isOaSend = eventName.startsWith('oa_send');
@@ -127,6 +132,9 @@ export async function feedbackToTakeChatSession(zaloApp: ZaloAppField, zaloOa: Z
 
             const waitSession_final = await serviceRedis.getData<WaitSessionField>(cacheMsgWaitSession_key);
             serviceRedis.deleteData(cacheMsgWaitSession_key);
+            if (!waitSession_final) {
+                return;
+            }
             return waitSession_final;
         }
     } else {

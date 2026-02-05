@@ -10,6 +10,7 @@ export interface HookDataSchema<T = ZaloMessageType> {
     recipient_id: string;
     reply_account_id: number;
     message: T;
+    is_seen: boolean;
     timestamp: string;
 }
 

@@ -22,3 +22,7 @@ export const prefix_cache_chatRoom_with_zaloOaId_userIdByApp = isProduct
 export const prefix_cache_zalo_accessToken_with_zaloOaId = isProduct
     ? 'prefix_cache_zalo_accessToken_with_zaloOaId'
     : 'prefix_cache_zalo_accessToken_with_zaloOaId_dev';
+
+export const prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp = isProduct
+    ? 'prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp'
+    : 'prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp_dev';

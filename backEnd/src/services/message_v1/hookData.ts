@@ -17,17 +17,21 @@ import {
     prefix_cache_zaloOa_list_with_zaloAppId,
     prefix_cache_chatRoom_with_zaloOaId_userIdByApp,
 } from '@src/const/redisKey';
-import { IsPassField } from './type';
+import { IsPassField, WaitSessionField } from './type';
 import { HookDataField, HookDataSchema } from '@src/dataStruct/zalo/hookData';
 import { feedbackToTakeChatSession } from './feedbackToTakeChatSession';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
+import { sendMessageToUser } from './sendMessageToUser';
+import { ensureIndexes } from './ensureIndexes';
 
 mssql_server.init();
 
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
 
-const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
+ensureIndexes();
+
+const timeExpireat = 60 * 3; // 5p
 
 export function hookData() {
     consumeHookData('zalo_hook_data_queue_dev', async (data) => {
@@ -35,6 +39,7 @@ export function hookData() {
         // console.dir(data, { depth: null });
         const app_id = data.app_id;
         const oa_id = determineOaId(data);
+        const sender_id_of_user = determineSenderIdOfUser(data);
         let chatRoom: ChatRoomField | undefined;
 
         if (!oa_id) return;
@@ -45,49 +50,116 @@ export function hookData() {
         if (!zaloApp) return;
         if (!zaloOa) return;
 
+        // const keyRedis = `${prefix_cache_chatRoom_with_zaloOaId_userIdByApp}_${zaloOa.id}_${data.user_id_by_app}`;
+        // serviceRedis.deleteData(keyRedis);
+
         // get chat room
         chatRoom = await getChatRoom(data, zaloOa);
         // console.log(1111, chatRoom);
+        let isFeedback: boolean = false;
+        let waitSession: WaitSessionField | undefined = undefined;
 
         if (!chatRoom) {
             // feedback to take session-code
-            const waitSession = await feedbackToTakeChatSession(zaloApp, zaloOa, data);
+            waitSession = await feedbackToTakeChatSession(zaloApp, zaloOa, data);
+            isFeedback = true;
+
             if (!waitSession) {
                 return;
             }
+            // console.dir(waitSession, { depth: null });
             const chatSession = waitSession.chatSession;
             if (!chatSession) {
-                return;
+                // get default chat session
+                const chatSessionAdmin: ChatSessionField = {
+                    id: -1,
+                    label: '',
+                    code: '',
+                    isReady: true,
+                    status: '',
+                    selectedAccountId: zaloApp.accountId,
+                    zaloOaId: -1,
+                    accountId: -1,
+                    updateTime: '',
+                    createTime: '',
+                };
+                chatRoom = await createChatRoom(zaloOa, data, chatSessionAdmin);
+            } else {
+                chatRoom = await createChatRoom(zaloOa, data, chatSession);
             }
-
-            chatRoom = await createChatRoom(zaloOa, data, chatSession);
         }
 
-        console.log(1111, chatRoom);
+        // console.log(1111, chatRoom);
+        if (!chatRoom) return;
 
-        const hookDataSchema: HookDataSchema = {
-            event_name: data.event_name,
-            app_id: data.app_id,
-            oa_id: oa_id,
-            chat_room_id: chatRoom?.id || -1,
-            user_id_by_app: data.user_id_by_app,
-            sender_id: data.sender.id,
-            recipient_id: data.recipient.id,
-            reply_account_id: chatRoom?.accountId || -1,
-            message: data.message,
-            timestamp: data.timestamp,
-        };
+        if (isFeedback && waitSession) {
+            // store message then feedback
+            const hookDatas = waitSession.hookDatas;
+            const hookDataSchemas: HookDataSchema[] = [];
+            for (let i: number = 0; i < hookDatas.length; i++) {
+                const hookDataSchema: HookDataSchema = {
+                    event_name: hookDatas[i].event_name,
+                    app_id: hookDatas[i].app_id,
+                    oa_id: oa_id,
+                    chat_room_id: chatRoom?.id || -1,
+                    user_id_by_app: hookDatas[i].user_id_by_app,
+                    sender_id: hookDatas[i].sender.id,
+                    recipient_id: hookDatas[i].recipient.id,
+                    reply_account_id: chatRoom?.accountId || -1,
+                    message: hookDatas[i].message,
+                    is_seen: false,
+                    timestamp: hookDatas[i].timestamp,
+                };
+                hookDataSchemas.push(hookDataSchema);
+            }
 
-        const parsedMessage = MessageZodSchema.safeParse(hookDataSchema);
+            const hookDatasMessage = MessageZodSchema.array().safeParse(hookDataSchemas);
 
-        if (!parsedMessage.success) {
-            console.error('Invalid message format:', parsedMessage.error);
+            if (!hookDatasMessage.success) {
+                console.error('Invalid message format:', hookDatasMessage.error);
+            } else {
+                const ops = hookDatasMessage.data.map((doc) => ({
+                    insertOne: { document: doc },
+                }));
+                const dbMonggo = getDbMonggo();
+                const kq = await dbMonggo.collection<MessageSchemaType>('messages').bulkWrite(ops, { ordered: false });
+                // console.log(33333333, kq);
+                if (kq) {
+                    if (!sender_id_of_user) return;
+                    sendMessageToUser(zaloApp, zaloOa, {
+                        recipient: { user_id: sender_id_of_user },
+                        message: {
+                            text: 'Bây giờ bạn có thể bắt đầu cuộc hội thoại !',
+                        },
+                    });
+                }
+            }
         } else {
-            const dbMonggo = getDbMonggo();
+            const hookDataSchema: HookDataSchema = {
+                event_name: data.event_name,
+                app_id: data.app_id,
+                oa_id: oa_id,
+                chat_room_id: chatRoom?.id || -1,
+                user_id_by_app: data.user_id_by_app,
+                sender_id: data.sender.id,
+                recipient_id: data.recipient.id,
+                reply_account_id: chatRoom?.accountId || -1,
+                message: data.message,
+                is_seen: false,
+                timestamp: data.timestamp,
+            };
 
-            const kq = await dbMonggo.collection<MessageSchemaType>('messages').insertOne(parsedMessage.data);
+            const parsedMessage = MessageZodSchema.safeParse(hookDataSchema);
 
-            console.log(22222222, kq);
+            if (!parsedMessage.success) {
+                console.error('Invalid message format:', parsedMessage.error);
+            } else {
+                const dbMonggo = getDbMonggo();
+                const dataParse = parsedMessage.data;
+                const kq = await dbMonggo.collection<MessageSchemaType>('messages').insertOne(dataParse);
+
+                // console.log(33333333, kq);
+            }
         }
     });
 }
@@ -223,6 +295,23 @@ function determineOaId(hookData: HookDataField): string | null {
     return oa_id;
 }
 
+function determineSenderIdOfUser(hookData: HookDataField): string | null {
+    const eventName = hookData.event_name;
+    let oa_id: string | null = null;
+    const isUserSend = eventName.startsWith('user_send');
+    const isOaSend = eventName.startsWith('oa_send');
+
+    if (isUserSend) {
+        oa_id = hookData.sender.id;
+    }
+
+    if (isOaSend) {
+        oa_id = hookData.recipient.id;
+    }
+
+    return oa_id;
+}
+
 async function getChatRoom(hookData: HookDataField, zaloOa: ZaloOaField): Promise<ChatRoomField | undefined> {
     const userIdByApp = hookData.user_id_by_app;
     const zaloOaId = zaloOa.id;
@@ -333,3 +422,14 @@ async function createChatRoom(zaloOa: ZaloOaField, hookData: HookDataField, chat
         return;
     }
 }
+
+// function parseTimestamp(ts: string) {
+//     const n = Number(ts);
+
+//     if (!Number.isNaN(n)) {
+//         if (ts.length === 10) return new Date(n * 1000);
+//         if (ts.length === 13) return new Date(n);
+//     }
+
+//     return new Date(ts); // ISO string
+// }

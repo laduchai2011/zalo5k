@@ -25,3 +25,6 @@ BEGIN
 	END CATCH
 END;
 GO
+
+DELETE FROM dbo.chatRoom
+GO
