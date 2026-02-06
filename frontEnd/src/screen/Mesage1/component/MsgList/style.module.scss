@@ -1,0 +1,9 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    flex: 1;
+    overflow-y: scroll;
+    @include small-scroll-yy(1px);
+    background-color: #eff6ff;
+}

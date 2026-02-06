@@ -4,7 +4,8 @@ import Signin from '@src/screen/Signin';
 import Signout from '@src/screen/Signout';
 // import Home from '@src/screen/Home';
 import Home1 from '@src/screen/Home1';
-import Message from '@src/screen/Message';
+// import Message from '@src/screen/Message';
+import Message1 from '@src/screen/Mesage1';
 import Members from '@src/screen/Members';
 import Note from '@src/screen/Note';
 import Profile from '@src/screen/Profile';
@@ -21,7 +22,7 @@ const router = createBrowserRouter(
         { path: route_enum.SIGNIN, element: <Signin /> },
         { path: route_enum.SIGNOUT, element: <Signout /> },
         { path: route_enum.HOME, element: <Home1 /> },
-        { path: route_enum.MESSAGE + '/:id', element: <Message /> },
+        { path: route_enum.MESSAGE1 + '/:id', element: <Message1 /> },
         { path: route_enum.MEMBERS, element: <Members /> },
         { path: route_enum.NOTE, element: <Note /> },
         { path: route_enum.PROFILE, element: <Profile /> },

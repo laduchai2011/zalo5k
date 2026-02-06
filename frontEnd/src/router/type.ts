@@ -5,6 +5,7 @@ const _SIGNUP = SIGNUP;
 const _SIGNIN = SIGNIN;
 const _SIGNOUT = SIGNOUT;
 const _MESSAGE = MESSAGE;
+const _MESSAGE1 = MESSAGE;
 const _MEMBERS = MEMBERS;
 const _NOTE = NOTE;
 const _PROFILE = PROFILE;
@@ -17,6 +18,7 @@ export enum select_enum {
     SIGNIN = _SIGNIN,
     SIGNOUT = _SIGNOUT,
     MESSAGE = _MESSAGE,
+    MESSAGE1 = _MESSAGE1,
     MEMBERS = _MEMBERS,
     NOTE = _NOTE,
     PROFILE = _PROFILE,
@@ -29,6 +31,7 @@ export type selected_type =
     | select_enum.SIGNIN
     | select_enum.SIGNOUT
     | select_enum.MESSAGE
+    | select_enum.MESSAGE1
     | select_enum.MEMBERS
     | select_enum.NOTE
     | select_enum.PROFILE
@@ -41,6 +44,7 @@ export enum route_enum {
     SIGNIN = '/signin',
     SIGNOUT = '/signout',
     MESSAGE = '/message',
+    MESSAGE1 = '/message1',
     MEMBERS = '/members',
     NOTE = '/note',
     PROFILE = '/profile',
@@ -55,6 +59,7 @@ export type routed_type =
     | route_enum.SIGNIN
     | route_enum.SIGNOUT
     | route_enum.MESSAGE
+    | route_enum.MESSAGE1
     | route_enum.MEMBERS
     | route_enum.NOTE
     | route_enum.MEMBER_RECEIVE_MESSAGE

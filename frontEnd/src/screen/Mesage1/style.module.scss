@@ -28,19 +28,5 @@
             background-color: hwb(240 35% 0%);
             color: white;
         }
-
-        > .list {
-            width: 100%;
-            flex: 1;
-            overflow-y: scroll;
-            @include small-scroll-yy(3px);
-            // display: flex;
-            // flex-direction: column;
-        }
-
-        > .headerTab {
-            position: sticky;
-            bottom: 0;
-        }
     }
 }
