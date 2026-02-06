@@ -5,7 +5,7 @@ import Signout from '@src/screen/Signout';
 // import Home from '@src/screen/Home';
 import Home1 from '@src/screen/Home1';
 // import Message from '@src/screen/Message';
-import Message1 from '@src/screen/Mesage1';
+import Message1 from '@src/screen/Message1';
 import Members from '@src/screen/Members';
 import Note from '@src/screen/Note';
 import Profile from '@src/screen/Profile';

@@ -2,6 +2,7 @@ import z from 'zod';
 import {
     MessageTextSchema,
     MessageImageSchema,
+    MessageMultiImageSchema,
     MessageVideoSchema,
     MessageAudioSchema,
     MessageFileSchema,
@@ -51,31 +52,43 @@ const MessageTextZodSchema = z.object({
 });
 
 const MessageImageZodSchema = z.object({
-    event_name: z.literal(Zalo_Event_Name_Enum.user_send_image, Zalo_Event_Name_Enum.oa_send_image),
+    event_name: z.union([
+        z.literal(Zalo_Event_Name_Enum.user_send_image),
+        z.literal(Zalo_Event_Name_Enum.oa_send_image),
+    ]),
     ...BaseEventSchema,
-    message: MessageImageSchema,
+    message: z.union([MessageImageSchema, MessageMultiImageSchema]),
 });
 
 const MessageVideoZodSchema = z.object({
-    event_name: z.literal(Zalo_Event_Name_Enum.user_send_video, Zalo_Event_Name_Enum.oa_send_video),
+    event_name: z.union([
+        z.literal(Zalo_Event_Name_Enum.user_send_video),
+        z.literal(Zalo_Event_Name_Enum.oa_send_video),
+    ]),
     ...BaseEventSchema,
     message: MessageVideoSchema,
 });
 
 const MessageAudioZodSchema = z.object({
-    event_name: z.literal(Zalo_Event_Name_Enum.user_send_audio, Zalo_Event_Name_Enum.oa_send_audio),
+    event_name: z.union([
+        z.literal(Zalo_Event_Name_Enum.user_send_audio),
+        z.literal(Zalo_Event_Name_Enum.oa_send_audio),
+    ]),
     ...BaseEventSchema,
     message: MessageAudioSchema,
 });
 
 const MessageFileZodSchema = z.object({
-    event_name: z.literal(Zalo_Event_Name_Enum.user_send_file, Zalo_Event_Name_Enum.oa_send_file),
+    event_name: z.union([z.literal(Zalo_Event_Name_Enum.user_send_file), z.literal(Zalo_Event_Name_Enum.oa_send_file)]),
     ...BaseEventSchema,
     message: MessageFileSchema,
 });
 
 const MessageStickerZodSchema = z.object({
-    event_name: z.literal(Zalo_Event_Name_Enum.user_send_sticker, Zalo_Event_Name_Enum.oa_send_sticker),
+    event_name: z.union([
+        z.literal(Zalo_Event_Name_Enum.user_send_sticker),
+        z.literal(Zalo_Event_Name_Enum.oa_send_sticker),
+    ]),
     ...BaseEventSchema,
     message: MessageStickerSchema,
 });

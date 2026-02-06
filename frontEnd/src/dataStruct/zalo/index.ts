@@ -23,6 +23,11 @@ export interface ZaloOaField {
     createTime: string;
 }
 
+export interface ZaloOaTokenField {
+    refreshToken: string;
+    zaloOaId: number;
+}
+
 export interface OaPermissionField {
     id: number;
     role: string;

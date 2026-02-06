@@ -1,10 +1,12 @@
-import { memo, useState } from 'react';
+import { FC, memo, useState } from 'react';
 import style from './style.module.scss';
 import { IoIosMore } from 'react-icons/io';
 import MsgText from './MsgText';
 import MsgImage from './MsgImage';
+import MsgVideo from './MsgVideo';
+import MsgSticker from './MsgSticker';
 
-const UserMsg = () => {
+const UserMsg: FC<{ msgList_element?: HTMLDivElement | null }> = ({ msgList_element }) => {
     const [isMore, setIsMore] = useState<boolean>(false);
 
     const handleShowMore = () => {
@@ -22,7 +24,7 @@ const UserMsg = () => {
             <div className={style.msgContainer}>
                 <div className={style.name}>Name</div>
                 <div>
-                    <MsgImage />
+                    <MsgVideo msgList_element={msgList_element} />
                 </div>
                 <div className={style.moreInfor}>time</div>
             </div>
