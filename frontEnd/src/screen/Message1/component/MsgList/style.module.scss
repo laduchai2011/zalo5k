@@ -6,4 +6,7 @@
     overflow-y: scroll;
     @include small-scroll-yy(1px);
     background-color: #eff6ff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }

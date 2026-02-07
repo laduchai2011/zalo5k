@@ -11,6 +11,7 @@ export const redisKey_memberReceiveMessage = isProduct
 export const prefix_cache_zaloApp_with_appId = isProduct
     ? 'prefix_cache_zaloApp_with_appId'
     : 'prefix_cache_zaloApp_with_appId_dev';
+
 export const prefix_cache_zaloOa_list_with_zaloAppId = isProduct
     ? 'prefix_cache_zaloOa_list_with_zaloAppId'
     : 'prefix_cache_zaloOa_list_with_zaloAppId_dev';

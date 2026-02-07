@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import AppReducer from '@src/redux/slice/App';
 import Home1Reducer from '@src/redux/slice/Home1';
 import MessageReducer from '@src/redux/slice/Message';
+import Message1Reducer from '@src/redux/slice/Message1';
 import ManageMembersReducer from '@src/redux/slice/ManageMembers';
 import MemberReceiveMessageReducer from '@src/redux/slice/MemberReceiveMessage';
 import OaReducer from '@src/redux/slice/Oa';
@@ -11,6 +12,7 @@ import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
 import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
+import { chatRoomRTK } from './query/chatRoomRTK';
 
 export const store = configureStore({
     reducer: {
@@ -18,6 +20,7 @@ export const store = configureStore({
         AppSlice: AppReducer,
         Home1Slice: Home1Reducer,
         MessageSlice: MessageReducer,
+        Message1Slice: Message1Reducer,
         ManageMembersSlice: ManageMembersReducer,
         MemberReceiveMessageSlice: MemberReceiveMessageReducer,
         OaSlice: OaReducer,
@@ -27,6 +30,7 @@ export const store = configureStore({
         [messageRTK.reducerPath]: messageRTK.reducer,
         [zaloRTK.reducerPath]: zaloRTK.reducer,
         [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
+        [chatRoomRTK.reducerPath]: chatRoomRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -34,7 +38,8 @@ export const store = configureStore({
             myCustomerRTK.middleware,
             messageRTK.middleware,
             zaloRTK.middleware,
-            chatSessionRTK.middleware
+            chatSessionRTK.middleware,
+            chatRoomRTK.middleware
         ),
 });
 

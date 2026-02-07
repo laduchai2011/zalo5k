@@ -1,4 +1,104 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
+    // background-color: rgb(78, 78, 255, 0.1);
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+
+    > .iconContainer {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+        position: relative;
+        z-index: 2;
+
+        > svg {
+            cursor: pointer;
+            border-radius: 50%;
+            box-sizing: border-box;
+            padding: 3px;
+
+            &:hover {
+                background-color: rgb(233, 233, 233);
+            }
+        }
+
+        > .moreContainer {
+            background-color: white;
+            position: absolute;
+            left: 0;
+            top: 60%;
+            box-sizing: border-box;
+            border-radius: 10px;
+            width: 70px;
+            overflow: hidden;
+
+            > div {
+                width: 100%;
+                user-select: none;
+                cursor: pointer;
+                box-sizing: border-box;
+                padding: 5px;
+
+                &:hover {
+                    background-color: rgb(241, 241, 241);
+                }
+            }
+        }
+    }
+
+    > .msgContainer {
+        max-width: 70%;
+        box-sizing: border-box;
+        padding: 5px;
+        background-color: rgb(235, 235, 235);
+        border-radius: 10px;
+
+        > .name {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            > div:nth-child(1) {
+                color: blue;
+            }
+
+            > div:nth-child(2) {
+                @include line-clamp(1);
+                font-weight: 700;
+                font-size: 1.1rem;
+                box-sizing: border-box;
+                padding: 5px;
+                line-height: 24px;
+                width: max-content;
+            }
+        }
+
+        > .moreInfor {
+            box-sizing: border-box;
+            padding: 5px;
+            color: gray;
+            @include center-of-row;
+            justify-content: flex-end;
+        }
+    }
+
+    > .avatarContainer {
+        width: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            box-sizing: border-box;
+            border: 1px solid gray;
+        }
+    }
 }

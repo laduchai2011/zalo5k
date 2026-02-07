@@ -125,6 +125,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_chatSession = (await import('@src/services/chatSession')).default;
         app.use(`${prefix}/service_chatSession`, service_chatSession);
     }
+
+    if (services.includes('chatRoom')) {
+        const service_chatRoom = (await import('@src/services/chatRoom')).default;
+        app.use(`${prefix}/service_chatRoom`, service_chatRoom);
+    }
 })();
 
 app.listen(port, () => {
