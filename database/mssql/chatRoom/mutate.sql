@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreateChatRoom
+﻿ALTER PROCEDURE CreateChatRoom
 	@userIdByApp NVARCHAR(255),
 	@zaloOaId INT,
 	@accountId INT
@@ -14,6 +14,9 @@ BEGIN
         VALUES (@userIdByApp, 'normal', @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
 		SET @newChatRoomId = SCOPE_IDENTITY();
+
+		INSERT INTO dbo.chatRoomRole (authorizedAccountId, isRead, isSend, status, chatRoomId, accountId, updateTime, createTime)
+        VALUES (@accountId, 1, 1, 'normal', @newChatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
 		SELECT * FROM dbo.chatRoom WHERE id = @newChatRoomId;
 

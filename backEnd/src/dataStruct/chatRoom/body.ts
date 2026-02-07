@@ -12,3 +12,8 @@ export interface UserTakeRoomToChatBodyField {
 export interface GetChatRoomWithIdBodyField {
     id: number;
 }
+
+export interface ChatRoomRoleWithCridAaidBodyField {
+    authorizedAccountId: number;
+    chatRoomId: number;
+}

@@ -8,10 +8,10 @@ import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
 import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
-import QueryDB_CheckZaloAppWithAppId from './queryDB/CheckZaloAppWithAppId';
-import QueryDB_CheckZaloOaListWithZaloAppId from './queryDB/CheckZaloOaListWithZaloAppId';
-import QueryDB_UserTakeRoomToChat from './queryDB/UserTakeRoomToChat';
-import MutateDB_CreateChatRoom from './mutateDB/CreateChatRoom';
+import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
+import QueryDB_CheckZaloOaListWithZaloAppId from './handleHookData/queryDB/CheckZaloOaListWithZaloAppId';
+import QueryDB_UserTakeRoomToChat from './handleHookData/queryDB/UserTakeRoomToChat';
+import MutateDB_CreateChatRoom from './handleHookData/mutateDB/CreateChatRoom';
 import {
     prefix_cache_zaloApp_with_appId,
     prefix_cache_zaloOa_list_with_zaloAppId,
@@ -19,10 +19,10 @@ import {
 } from '@src/const/redisKey';
 import { IsPassField, WaitSessionField } from './type';
 import { HookDataField, HookDataSchema } from '@src/dataStruct/zalo/hookData';
-import { feedbackToTakeChatSession } from './feedbackToTakeChatSession';
+import { feedbackToTakeChatSession } from './handleHookData/feedbackToTakeChatSession';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { sendMessageToUser } from './sendMessageToUser';
-import { ensureIndexes } from './ensureIndexes';
+import { ensureIndexes } from './handleHookData/ensureIndexes';
 
 mssql_server.init();
 

@@ -22,3 +22,16 @@ BEGIN
 			AND (@id IS NULL OR cr.id = @id)
 END
 GO
+
+CREATE PROCEDURE GetChatRoomRoleWithCridAaid
+	@authorizedAccountId INT,
+	@chatRoomId INT
+AS
+BEGIN
+    SELECT * FROM dbo.chatRoomRole AS crr
+		WHERE 
+			status = 'normal' 
+			AND (@authorizedAccountId IS NULL OR crr.authorizedAccountId = @authorizedAccountId)
+			AND (@chatRoomId IS NULL OR crr.chatRoomId = @chatRoomId)
+END
+GO
