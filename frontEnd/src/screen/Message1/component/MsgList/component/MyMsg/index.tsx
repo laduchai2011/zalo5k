@@ -7,12 +7,22 @@ import MsgVideo from './MsgVideo';
 import MsgAudio from './MsgAudio';
 import MsgFile from './MsgFile';
 import MsgSticker from './MsgSticker';
-import { HookDataField } from '@src/dataStruct/zalo/hookData';
+import {
+    ZaloMessageType,
+    MessageTextField,
+    MessageImageField,
+    MessageMultiImageField,
+    MessageVideoField,
+    MessageAudioField,
+    MessageFileField,
+    MessageStickerField,
+} from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 
-const MyMsg: FC<{ msgList_element?: HTMLDivElement | null; hookData?: HookDataField }> = ({
+const MyMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field<ZaloMessageType> }> = ({
     msgList_element,
-    hookData,
+    data,
 }) => {
     const [isMore, setIsMore] = useState<boolean>(false);
 
@@ -21,27 +31,33 @@ const MyMsg: FC<{ msgList_element?: HTMLDivElement | null; hookData?: HookDataFi
     };
 
     const msg = () => {
-        if (!hookData) return;
-        const event_name = hookData.event_name;
+        if (!data) return;
+        const event_name = data.event_name;
 
         switch (event_name) {
             case Zalo_Event_Name_Enum.oa_send_text: {
-                return <MsgText hookData={hookData} />;
+                const data_t = data as MessageV1Field<MessageTextField>;
+                return <MsgText data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_image: {
-                return <MsgImage hookData={hookData} />;
+                const data_t = data as MessageV1Field<MessageImageField | MessageMultiImageField>;
+                return <MsgImage data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_video: {
-                return <MsgVideo msgList_element={msgList_element} hookData={hookData} />;
+                const data_t = data as MessageV1Field<MessageVideoField>;
+                return <MsgVideo msgList_element={msgList_element} data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_audio: {
-                return <MsgAudio hookData={hookData} />;
+                const data_t = data as MessageV1Field<MessageAudioField>;
+                return <MsgAudio data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_file: {
-                return <MsgFile hookData={hookData} />;
+                const data_t = data as MessageV1Field<MessageFileField>;
+                return <MsgFile data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_sticker: {
-                return <MsgSticker hookData={hookData} />;
+                const data_t = data as MessageV1Field<MessageStickerField>;
+                return <MsgSticker data={data_t} />;
             }
             default: {
                 return;

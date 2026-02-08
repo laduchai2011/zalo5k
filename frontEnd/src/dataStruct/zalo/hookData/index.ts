@@ -9,6 +9,7 @@ export interface HookDataSchema<T = ZaloMessageType> {
     sender_id: string;
     recipient_id: string;
     reply_account_id: number;
+    message_id: string;
     message: T;
     is_seen: boolean;
     timestamp: string;
@@ -28,13 +29,17 @@ export interface HookDataField<T = ZaloMessageType> {
     timestamp: string;
 }
 
-export interface MessageTextField {
+interface MessageField {
+    msg_id: string;
+}
+
+export interface MessageTextField extends MessageField {
     quote_msg_id?: string;
     msg_id: string;
     text: string;
 }
 
-interface MessageImageField {
+export interface MessageImageField extends MessageField {
     msg_id: string;
     attachments: [
         {
@@ -47,7 +52,7 @@ interface MessageImageField {
     ];
 }
 
-interface MessageMultiImageField {
+export interface MessageMultiImageField extends MessageField {
     msg_id: string;
     attachments: [
         {
@@ -63,7 +68,7 @@ interface MessageMultiImageField {
     ];
 }
 
-interface MessageVideoField {
+export interface MessageVideoField extends MessageField {
     msg_id: string;
     attachments: [
         {
@@ -77,7 +82,7 @@ interface MessageVideoField {
     ];
 }
 
-interface MessageAudioField {
+export interface MessageAudioField extends MessageField {
     msg_id: string;
     attachments: [
         {
@@ -89,7 +94,7 @@ interface MessageAudioField {
     ];
 }
 
-interface MessageFileField {
+export interface MessageFileField extends MessageField {
     msg_id: string;
     attachments: [
         {
@@ -105,7 +110,7 @@ interface MessageFileField {
     ];
 }
 
-interface MessageStickerField {
+export interface MessageStickerField extends MessageField {
     msg_id: string;
     attachments: [
         {
@@ -118,12 +123,12 @@ interface MessageStickerField {
     ];
 }
 
-type ZaloMessageType =
+export type ZaloMessageType =
     | MessageTextField
     | MessageImageField
     | MessageMultiImageField
     | MessageVideoField
     | MessageAudioField
     | MessageFileField
-    | MessageStickerField
-    | Record<string, unknown>; // fallback
+    | MessageStickerField;
+// | Record<string, unknown>; // fallback

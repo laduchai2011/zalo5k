@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { ChatRoomRoleWithCridAaidBodyField } from '@src/dataStruct/chatRoom/body';
+import { MessageV1BodyField } from '@src/dataStruct/message_v1/body';
 import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
 import { verifyRefreshToken } from '@src/token';
 
@@ -11,17 +12,17 @@ class Handle_GetChatRoomRoleWithCridAaid {
 
     constructor() {}
 
-    setup = (
-        req: Request<Record<string, never>, unknown, ChatRoomRoleWithCridAaidBodyField>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    setup = (req: Request<Record<string, never>, unknown, MessageV1BodyField>, res: Response, next: NextFunction) => {
         const myResponse: MyResponse<ChatRoomRoleField> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-setup)',
         };
 
-        const chatRoomRoleWithCridAaidBody = req.body;
+        const messageV1Body = req.body;
+        const chatRoomRoleWithCridAaidBody: ChatRoomRoleWithCridAaidBodyField = {
+            chatRoomId: messageV1Body.chatRoomId,
+            authorizedAccountId: -1,
+        };
         const { refreshToken } = req.cookies;
 
         if (typeof refreshToken === 'string') {
@@ -54,7 +55,6 @@ class Handle_GetChatRoomRoleWithCridAaid {
 
     main = async (_: Request, res: Response, next: NextFunction) => {
         const chatRoomRoleWithCridAaidBody = res.locals.chatRoomRoleWithCridAaidBody as ChatRoomRoleField;
-
         const myResponse: MyResponse<ChatRoomRoleField> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-main)',
@@ -85,19 +85,19 @@ class Handle_GetChatRoomRoleWithCridAaid {
                 res.locals.chatRoomRole = result.recordset[0];
                 next();
             } else {
-                myResponse.message = 'Lấy thông tin vai trò phòng hội thoại KHÔNG thành công 1 !';
+                myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại KHÔNG thành công 1 !';
                 res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy thông tin vai trò phòng hội thoại KHÔNG thành công 2 !';
+            myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại KHÔNG thành công 2 !';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
         }
     };
 
-    checkRole = async (_: Request, res: Response, next: NextFunction) => {
+    passRole = async (_: Request, res: Response, next: NextFunction) => {
         const chatRoomRole = res.locals.chatRoomRole as ChatRoomRoleField;
 
         const myResponse: MyResponse<ChatRoomRoleField> = {
@@ -110,11 +110,11 @@ class Handle_GetChatRoomRoleWithCridAaid {
 
         if (isSend || isRead) {
             next();
+        } else {
+            myResponse.message = 'Bạn không có quyền xem nội dung này !';
+            res.status(200).json(myResponse);
+            return;
         }
-
-        myResponse.message = 'Bạn không có quyền xem nội dung này !';
-        res.status(200).json(myResponse);
-        return;
     };
 }
 

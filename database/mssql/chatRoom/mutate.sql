@@ -29,5 +29,8 @@ BEGIN
 END;
 GO
 
+
+DELETE FROM dbo.chatRoomRole
+GO
 DELETE FROM dbo.chatRoom
 GO

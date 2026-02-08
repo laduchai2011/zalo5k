@@ -1,16 +1,17 @@
 import { FC, memo } from 'react';
 import style from './style.module.scss';
-import { HookDataField } from '@src/dataStruct/zalo/hookData';
+import { MessageVideoField } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field } from '@src/dataStruct/message_v1';
 import LazyVideo from '@src/component/LazyVideo';
 
-const MsgVideo: FC<{ msgList_element?: HTMLDivElement | null; hookData?: HookDataField }> = ({ msgList_element }) => {
+const MsgVideo: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field<MessageVideoField> }> = ({
+    msgList_element,
+    data,
+}) => {
+    const url = data?.message.attachments[0].payload.url;
     return (
         <div className={style.parent}>
-            <LazyVideo
-                className={style.video}
-                src={'https://f141-zvc.dlmd.me/9b07c0f8bbbf57e10eae/7625487327728053874'}
-                root={msgList_element}
-            />
+            {url && <LazyVideo className={style.video} src={url} root={msgList_element} />}
         </div>
     );
 };

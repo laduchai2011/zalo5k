@@ -10,6 +10,7 @@ import OaSettingReducer from '@src/redux/slice/OaSetting';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
+import { message1RTK } from './query/message1RTK';
 import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
 import { chatRoomRTK } from './query/chatRoomRTK';
@@ -28,6 +29,7 @@ export const store = configureStore({
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageRTK.reducerPath]: messageRTK.reducer,
+        [message1RTK.reducerPath]: message1RTK.reducer,
         [zaloRTK.reducerPath]: zaloRTK.reducer,
         [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
         [chatRoomRTK.reducerPath]: chatRoomRTK.reducer,
@@ -37,6 +39,7 @@ export const store = configureStore({
             accountRTK.middleware,
             myCustomerRTK.middleware,
             messageRTK.middleware,
+            message1RTK.middleware,
             zaloRTK.middleware,
             chatSessionRTK.middleware,
             chatRoomRTK.middleware

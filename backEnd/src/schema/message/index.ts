@@ -19,6 +19,7 @@ const BaseEventSchema = {
     recipient_id: z.string(),
     reply_account_id: z.number().int(),
     is_seen: z.boolean(),
+    message_id: z.string(),
     // timestamp: z.coerce.date(),
     timestamp: z.preprocess((val) => {
         if (val instanceof Date) return val;

@@ -1,18 +1,13 @@
 import { FC, memo } from 'react';
 import style from './style.module.scss';
-import { HookDataField } from '@src/dataStruct/zalo/hookData';
+import { MessageImageField, MessageMultiImageField } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field } from '@src/dataStruct/message_v1';
 import LazyImage from '@src/component/LazyImage';
 
-const MsgImage: FC<{ hookData?: HookDataField }> = () => {
-    return (
-        <div className={style.parent}>
-            <LazyImage
-                className={style.image}
-                src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt8cRWnrApHOH_kYlIusnH-OIEc_LdDDUldg&s'}
-                alt="img"
-            />
-        </div>
-    );
+const MsgImage: FC<{ data?: MessageV1Field<MessageImageField | MessageMultiImageField> }> = ({ data }) => {
+    const url = data?.message.attachments[0].payload.url;
+
+    return <div className={style.parent}>{url && <LazyImage className={style.image} src={url} alt="img" />}</div>;
 };
 
 export default memo(MsgImage);

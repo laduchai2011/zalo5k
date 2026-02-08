@@ -1,7 +1,8 @@
 import { FC, memo } from 'react';
-import { HookDataField } from '@src/dataStruct/zalo/hookData';
+import { MessageAudioField } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field } from '@src/dataStruct/message_v1';
 
-const MsgAudio: FC<{ hookData?: HookDataField }> = () => {
+const MsgAudio: FC<{ data?: MessageV1Field<MessageAudioField> }> = () => {
     return <div>MsgAudio</div>;
 };
 
