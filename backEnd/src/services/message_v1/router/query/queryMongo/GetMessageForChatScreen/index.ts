@@ -11,12 +11,14 @@ export async function getMessagesFirst(
 
     const data = await col
         .find<MessageV1Field<ZaloMessageType>>({ chat_room_id }, { projection: { _id: 0 } })
-        .sort({ timestamp: 1 })
+        .sort({ timestamp: -1 })
         .limit(limit)
         .toArray();
     // const count = await col.countDocuments();
 
-    const nextCursor = data.length ? data[data.length - 1].timestamp : null;
+    data.reverse();
+
+    const nextCursor = data.length ? data[0].timestamp.toISOString() : null;
 
     return { items: data, cursor: nextCursor };
 }
@@ -29,19 +31,23 @@ export async function getMessagesMore(
     const db = getDbMonggo();
     const col = db.collection<MessageV1Field<ZaloMessageType>>('messages');
 
+    const cursorDate = new Date(cursor);
+
     const data = await col
         .find(
             {
                 chat_room_id,
-                timestamp: { $lt: cursor }, // 👈 lấy tin cũ hơn
+                timestamp: { $lt: cursorDate }, // 👈 lấy tin cũ hơn
             },
             { projection: { _id: 0 } }
         )
-        .sort({ timestamp: 1 })
+        .sort({ timestamp: -1 })
         .limit(limit)
         .toArray();
 
-    const nextCursor = data.length ? data[data.length - 1].timestamp : null;
+    data.reverse();
+
+    const nextCursor = data.length ? data[0].timestamp.toISOString() : null;
 
     return { items: data, cursor: nextCursor };
 }

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Message1/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
+import { ZaloOaField } from '@src/dataStruct/zalo';
 
 const initialState: state_props = {
     isLoading: false,
@@ -9,6 +10,7 @@ const initialState: state_props = {
         data: { type: undefined, message: '' },
     },
     chatRoom: undefined,
+    zaloOa: undefined,
 };
 
 const Message1Slice = createSlice({
@@ -24,8 +26,11 @@ const Message1Slice = createSlice({
         setData_chatRoom: (state, action: PayloadAction<ChatRoomField>) => {
             state.chatRoom = action.payload;
         },
+        set_zaloOa: (state, action: PayloadAction<ZaloOaField>) => {
+            state.zaloOa = action.payload;
+        },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, setData_chatRoom } = Message1Slice.actions;
+export const { set_isLoading, setData_toastMessage, setData_chatRoom, set_zaloOa } = Message1Slice.actions;
 export default Message1Slice.reducer;

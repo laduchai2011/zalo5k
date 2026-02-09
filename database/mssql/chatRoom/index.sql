@@ -7,7 +7,7 @@ CREATE TABLE chatRoom (
     updateTime DATETIMEOFFSET(7) NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL,
     
-	CONSTRAINT UQ_chatRoom_zaloOaId_zaloUserId UNIQUE (zaloOaId, userIdByApp),
+	CONSTRAINT UQ_chatRoom_zaloOaId_userIdByApp UNIQUE (zaloOaId, userIdByApp),
     CONSTRAINT FK_chatRoom_Account FOREIGN KEY (accountId) REFERENCES account(id)
 )
 GO

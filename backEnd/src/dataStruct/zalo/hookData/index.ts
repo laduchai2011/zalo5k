@@ -12,7 +12,7 @@ export interface HookDataSchema<T = ZaloMessageType> {
     message_id: string;
     message: T;
     is_seen: boolean;
-    timestamp: string;
+    timestamp: Date;
 }
 
 export interface HookDataField<T = ZaloMessageType> {

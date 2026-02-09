@@ -20,4 +20,4 @@ export const message1RTK = createApi({
     }),
 });
 
-export const { useGetMessagesForChatScreenQuery } = message1RTK;
+export const { useGetMessagesForChatScreenQuery, useLazyGetMessagesForChatScreenQuery } = message1RTK;

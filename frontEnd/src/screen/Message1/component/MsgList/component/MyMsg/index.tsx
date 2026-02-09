@@ -19,6 +19,7 @@ import {
 } from '@src/dataStruct/zalo/hookData';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+import { timeAgoSmart } from '@src/utility/time';
 
 const MyMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field<ZaloMessageType> }> = ({
     msgList_element,
@@ -82,7 +83,7 @@ const MyMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field
                     <div>Name</div>
                 </div>
                 <div>{msg()}</div>
-                <div className={style.moreInfor}>time</div>
+                {data?.timestamp && <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>}
             </div>
             <div className={style.avatarContainer}>
                 <img

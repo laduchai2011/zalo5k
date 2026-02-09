@@ -31,7 +31,7 @@ serviceRedis.init();
 
 ensureIndexes();
 
-const timeExpireat = 60 * 3; // 5p
+const timeExpireat = 60 * 3; // 3p
 
 export function hookData() {
     consumeHookData('zalo_hook_data_queue_dev', async (data) => {
@@ -109,7 +109,7 @@ export function hookData() {
                     message_id: hookDatas[i].message.msg_id,
                     message: hookDatas[i].message,
                     is_seen: false,
-                    timestamp: hookDatas[i].timestamp,
+                    timestamp: parseTimestamp(hookDatas[i].timestamp),
                 };
                 hookDataSchemas.push(hookDataSchema);
             }
@@ -148,7 +148,7 @@ export function hookData() {
                 message_id: data.message.msg_id,
                 message: data.message,
                 is_seen: false,
-                timestamp: data.timestamp,
+                timestamp: parseTimestamp(data.timestamp),
             };
 
             const parsedMessage = MessageZodSchema.safeParse(hookDataSchema);
@@ -425,13 +425,13 @@ async function createChatRoom(zaloOa: ZaloOaField, hookData: HookDataField, chat
     }
 }
 
-// function parseTimestamp(ts: string) {
-//     const n = Number(ts);
+function parseTimestamp(ts: string) {
+    const n = Number(ts);
 
-//     if (!Number.isNaN(n)) {
-//         if (ts.length === 10) return new Date(n * 1000);
-//         if (ts.length === 13) return new Date(n);
-//     }
+    if (!Number.isNaN(n)) {
+        if (ts.length === 10) return new Date(n * 1000);
+        if (ts.length === 13) return new Date(n);
+    }
 
-//     return new Date(ts); // ISO string
-// }
+    return new Date(ts); // ISO string
+}

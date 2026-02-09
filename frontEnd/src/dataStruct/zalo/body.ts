@@ -31,7 +31,7 @@ export interface IsMyOaBodyField {
 
 export interface ZaloOaWithIdBodyField {
     id: number;
-    accountId: number;
+    accountId: number; // to determine admin or member
 }
 
 export interface CheckZaloAppWithAppIdBodyField {

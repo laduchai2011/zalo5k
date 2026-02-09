@@ -67,7 +67,7 @@ export async function refreshAccessToken(zaloApp: ZaloAppField, zaloOa: ZaloOaFi
 
         const zaloOaToken: ZaloOaTokenField = result?.recordset[0];
 
-        console.log('zaloOaToken', zaloOaToken);
+        // console.log('zaloOaToken', zaloOaToken);
 
         const body = qs.stringify({
             app_id: app_id,

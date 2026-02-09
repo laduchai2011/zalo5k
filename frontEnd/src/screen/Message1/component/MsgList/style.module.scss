@@ -3,10 +3,18 @@
 .parent {
     width: 100%;
     flex: 1;
-    overflow-y: scroll;
-    @include small-scroll-yy(1px);
-    background-color: #eff6ff;
+    min-height: 0;
+    overflow-y: auto;
+
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+
+    background-color: #eff6ff;
+    @include small-scroll-yy(1px);
+
+    > .loading {
+        @include center-of-rectangle;
+        color: rgb(0, 204, 255);
+        margin: 10px 0;
+    }
 }

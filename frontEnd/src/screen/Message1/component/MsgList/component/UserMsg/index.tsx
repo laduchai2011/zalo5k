@@ -1,5 +1,7 @@
 import { FC, memo, useState } from 'react';
 import style from './style.module.scss';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@src/redux';
 import { IoIosMore } from 'react-icons/io';
 import MsgText from './MsgText';
 import MsgImage from './MsgImage';
@@ -18,12 +20,19 @@ import {
     MessageStickerField,
 } from '@src/dataStruct/zalo/hookData';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
+import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+import { timeAgoSmart } from '@src/utility/time';
 
 const UserMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field<ZaloMessageType> }> = ({
     msgList_element,
     data,
 }) => {
+    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
+    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.Message1Slice.zaloOa);
+    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.Message1Slice.chatRoom);
+
     const [isMore, setIsMore] = useState<boolean>(false);
 
     const handleShowMore = () => {
@@ -76,7 +85,7 @@ const UserMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Fie
             <div className={style.msgContainer}>
                 <div className={style.name}>Name</div>
                 <div>{msg()}</div>
-                <div className={style.moreInfor}>time</div>
+                {data?.timestamp && <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>}
             </div>
             <div className={style.iconContainer}>
                 <IoIosMore onClick={() => handleShowMore()} size={25} />
