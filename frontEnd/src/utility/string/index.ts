@@ -47,3 +47,42 @@ export function containsSpecialCharacters(str: string): boolean {
 //     }
 //     return s_new.trim();
 // };
+
+type Part = { type: 'text'; value: string } | { type: 'link'; value: string };
+const urlRegex = /https?:\/\/[^\s<>"']+[^\s<>"'.,!?;:)\]]/g;
+export function parseTextToParts(text: string): Part[] {
+    const matches = [...text.matchAll(urlRegex)];
+
+    if (matches.length === 0) return [{ type: 'text', value: text }];
+
+    const parts: Part[] = [];
+    let lastIndex = 0;
+
+    for (const match of matches) {
+        const url = match[0];
+        const index = match.index ?? 0;
+
+        // text trước url
+        if (index > lastIndex) {
+            parts.push({
+                type: 'text',
+                value: text.slice(lastIndex, index),
+            });
+        }
+
+        // url
+        parts.push({ type: 'link', value: url });
+
+        lastIndex = index + url.length;
+    }
+
+    // text sau cùng
+    if (lastIndex < text.length) {
+        parts.push({
+            type: 'text',
+            value: text.slice(lastIndex),
+        });
+    }
+
+    return parts;
+}

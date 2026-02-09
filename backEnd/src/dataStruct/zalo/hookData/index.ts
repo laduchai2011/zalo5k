@@ -31,6 +31,7 @@ export interface HookDataField<T = ZaloMessageType> {
 
 interface MessageField {
     msg_id: string;
+    text?: string;
 }
 
 export interface MessageTextField extends MessageField {
@@ -123,6 +124,21 @@ export interface MessageStickerField extends MessageField {
     ];
 }
 
+export interface MessageLinkField extends MessageField {
+    msg_id: string;
+    attachments: [
+        {
+            payload: {
+                thumbnail: string;
+                description: string;
+                title: string;
+                url: string;
+            };
+            type: 'link';
+        },
+    ];
+}
+
 export type ZaloMessageType =
     | MessageTextField
     | MessageImageField
@@ -130,5 +146,6 @@ export type ZaloMessageType =
     | MessageVideoField
     | MessageAudioField
     | MessageFileField
-    | MessageStickerField;
+    | MessageStickerField
+    | MessageLinkField;
 // | Record<string, unknown>; // fallback

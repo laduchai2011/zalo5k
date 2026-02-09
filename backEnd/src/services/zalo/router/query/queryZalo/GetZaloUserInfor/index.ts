@@ -37,12 +37,12 @@ async function getZaloUserInfo(zaloUserBody: ZaloUserBodyField): Promise<ZaloUse
         let newAccessToken: string | undefined = undefined;
         newAccessToken = await getAccessToken(zaloOa);
         if (!newAccessToken) {
-            newAccessToken = await refreshAccessToken(zaloApp, zaloOa, 10);
+            newAccessToken = await refreshAccessToken(zaloApp, zaloOa, 5);
         }
 
         const res = await axios.get('https://openapi.zalo.me/v3.0/oa/user/detail', {
             params: {
-                data: JSON.stringify({ user_id: zaloUserBody.userIdByApp }),
+                data: JSON.stringify({ user_id: userIdByApp }),
             },
             headers: {
                 access_token: newAccessToken,
@@ -60,7 +60,7 @@ async function getZaloUserInfo(zaloUserBody: ZaloUserBodyField): Promise<ZaloUse
 
             const res1 = await axios.get('https://openapi.zalo.me/v3.0/oa/user/detail', {
                 params: {
-                    data: JSON.stringify({ user_id: zaloUserBody.userIdByApp }),
+                    data: JSON.stringify({ user_id: userIdByApp }),
                 },
                 headers: {
                     access_token: newAccessToken,
@@ -76,7 +76,7 @@ async function getZaloUserInfo(zaloUserBody: ZaloUserBodyField): Promise<ZaloUse
         console.error('getZaloUserInfo', 'catch', err);
 
         if (err.response?.data?.message === 'Access token has expired') {
-            const newAccessToken = await refreshAccessToken(zaloApp, zaloOa, 10);
+            const newAccessToken = await refreshAccessToken(zaloApp, zaloOa, 5);
             if (!newAccessToken) {
                 console.error('Could not refresh Zalo access token');
                 return;

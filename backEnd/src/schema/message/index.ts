@@ -7,6 +7,7 @@ import {
     MessageAudioSchema,
     MessageFileSchema,
     MessageStickerSchema,
+    MessageLinkSchema,
 } from './messageType';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 
@@ -94,6 +95,12 @@ const MessageStickerZodSchema = z.object({
     message: MessageStickerSchema,
 });
 
+const MessageLinkZodSchema = z.object({
+    event_name: z.union([z.literal(Zalo_Event_Name_Enum.user_send_link), z.literal(Zalo_Event_Name_Enum.oa_send_link)]),
+    ...BaseEventSchema,
+    message: MessageLinkSchema,
+});
+
 export const MessageZodSchema = z.discriminatedUnion('event_name', [
     MessageTextZodSchema,
     MessageImageZodSchema,
@@ -101,6 +108,7 @@ export const MessageZodSchema = z.discriminatedUnion('event_name', [
     MessageAudioZodSchema,
     MessageFileZodSchema,
     MessageStickerZodSchema,
+    MessageLinkZodSchema,
 ]);
 
 export type MessageSchemaType = z.infer<typeof MessageZodSchema>;

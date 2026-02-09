@@ -5,6 +5,7 @@ export enum Zalo_Event_Name_Enum {
     user_send_audio = 'user_send_audio',
     user_send_file = 'user_send_file',
     user_send_sticker = 'user_send_sticker',
+    user_send_link = 'user_send_link',
     user_received_message = 'user_received_message',
     user_seen_message = 'user_seen_message',
     oa_send_text = 'oa_send_text',
@@ -13,4 +14,5 @@ export enum Zalo_Event_Name_Enum {
     oa_send_audio = 'oa_send_audio',
     oa_send_file = 'oa_send_file',
     oa_send_sticker = 'oa_send_sticker',
+    oa_send_link = 'oa_send_link',
 }

@@ -5,6 +5,8 @@ import {
     ZaloOaListWith2FkBodyField,
     ZaloOaWithIdBodyField,
 } from '@src/dataStruct/zalo/body';
+import { ZaloUserField } from '@src/dataStruct/zalo/user';
+import { ZaloUserBodyField } from '@src/dataStruct/zalo/user/body';
 import { ZALO_API } from '@src/const/api/zalo';
 import { MyResponse } from '@src/dataStruct/response';
 
@@ -34,7 +36,19 @@ export const zaloRTK = createApi({
                 body,
             }),
         }),
+        getZaloUser: builder.query<MyResponse<ZaloUserField>, ZaloUserBodyField>({
+            query: (body) => ({
+                url: ZALO_API.GET_ZALOUSER,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useGetZaloAppWithAccountIdQuery, useGetZaloOaListWith2FkQuery, useGetZaloOaWithIdQuery } = zaloRTK;
+export const {
+    useGetZaloAppWithAccountIdQuery,
+    useGetZaloOaListWith2FkQuery,
+    useGetZaloOaWithIdQuery,
+    useGetZaloUserQuery,
+} = zaloRTK;

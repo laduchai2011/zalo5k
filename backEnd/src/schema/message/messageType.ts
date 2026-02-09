@@ -8,6 +8,7 @@ export const MessageTextSchema = z.object({
 
 export const MessageImageSchema = z.object({
     msg_id: z.string(),
+    text: z.string().optional(),
     attachments: z.array(
         z.object({
             payload: z.object({
@@ -21,6 +22,7 @@ export const MessageImageSchema = z.object({
 
 export const MessageMultiImageSchema = z.object({
     msg_id: z.string(),
+    text: z.string().optional(),
     attachments: z.array(
         z.object({
             payload: z.object({
@@ -37,6 +39,7 @@ export const MessageMultiImageSchema = z.object({
 
 export const MessageVideoSchema = z.object({
     msg_id: z.string(),
+    text: z.string().optional(),
     attachments: z.array(
         z.object({
             payload: z.object({
@@ -51,6 +54,7 @@ export const MessageVideoSchema = z.object({
 
 export const MessageAudioSchema = z.object({
     msg_id: z.string(),
+    text: z.string().optional(),
     attachments: z.array(
         z.object({
             payload: z.object({
@@ -63,6 +67,7 @@ export const MessageAudioSchema = z.object({
 
 export const MessageFileSchema = z.object({
     msg_id: z.string(),
+    text: z.string().optional(),
     attachments: z.array(
         z.object({
             payload: z.object({
@@ -79,6 +84,7 @@ export const MessageFileSchema = z.object({
 
 export const MessageStickerSchema = z.object({
     msg_id: z.string(),
+    text: z.string().optional(),
     attachments: z.array(
         z.object({
             payload: z.object({
@@ -86,6 +92,22 @@ export const MessageStickerSchema = z.object({
                 url: z.string(),
             }),
             type: z.literal('sticker'),
+        })
+    ),
+});
+
+export const MessageLinkSchema = z.object({
+    msg_id: z.string(),
+    text: z.string().optional(),
+    attachments: z.array(
+        z.object({
+            payload: z.object({
+                thumbnail: z.string(),
+                description: z.string(),
+                title: z.string(),
+                url: z.string(),
+            }),
+            type: z.literal('link'),
         })
     ),
 });
