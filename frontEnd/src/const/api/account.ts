@@ -12,4 +12,5 @@ export const ACCOUNT_API = {
     SET_MEMBER_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/setMemberReceiveMessage`,
     GET_MEMBER_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/query/getMemberReceiveMessage`,
     GET_ACCOUNT_WITH_ID: `${BASE_URL}${apiString}/service_account/query/getAccountWithId`,
+    GET_REPLY_ACCOUNt: `${BASE_URL}${apiString}/service_account/query/getReplyAccounts`,
 };

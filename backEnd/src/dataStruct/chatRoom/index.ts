@@ -11,6 +11,7 @@ export interface ChatRoomField {
 export interface ChatRoomRoleField {
     id: number;
     authorizedAccountId: number;
+    backGroundColor: string | null;
     isRead: boolean;
     isSend: boolean;
     status: string;

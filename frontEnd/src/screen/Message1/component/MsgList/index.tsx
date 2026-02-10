@@ -26,6 +26,7 @@ const MsgList = () => {
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
+                    console.log(33, resData.data);
                     setMessages(resData.data?.items);
                     setCursor(resData.data.cursor);
                     setHasMore(resData.data?.items.length === size);
@@ -73,6 +74,7 @@ const MsgList = () => {
                 if (resData?.isSuccess && resData.data) {
                     setMessages((pre) => [...(resData.data?.items || []), ...pre]);
                     setCursor(resData.data.cursor);
+                    console.log(222222222, resData.data?.items.length === size);
                     setHasMore(resData.data?.items.length === size);
                 }
                 requestAnimationFrame(() => {

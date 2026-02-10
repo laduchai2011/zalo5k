@@ -17,6 +17,7 @@ GO
 CREATE TABLE chatRoomRole (
 	id INT PRIMARY KEY IDENTITY(1,1),
 	authorizedAccountId INT NOT NULL,
+	backGroundColor NVARCHAR(255),
 	isRead BIT NOT NULL,
 	isSend BIT NOT NULL,
     status NVARCHAR(255) NOT NULL,

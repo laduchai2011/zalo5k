@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import style from './style.module.scss';
 import { IoSend } from 'react-icons/io5';
 import { CiImageOn } from 'react-icons/ci';
@@ -36,4 +36,4 @@ const InputMsg = () => {
     );
 };
 
-export default InputMsg;
+export default memo(InputMsg);

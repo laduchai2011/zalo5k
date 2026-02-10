@@ -34,3 +34,33 @@ DELETE FROM dbo.chatRoomRole
 GO
 DELETE FROM dbo.chatRoom
 GO
+
+ALTER PROCEDURE UpdateSetupChatRoomRole
+	@id INT,
+	@backGroundColor NVARCHAR(255),
+	@isRead BIT,
+	@isSend BIT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		UPDATE dbo.chatRoomRole
+		SET backGroundColor = @backGroundColor,
+			isRead = @isRead,
+			isSend = @isSend
+		WHERE id = @id and accountId = @accountId;
+
+		SELECT * FROM dbo.chatRoomRole WHERE id = @id and accountId = @accountId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO

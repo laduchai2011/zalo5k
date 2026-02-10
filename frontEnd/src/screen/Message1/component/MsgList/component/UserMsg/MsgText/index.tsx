@@ -11,7 +11,7 @@ const MsgText: FC<{ data?: MessageV1Field<MessageTextField> }> = ({ data }) => {
     return (
         <pre className={style.parent}>
             {parts.map((p, i) => {
-                if (p.type === 'text') return <span key={i}>{p.value}</span>;
+                if (p.type === 'text') return <div key={i}>{p.value}</div>;
 
                 return (
                     <a

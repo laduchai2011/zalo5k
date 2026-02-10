@@ -35,3 +35,8 @@ export interface AddMemberBodyField {
 export interface AllMembersBodyField {
     addedById: number;
 }
+
+export interface PagedAccountField {
+    items: AccountField[];
+    totalCount: number;
+}

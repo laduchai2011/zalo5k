@@ -59,3 +59,35 @@ BEGIN
 		AND id = @id
 END
 GO
+
+
+--  WITH chatRoomRole
+ALTER PROCEDURE GetReplyAccounts
+	@page INT,
+	@size INT,
+    @chatRoomId INT
+AS
+BEGIN
+	SELECT a.*
+	FROM dbo.account a
+	INNER JOIN dbo.chatRoomRole crr ON crr.authorizedAccountId = a.id
+	WHERE a.status = 'normal' AND crr.status = 'normal' AND crr.chatRoomId = @chatRoomId
+	ORDER BY
+	(
+		SELECT STRING_AGG(s.value, ' ') WITHIN GROUP (ORDER BY s.ordinal DESC)
+		FROM STRING_SPLIT(LTRIM(RTRIM(a.lastName)), ' ', 1) s
+	) COLLATE Vietnamese_100_CI_AI,
+	(
+		SELECT STRING_AGG(s.value, ' ') WITHIN GROUP (ORDER BY s.ordinal DESC)
+		FROM STRING_SPLIT(LTRIM(RTRIM(a.firstName)), ' ', 1) s
+	) COLLATE Vietnamese_100_CI_AI,
+	a.id ASC
+	OFFSET (@page - 1) * @size ROWS
+	FETCH NEXT @size ROWS ONLY;
+
+	SELECT COUNT(*) AS totalCount
+	FROM dbo.account a
+	INNER JOIN dbo.chatRoomRole crr ON crr.authorizedAccountId = a.id
+	WHERE a.status = 'normal' AND crr.status = 'normal' AND crr.chatRoomId = @chatRoomId
+END
+GO 

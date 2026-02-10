@@ -12,3 +12,16 @@ export interface UserTakeRoomToChatBodyField {
 export interface GetChatRoomWithIdBodyField {
     id: number;
 }
+
+export interface ChatRoomRoleWithCridAaidBodyField {
+    authorizedAccountId: number;
+    chatRoomId: number;
+}
+
+export interface UpdateSetupChatRoomRoleBodyField {
+    id: number;
+    backGroundColor: string;
+    isRead: boolean;
+    isSend: boolean;
+    accountId: number; // để xác định người có quyền cập nhật
+}

@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AccountField, AddMemberBodyField, AllMembersBodyField } from '@src/dataStruct/account';
+import { AccountField, AddMemberBodyField, AllMembersBodyField, PagedAccountField } from '@src/dataStruct/account';
+import { GetReplyAccountBodyField } from '@src/dataStruct/account/body';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
 import { MyResponse } from '@src/dataStruct/response';
@@ -7,7 +8,7 @@ import { MyResponse } from '@src/dataStruct/response';
 export const accountRTK = createApi({
     reducerPath: 'accountRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['Account', 'MemberList', 'MemberReceiveMessage'],
+    tagTypes: ['Account', 'MemberList', 'MemberReceiveMessage', 'ReplyAccounts'],
     endpoints: (builder) => ({
         getAccountWithId: builder.query<MyResponse<AccountField>, { accountId: number }>({
             query: ({ accountId }) => `${ACCOUNT_API.GET_ACCOUNT_WITH_ID}?accountId=${accountId}`,
@@ -23,6 +24,14 @@ export const accountRTK = createApi({
                 body,
             }),
             providesTags: ['MemberList'],
+        }),
+        getReplyAccounts: builder.query<MyResponse<PagedAccountField>, GetReplyAccountBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.GET_REPLY_ACCOUNt,
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['ReplyAccounts'],
         }),
         // Mutation (POST)
         signup: builder.mutation<router_res_type, AccountField>({
@@ -71,6 +80,7 @@ export const {
     useGetAccountWithIdQuery,
     useGetMemberReceiveMessageQuery,
     useGetAllMembersQuery,
+    useGetReplyAccountsQuery,
     useSignupMutation,
     useSigninMutation,
     useSignoutMutation,

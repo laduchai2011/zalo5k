@@ -6,6 +6,9 @@ import { RootState, AppDispatch } from '@src/redux';
 import { MESSAGE } from '@src/const/text';
 import InputMsg from './component/InputMsg';
 import MsgList from './component/MsgList';
+import ReplyMember from './component/ReplyMember';
+import MyToastMessage from './component/MyToastMessage';
+import MyLoading from './component/MyLoading';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import { setData_chatRoom, setData_toastMessage, set_isLoading, set_zaloOa } from '@src/redux/slice/Message1';
@@ -83,8 +86,13 @@ const Message1 = () => {
         <div className={style.parent}>
             <div className={style.main}>
                 <div className={style.header}>{MESSAGE}</div>
+                <ReplyMember />
                 <MsgList />
                 <InputMsg />
+            </div>
+            <div>
+                <MyToastMessage />
+                <MyLoading />
             </div>
         </div>
     );
