@@ -16,7 +16,12 @@
         height: 100%;
     }
 
-    > div:nth-child(1) {
+    > .indexContainer {
+        color: blue;
+        @include center-of-rectangle;
+    }
+
+    > .inforContainer {
         flex: 1;
         @include center-of-row;
 
@@ -34,7 +39,7 @@
         }
     }
 
-    > div:nth-child(2) {
+    > .btnContainer {
         aspect-ratio: 1/1;
         @include center-of-rectangle;
 

@@ -91,3 +91,60 @@ BEGIN
 	WHERE a.status = 'normal' AND crr.status = 'normal' AND crr.chatRoomId = @chatRoomId
 END
 GO 
+
+ALTER PROCEDURE GetNotReplyAccounts
+	@page INT,
+	@size INT,
+    @chatRoomId INT,
+	@accountId INT
+AS
+BEGIN
+	DECLARE @addedById INT;
+
+    SELECT @addedById = ai.addedById
+    FROM dbo.accountInformation ai
+    WHERE ai.accountId = @accountId;
+
+    SELECT a.*
+	FROM dbo.account a
+	INNER JOIN dbo.accountInformation ai ON ai.accountId = a.id
+	LEFT JOIN dbo.chatRoomRole crr 
+		ON crr.authorizedAccountId = a.id
+		AND crr.chatRoomId = @chatRoomId
+		AND crr.status = 'normal'
+	WHERE 
+		a.status = 'normal'
+		AND ai.addedById = @addedById
+		AND crr.id IS NULL
+	ORDER BY
+	(
+		SELECT STRING_AGG(s.value, ' ') WITHIN GROUP (ORDER BY s.ordinal DESC)
+		FROM STRING_SPLIT(LTRIM(RTRIM(a.lastName)), ' ', 1) s
+	) COLLATE Vietnamese_100_CI_AI,
+	(
+		SELECT STRING_AGG(s.value, ' ') WITHIN GROUP (ORDER BY s.ordinal DESC)
+		FROM STRING_SPLIT(LTRIM(RTRIM(a.firstName)), ' ', 1) s
+	) COLLATE Vietnamese_100_CI_AI,
+	a.id ASC
+	OFFSET (@page - 1) * @size ROWS
+	FETCH NEXT @size ROWS ONLY;
+
+	SELECT COUNT(*) AS totalCount
+	FROM dbo.account a
+	INNER JOIN dbo.accountInformation ai ON ai.accountId = a.id
+	LEFT JOIN dbo.chatRoomRole crr 
+		ON crr.authorizedAccountId = a.id
+		AND crr.chatRoomId = @chatRoomId
+		AND crr.status = 'normal'
+	WHERE 
+		a.status = 'normal'
+		AND ai.addedById = @addedById
+		AND crr.id IS NULL;
+	END
+GO 
+
+EXEC dbo.GetNotReplyAccounts
+    @page = 1,
+    @size = 10,
+    @chatRoomId = 24,
+    @accountId = 1;

@@ -1,0 +1,23 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const isProduct = process.env.NODE_ENV === 'production';
+
+export const prefix_cache_replyAccounts = {
+    key: {
+        with_chatRoomId: isProduct
+            ? 'prefix_cache_replyAccount_with_chatRoomId'
+            : 'prefix_cache_replyAccount_with_chatRoomId_dev',
+    },
+    time: 60 * 5, // 5p
+};
+
+export const prefix_cache_notReplyAccounts = {
+    key: {
+        with_chatRoomId: isProduct
+            ? 'prefix_cache_notReplyAccount_with_chatRoomId'
+            : 'prefix_cache_notReplyAccount_with_chatRoomId_dev',
+    },
+    time: 60 * 5, // 5p
+};

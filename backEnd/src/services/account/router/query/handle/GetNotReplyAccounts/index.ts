@@ -3,11 +3,11 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { PagedAccountField, AccountField } from '@src/dataStruct/account';
-import { GetReplyAccountBodyField } from '@src/dataStruct/account/body';
-import QueryDB_GetReplyAccounts from '../../queryDB/GetReplyAccounts';
-import { prefix_cache_replyAccounts } from '@src/const/redisKey/account';
+import { GetNotReplyAccountBodyField } from '@src/dataStruct/account/body';
+import QueryDB_GetNotReplyAccounts from '../../queryDB/GetNotReplyAccounts';
+import { prefix_cache_notReplyAccounts } from '@src/const/redisKey/account';
 
-class Handle_GetReplyAccounts {
+class Handle_GetNotReplyAccounts {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
 
@@ -16,31 +16,31 @@ class Handle_GetReplyAccounts {
         this._serviceRedis.init();
     }
 
-    main = async (req: Request<Record<string, never>, unknown, GetReplyAccountBodyField>, res: Response) => {
-        const getReplyAccountBody = req.body;
-        const chatRoomId = getReplyAccountBody.chatRoomId;
-        const page = getReplyAccountBody.page;
-        const size = getReplyAccountBody.size;
+    main = async (req: Request<Record<string, never>, unknown, GetNotReplyAccountBodyField>, res: Response) => {
+        const getNotReplyAccountBody = req.body;
+        const chatRoomId = getNotReplyAccountBody.chatRoomId;
+        const page = getNotReplyAccountBody.page;
+        const size = getNotReplyAccountBody.size;
 
         const myResponse: MyResponse<PagedAccountField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetReplyAccounts-main)',
+            message: 'Bắt đầu (Handle_GetNotReplyAccounts-main)',
         };
 
-        const keyRedis = `${prefix_cache_replyAccounts.key.with_chatRoomId}_${chatRoomId}_${page}_${size}`;
-        const timeExpireat = prefix_cache_replyAccounts.time;
+        const keyRedis = `${prefix_cache_notReplyAccounts.key.with_chatRoomId}_${chatRoomId}_${page}_${size}`;
+        const timeExpireat = prefix_cache_notReplyAccounts.time;
 
-        const replyAccounts_redis = await this._serviceRedis.getData<PagedAccountField>(keyRedis);
-        if (replyAccounts_redis) {
-            myResponse.data = replyAccounts_redis;
-            myResponse.message = 'Lấy danh sách người trả lời tin nhắn thành công !';
+        const notReplyAccounts_redis = await this._serviceRedis.getData<PagedAccountField>(keyRedis);
+        if (notReplyAccounts_redis) {
+            myResponse.data = notReplyAccounts_redis;
+            myResponse.message = 'Lấy danh sách người không trả lời tin nhắn thành công !';
             myResponse.isSuccess = true;
             res.status(200).json(myResponse);
             return;
         }
 
-        const queryDB = new QueryDB_GetReplyAccounts();
-        queryDB.setGetReplyAccountBody(getReplyAccountBody);
+        const queryDB = new QueryDB_GetNotReplyAccounts();
+        queryDB.setGetNotReplyAccountBody(getNotReplyAccountBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
@@ -69,17 +69,17 @@ class Handle_GetReplyAccounts {
                 }
 
                 myResponse.data = rData;
-                myResponse.message = 'Lấy danh sách người trả lời tin nhắn thành công !';
+                myResponse.message = 'Lấy danh sách người không trả lời tin nhắn thành công !';
                 myResponse.isSuccess = true;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Lấy danh sách người trả lời tin nhắn KHÔNG thành công !';
+                myResponse.message = 'Lấy danh sách người không trả lời tin nhắn KHÔNG thành công !';
                 res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy danh sách người trả lời tin nhắn KHÔNG thành công !!';
+            myResponse.message = 'Lấy danh sách người không trả lời tin nhắn KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -87,4 +87,4 @@ class Handle_GetReplyAccounts {
     };
 }
 
-export default Handle_GetReplyAccounts;
+export default Handle_GetNotReplyAccounts;

@@ -26,7 +26,6 @@ const MsgList = () => {
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
-                    console.log(33, resData.data);
                     setMessages(resData.data?.items);
                     setCursor(resData.data.cursor);
                     setHasMore(resData.data?.items.length === size);
@@ -57,6 +56,7 @@ const MsgList = () => {
     }, []);
 
     const loadMore = async () => {
+        if (!id) return;
         if (lockLoadMore.current) return;
         if (!hasMore || isLoadingMore) return;
         if (!parent_element.current) return;
@@ -68,13 +68,12 @@ const MsgList = () => {
         const prevScrollHeight = container.scrollHeight;
         const prevScrollTop = container.scrollTop;
 
-        getMessages({ cursor: cursor, size: size, chatRoomId: 23 })
+        getMessages({ cursor: cursor, size: size, chatRoomId: Number(id) })
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
                     setMessages((pre) => [...(resData.data?.items || []), ...pre]);
                     setCursor(resData.data.cursor);
-                    console.log(222222222, resData.data?.items.length === size);
                     setHasMore(resData.data?.items.length === size);
                 }
                 requestAnimationFrame(() => {

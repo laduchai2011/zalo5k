@@ -54,5 +54,17 @@
         &.show {
             max-height: 500px;
         }
+
+        > .notAddedMore {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+            color: blue;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
 }

@@ -10,6 +10,11 @@
         background-color: rgb(240, 240, 240);
     }
 
+    > .indexContainer {
+        height: 40px;
+        @include center-of-rectangle;
+    }
+
     > .nameContainer {
         @include center-of-row;
         height: 50px;

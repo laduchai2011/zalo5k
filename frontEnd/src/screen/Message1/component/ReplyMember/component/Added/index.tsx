@@ -12,7 +12,7 @@ import { useGetChatRoomRoleWithCridAaidQuery, useUpdateSetupChatRoomRoleMutation
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Message1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
-const Added: FC<{ index: number; data: AccountField }> = ({ data }) => {
+const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
     const defaultColor = '#EBEBEB';
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
@@ -117,6 +117,7 @@ const Added: FC<{ index: number; data: AccountField }> = ({ data }) => {
 
     return (
         <div className={style.parent}>
+            <div className={style.indexContainer}>{index + 1}</div>
             <div className={style.nameContainer}>
                 <img src={data.avatar ? data.avatar : avatarnull} alt="" />
                 <div>{data.firstName + ' ' + data.lastName}</div>

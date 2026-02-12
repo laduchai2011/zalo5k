@@ -25,3 +25,9 @@ export interface UpdateSetupChatRoomRoleBodyField {
     isSend: boolean;
     accountId: number; // để xác định người có quyền cập nhật
 }
+
+export interface CreateChatRoomRoleBodyField {
+    authorizedAccountId: string;
+    chatRoomId: number;
+    accountId: number;
+}

@@ -12,11 +12,11 @@ INSERT INTO
     )
 VALUES
     (
-        'admin',
-        'admin',
-        '0789860854',
-        'la',
-        'hai',
+        'thuyhang',
+        'thuyhangxinhgai',
+        '0984867461',
+        'Thuy',
+        'Hang',
         NULL,
         'normal',
         TODATETIMEOFFSET(SYSUTCDATETIME(), -5),
@@ -32,7 +32,15 @@ INSERT INTO
     )
 VALUES
     (
-        1,
+        4,
         'admin',
-        '1'
+        '4'
     );
+
+
+DELETE FROM dbo.accountInformation
+WHERE accountId = 3;
+go
+DELETE FROM dbo.account
+WHERE id = 3;
+go
