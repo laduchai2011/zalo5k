@@ -1,8 +1,8 @@
 import { FC, memo, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@src/redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
 import { HexColorPicker } from 'react-colorful';
 import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
@@ -15,6 +15,8 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
     const defaultColor = '#EBEBEB';
     const dispatch = useDispatch<AppDispatch>();
+    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const you: string = account?.id === data.id ? 'Bạn' : '';
     const { id } = useParams<{ id: string }>();
     const [isColorFrame, setIscolorFrame] = useState<boolean>(false);
     const [isRead, setIsRead] = useState<boolean>(false);
@@ -120,7 +122,8 @@ const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
             <div className={style.indexContainer}>{index + 1}</div>
             <div className={style.nameContainer}>
                 <img src={data.avatar ? data.avatar : avatarnull} alt="" />
-                <div>{data.firstName + ' ' + data.lastName}</div>
+                <div className={style.you}>{you}</div>
+                <div className={style.name}>{data.firstName + ' ' + data.lastName}</div>
             </div>
             <div className={style.setupContainer}>
                 <div className={style.setupMain}>

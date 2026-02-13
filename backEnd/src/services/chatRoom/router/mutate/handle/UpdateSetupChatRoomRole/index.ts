@@ -1,16 +1,20 @@
 import { mssql_server } from '@src/connect';
+import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
 import MutateDB_UpdateSetupChatRoomRole from '../../mutateDB/UpdateSetupChatRoomRole';
 import { verifyRefreshToken } from '@src/token';
+import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
 
 class Handle_UpdateSetupChatRoomRole {
     private _mssql_server = mssql_server;
+    private _serviceRedis = ServiceRedis.getInstance();
 
     constructor() {
         this._mssql_server.init();
+        this._serviceRedis.init();
     }
 
     setup = async (
@@ -77,7 +81,16 @@ class Handle_UpdateSetupChatRoomRole {
         try {
             const result = await mutateDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                const data = result.recordset[0];
+                const rData = result.recordset[0];
+                const crid = rData.chatRoomId;
+                const aaid = rData.authorizedAccountId;
+                const keyRedis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
+                const isDel = this._serviceRedis.deleteData(keyRedis);
+                if (!isDel) {
+                    console.error('Failed to delete key in Redis', keyRedis);
+                }
+
+                const data = rData;
                 myResponse.message = 'Cập nhật thành công !';
                 myResponse.isSuccess = true;
                 myResponse.data = data;

@@ -9,6 +9,12 @@ export const prefix_cache_replyAccounts = {
         with_chatRoomId: isProduct
             ? 'prefix_cache_replyAccount_with_chatRoomId'
             : 'prefix_cache_replyAccount_with_chatRoomId_dev',
+        body_with_chatRoomId: isProduct
+            ? 'prefix_cache_replyAccount_body_with_chatRoomId'
+            : 'prefix_cache_replyAccount_body_with_chatRoomId_dev',
+        maxPage_with_chatRoomId: isProduct
+            ? 'prefix_cache_replyAccount_maxPage_with_chatRoomId'
+            : 'prefix_cache_replyAccount_maxPage_with_chatRoomId_dev',
     },
     time: 60 * 5, // 5p
 };
@@ -18,6 +24,12 @@ export const prefix_cache_notReplyAccounts = {
         with_chatRoomId: isProduct
             ? 'prefix_cache_notReplyAccount_with_chatRoomId'
             : 'prefix_cache_notReplyAccount_with_chatRoomId_dev',
+        body_with_chatRoomId: isProduct
+            ? 'prefix_cache_notReplyAccount_body_with_chatRoomId'
+            : 'prefix_cache_notReplyAccount_body_with_chatRoomId_dev',
+        maxPage_with_chatRoomId: isProduct
+            ? 'prefix_cache_notReplyAccount_maxPage_with_chatRoomId'
+            : 'prefix_cache_notReplyAccount_maxPage_with_chatRoomId_dev',
     },
     time: 60 * 5, // 5p
 };

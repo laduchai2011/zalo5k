@@ -1,21 +1,22 @@
 import { mssql_server } from '@src/connect';
+import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { GetChatRoomWithIdBodyField } from '@src/dataStruct/chatRoom/body';
 import QueryDB_GetChatRoomWithId from '../../queryDB/GetChatRoomWithId';
 import { prefix_cache_chatRoom_with_id } from '@src/const/redisKey/chatRoom';
-import ServiceRedis from '@src/cache/cacheRedis';
 
-const serviceRedis = ServiceRedis.getInstance();
-serviceRedis.init();
-
-const timeExpireat = 60 * 10; // 1p
+const timeExpireat = 60 * 5; // 5p
 
 class Handle_GetChatRoomWithId {
     private _mssql_server = mssql_server;
+    private _serviceRedis = ServiceRedis.getInstance();
 
-    constructor() {}
+    constructor() {
+        this._mssql_server.init();
+        this._serviceRedis.init();
+    }
 
     main = async (req: Request<Record<string, never>, unknown, GetChatRoomWithIdBodyField>, res: Response) => {
         const getChatRoomWithIdBody = req.body;
@@ -28,7 +29,7 @@ class Handle_GetChatRoomWithId {
         // get in redis
         const id = getChatRoomWithIdBody.id;
         const keyRedis = `${prefix_cache_chatRoom_with_id}_${id}`;
-        const chatRoom = await serviceRedis.getData<ChatRoomField>(keyRedis);
+        const chatRoom = await this._serviceRedis.getData<ChatRoomField>(keyRedis);
         if (chatRoom) {
             myResponse.data = chatRoom;
             myResponse.message = 'Lấy phòng chat thành công !';
@@ -36,8 +37,6 @@ class Handle_GetChatRoomWithId {
             res.status(200).json(myResponse);
             return;
         }
-
-        await this._mssql_server.init();
 
         const queryDB = new QueryDB_GetChatRoomWithId();
         queryDB.setGetChatRoomWithIdBody(getChatRoomWithIdBody);
@@ -57,7 +56,10 @@ class Handle_GetChatRoomWithId {
                 const r_chatRoom = result.recordset[0];
 
                 // cache into redis
-                serviceRedis.setData<ChatRoomField>(keyRedis, r_chatRoom, timeExpireat);
+                const isSet = this._serviceRedis.setData<ChatRoomField>(keyRedis, r_chatRoom, timeExpireat);
+                if (!isSet) {
+                    console.error('Failed to lưu thông tin phòng hội thoại in Redis', keyRedis);
+                }
 
                 myResponse.data = r_chatRoom;
                 myResponse.message = 'Lấy phòng chat thành công !';

@@ -1,6 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { AccountField, AddMemberBodyField, AllMembersBodyField, PagedAccountField } from '@src/dataStruct/account';
-import { GetReplyAccountBodyField, GetNotReplyAccountBodyField } from '@src/dataStruct/account/body';
+import {
+    GetReplyAccountBodyField,
+    GetNotReplyAccountBodyField,
+    CreateReplyAccountBodyField,
+} from '@src/dataStruct/account/body';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
 import { MyResponse } from '@src/dataStruct/response';
@@ -81,6 +85,14 @@ export const accountRTK = createApi({
             }),
             invalidatesTags: ['MemberReceiveMessage'],
         }),
+        createReplyAccount: builder.mutation<MyResponse<AccountField>, CreateReplyAccountBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.CREATE_REPLY_ACCOUNT,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['NotReplyAccounts', 'ReplyAccounts'], // dùng nếu muốn refetch danh sách sau khi thêm
+        }),
     }),
 });
 
@@ -95,4 +107,5 @@ export const {
     useSignoutMutation,
     useAddMemberMutation,
     useSetMemberReceiveMessageMutation,
+    useCreateReplyAccountMutation,
 } = accountRTK;

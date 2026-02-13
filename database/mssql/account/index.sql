@@ -23,7 +23,7 @@ GO
 CREATE TABLE accountInformation (
     addedById INT,
     accountType NVARCHAR(255) NOT NULL,
-	accountId INT NOT NULL,
+	accountId INT NOT NULL UNIQUE,
 
 	CONSTRAINT FK_accountInformation_Account FOREIGN KEY (accountId) REFERENCES account(id),
 	CONSTRAINT FK_accountInformation_AddedBy FOREIGN KEY (addedById) REFERENCES account(id)

@@ -1,11 +1,12 @@
 import express, { Router, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import authentication from '@src/auth';
 import Handle_Signup from './handle/Signup';
 import Handle_Signin from './handle/Signin';
 import Handle_Signout from './handle/Signout';
 import Handle_AddMember from './handle/AddMember';
 import Handle_SetMemberReceiveMessage from './handle/SetMemberReceiveMessage';
-import authentication from '@src/auth';
+import Handle_CreateReplyAccount from './handle/CreateReplyAccount';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const handle_signin = new Handle_Signin();
 const handle_signout = new Handle_Signout();
 const handle_addMember = new Handle_AddMember();
 const handle_setMemberReceiveMessage = new Handle_SetMemberReceiveMessage();
+const handle_createReplyAccount = new Handle_CreateReplyAccount();
 
 router_mutate_account.post('/', (_: Request, res: Response) => {
     res.send('(POST) Express + TypeScript Server: router_mutate_account');
@@ -41,5 +43,12 @@ router_mutate_account.post('/setMemberReceiveMessage', authentication, handle_se
 router_mutate_account.post('/signin', handle_signin.main);
 
 router_mutate_account.post('/signout', handle_signout.main);
+
+router_mutate_account.post(
+    '/createReplyAccount',
+    authentication,
+    handle_createReplyAccount.setup,
+    handle_createReplyAccount.main
+);
 
 export default router_mutate_account;

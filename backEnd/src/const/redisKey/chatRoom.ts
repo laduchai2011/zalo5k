@@ -7,3 +7,12 @@ const isProduct = process.env.NODE_ENV === 'production';
 export const prefix_cache_chatRoom_with_id = isProduct
     ? 'prefix_cache_chatRoom_with_id'
     : 'prefix_cache_chatRoom_with_id_dev';
+
+export const prefix_cache_chatRoomRole = {
+    key: {
+        with_crid_Aaid: isProduct
+            ? 'prefix_cache_chatRoomRole_with_crid_Aaid'
+            : 'prefix_cache_chatRoomRole_with_crid_Aaid_dev',
+    },
+    time: 60 * 5, // 5p
+};

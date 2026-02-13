@@ -10,3 +10,9 @@ export interface GetNotReplyAccountBodyField {
     chatRoomId: number;
     accountId: number;
 }
+
+export interface CreateReplyAccountBodyField {
+    authorizedAccountId: number;
+    chatRoomId: number;
+    accountId: number;
+}

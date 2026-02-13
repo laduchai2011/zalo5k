@@ -28,7 +28,16 @@
             border: 1px solid gray;
         }
 
-        > div {
+        > .you {
+            box-sizing: border-box;
+            padding: 0 5px;
+            color: blue;
+            font-style: italic;
+            font-size: 0.9rem;
+            @include center-of-rectangle;
+        }
+
+        > .name {
             @include line-clamp(1);
             box-sizing: border-box;
             padding: 5px;
