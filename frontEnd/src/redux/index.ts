@@ -10,7 +10,7 @@ import OaSettingReducer from '@src/redux/slice/OaSetting';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
-import { message1RTK } from './query/message1RTK';
+import { message1RTK } from './query/messageV1RTK';
 import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
 import { chatRoomRTK } from './query/chatRoomRTK';

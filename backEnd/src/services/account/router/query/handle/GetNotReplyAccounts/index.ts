@@ -55,11 +55,12 @@ class Handle_GetNotReplyAccounts {
 
         try {
             const result = await queryDB.run();
-            if (result?.recordset.length && result?.recordset.length > 0) {
+            if (result?.recordset) {
                 const rows: AccountField[] = result.recordset;
                 const rows_removed: AccountField[] = [];
                 for (let i: number = 0; i < rows.length; i++) {
                     const newRow = { ...rows[i] };
+                    newRow.userName = '';
                     newRow.password = '';
                     newRow.phone = '';
                     rows_removed.push(newRow);

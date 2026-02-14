@@ -4,6 +4,13 @@ dotenv.config();
 
 const isProduct = process.env.NODE_ENV === 'production';
 
+export const prefix_cache_account = {
+    key: {
+        with_id: isProduct ? 'prefix_cache_account_with_id' : 'prefix_cache_account_with_id_dev',
+    },
+    time: 60 * 5, // 5p
+};
+
 export const prefix_cache_replyAccounts = {
     key: {
         with_chatRoomId: isProduct

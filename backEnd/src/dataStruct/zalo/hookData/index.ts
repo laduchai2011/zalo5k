@@ -149,3 +149,13 @@ export type ZaloMessageType =
     | MessageStickerField
     | MessageLinkField;
 // | Record<string, unknown>; // fallback
+
+export interface ResultSendToZaloField {
+    data: {
+        message_id: string;
+        user_id: string;
+        sent_time: number;
+    };
+    error: number;
+    message: string;
+}

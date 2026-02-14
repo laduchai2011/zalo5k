@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
 import UserMsg from './component/UserMsg';
 import MyMsg from './component/MyMsg';
-import { useLazyGetMessagesForChatScreenQuery } from '@src/redux/query/message1RTK';
+import { useLazyGetMessagesForChatScreenQuery } from '@src/redux/query/messageV1RTK';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 

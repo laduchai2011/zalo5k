@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getAccessToken, refreshAccessToken } from '@src/zaloToken';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { ResultSendToZaloField } from '@src/dataStruct/zalo/hookData';
 import { HookDataBodyField } from '@src/dataStruct/zalo/hookData/body';
 
 export async function sendMessageToUser(zaloApp: ZaloAppField, zaloOa: ZaloOaField, payload: HookDataBodyField) {
@@ -11,13 +12,13 @@ export async function sendMessageToUser(zaloApp: ZaloAppField, zaloOa: ZaloOaFie
             newAccessToken = await refreshAccessToken(zaloApp, zaloOa, 10);
         }
 
-        const result = await axios.post<any>('https://openapi.zalo.me/v3.0/oa/message/cs', payload, {
+        const result = await axios.post<ResultSendToZaloField>('https://openapi.zalo.me/v3.0/oa/message/cs', payload, {
             headers: {
                 access_token: newAccessToken,
                 'Content-Type': 'application/json',
             },
         });
-        // console.log('result', result.data);
+
         if (result?.data.error !== 0) {
             const newAccessToken = await refreshAccessToken(zaloApp, zaloOa, 10);
             if (!newAccessToken) {
@@ -25,17 +26,21 @@ export async function sendMessageToUser(zaloApp: ZaloAppField, zaloOa: ZaloOaFie
                 return;
             }
 
-            const result1 = await axios.post('https://openapi.zalo.me/v3.0/oa/message/cs', payload, {
-                headers: {
-                    access_token: newAccessToken,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const result1 = await axios.post<ResultSendToZaloField>(
+                'https://openapi.zalo.me/v3.0/oa/message/cs',
+                payload,
+                {
+                    headers: {
+                        access_token: newAccessToken,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
 
             // console.log('result1', result.data);
-            return result1;
+            return result1.data;
         }
-        return result;
+        return result.data;
     } catch (err: any) {
         // Nếu lỗi hết hạn token
         console.error(err);
@@ -47,12 +52,18 @@ export async function sendMessageToUser(zaloApp: ZaloAppField, zaloOa: ZaloOaFie
                 return;
             }
 
-            return await axios.post('https://openapi.zalo.me/v3.0/oa/message/cs', payload, {
-                headers: {
-                    access_token: newAccessToken,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const result = await axios.post<ResultSendToZaloField>(
+                'https://openapi.zalo.me/v3.0/oa/message/cs',
+                payload,
+                {
+                    headers: {
+                        access_token: newAccessToken,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            return result.data;
         }
     }
 }

@@ -14,8 +14,8 @@ export const accountRTK = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
     tagTypes: ['Account', 'MemberList', 'MemberReceiveMessage', 'ReplyAccounts', 'NotReplyAccounts'],
     endpoints: (builder) => ({
-        getAccountWithId: builder.query<MyResponse<AccountField>, { accountId: number }>({
-            query: ({ accountId }) => `${ACCOUNT_API.GET_ACCOUNT_WITH_ID}?accountId=${accountId}`,
+        getAccountWithId: builder.query<MyResponse<AccountField>, { id: number }>({
+            query: ({ id }) => `${ACCOUNT_API.GET_ACCOUNT_WITH_ID}?id=${id}`,
         }),
         getMemberReceiveMessage: builder.query<MyResponse<AccountField>, void>({
             query: () => ACCOUNT_API.GET_MEMBER_RECEIVE_MESSAGE,
@@ -35,7 +35,7 @@ export const accountRTK = createApi({
                 method: 'POST',
                 body,
             }),
-            providesTags: ['ReplyAccounts'],
+            providesTags: (result, error, arg) => [{ type: 'ReplyAccounts', id: `LIST-${arg.chatRoomId}` }],
         }),
         getNotReplyAccounts: builder.query<MyResponse<PagedAccountField>, GetNotReplyAccountBodyField>({
             query: (body) => ({
@@ -43,7 +43,7 @@ export const accountRTK = createApi({
                 method: 'POST',
                 body,
             }),
-            providesTags: ['NotReplyAccounts'],
+            providesTags: (result, error, arg) => [{ type: 'NotReplyAccounts', id: `LIST-${arg.chatRoomId}` }],
         }),
         // Mutation (POST)
         signup: builder.mutation<router_res_type, AccountField>({
@@ -91,7 +91,10 @@ export const accountRTK = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['NotReplyAccounts', 'ReplyAccounts'], // dùng nếu muốn refetch danh sách sau khi thêm
+            invalidatesTags: (result, error, arg) => [
+                { type: 'NotReplyAccounts', id: `LIST-${arg.chatRoomId}` },
+                { type: 'ReplyAccounts', id: `LIST-${arg.chatRoomId}` },
+            ],
         }),
     }),
 });

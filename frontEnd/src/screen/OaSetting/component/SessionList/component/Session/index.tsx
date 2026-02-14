@@ -62,7 +62,7 @@ const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data })
         isLoading: isLoading_account,
         isError: isError_account,
         error: error_account,
-    } = useGetAccountWithIdQuery({ accountId: chatSession.selectedAccountId });
+    } = useGetAccountWithIdQuery({ id: chatSession.selectedAccountId });
     useEffect(() => {
         if (isError_account && error_account) {
             console.error(error_account);

@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { ChatRoomRoleWithCridAaidBodyField } from '@src/dataStruct/chatRoom/body';
-import { MessageV1BodyField } from '@src/dataStruct/message_v1/body';
+import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
 import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
 import { verifyRefreshToken } from '@src/token';
 import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
@@ -18,15 +18,19 @@ class Handle_GetChatRoomRoleWithCridAaid {
         this._serviceRedis.init();
     }
 
-    setup = (req: Request<Record<string, never>, unknown, MessageV1BodyField>, res: Response, next: NextFunction) => {
+    setup = (
+        req: Request<Record<string, never>, unknown, CreateMessageV1BodyField>,
+        res: Response,
+        next: NextFunction
+    ) => {
         const myResponse: MyResponse<ChatRoomRoleField> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-setup)',
         };
 
-        const messageV1Body = req.body;
+        const createMessageV1Body = req.body;
         const chatRoomRoleWithCridAaidBody: ChatRoomRoleWithCridAaidBodyField = {
-            chatRoomId: messageV1Body.chatRoomId,
+            chatRoomId: createMessageV1Body.chatRoomId,
             authorizedAccountId: -1,
         };
         const { refreshToken } = req.cookies;
@@ -121,10 +125,9 @@ class Handle_GetChatRoomRoleWithCridAaid {
             message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-checkRole)',
         };
 
-        const isRead = chatRoomRole.isRead;
         const isSend = chatRoomRole.isSend;
 
-        if (isSend || isRead) {
+        if (isSend) {
             next();
         } else {
             myResponse.message = 'Bạn không có quyền xem nội dung này !';

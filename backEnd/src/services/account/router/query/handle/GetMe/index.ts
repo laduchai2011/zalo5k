@@ -72,6 +72,7 @@ class Handle_GetMe {
                 const account: AccountField = { ...result?.recordset[0] };
                 account.userName = '';
                 account.password = '';
+                account.phone = '';
                 myResponse.data = account;
                 myResponse.message = 'Lấy thông tin thành viên thành công !';
                 myResponse.isSuccess = true;

@@ -30,7 +30,7 @@ END;
 GO
 
 
-DELETE FROM dbo.chatRoomRole WHERE id = 4
+DELETE FROM dbo.chatRoomRole WHERE id = 10
 GO
 DELETE FROM dbo.chatRoom
 GO
