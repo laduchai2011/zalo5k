@@ -2,14 +2,16 @@ import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
+import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { ChatRoomRoleWithCridAaidBodyField } from '@src/dataStruct/chatRoom/body';
-import { MessageV1BodyField } from '@src/dataStruct/message_v1/body';
-import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
+import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { getLastMessage } from '../../queryMongo/GetLastMessage';
 import { verifyRefreshToken } from '@src/token';
 import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
 
-class Handle_GetChatRoomRoleWithCridAaid {
+class Handle_GetLastMessage {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
 
@@ -18,15 +20,15 @@ class Handle_GetChatRoomRoleWithCridAaid {
         this._serviceRedis.init();
     }
 
-    setup = (req: Request<Record<string, never>, unknown, MessageV1BodyField>, res: Response, next: NextFunction) => {
-        const myResponse: MyResponse<ChatRoomRoleField> = {
+    setup = (req: Request<any, any, any, { chatRoomId: string }>, res: Response, next: NextFunction) => {
+        const myResponse: MyResponse<MessageV1Field<ZaloMessageType>> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-setup)',
+            message: 'Bắt đầu (Handle_GetLastMessage-setup)',
         };
 
-        const messageV1Body = req.body;
+        const chatRoomId = req.query.chatRoomId;
         const chatRoomRoleWithCridAaidBody: ChatRoomRoleWithCridAaidBodyField = {
-            chatRoomId: messageV1Body.chatRoomId,
+            chatRoomId: Number(chatRoomId),
             authorizedAccountId: -1,
         };
         const { refreshToken } = req.cookies;
@@ -59,15 +61,15 @@ class Handle_GetChatRoomRoleWithCridAaid {
         }
     };
 
-    main = async (_: Request, res: Response, next: NextFunction) => {
+    getRole = async (_: Request, res: Response, next: NextFunction) => {
         const chatRoomRoleWithCridAaidBody = res.locals
             .chatRoomRoleWithCridAaidBody as ChatRoomRoleWithCridAaidBodyField;
         const crid = chatRoomRoleWithCridAaidBody.chatRoomId;
         const aaid = chatRoomRoleWithCridAaidBody.authorizedAccountId;
 
-        const myResponse: MyResponse<ChatRoomRoleField> = {
+        const myResponse: MyResponse<MessageV1Field<ZaloMessageType>> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-main)',
+            message: 'Bắt đầu (Handle_GetLastMessage-getRole)',
         };
 
         const keyRedis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
@@ -114,12 +116,12 @@ class Handle_GetChatRoomRoleWithCridAaid {
         }
     };
 
-    passRole = async (_: Request, res: Response, next: NextFunction) => {
+    isPassRole = async (_: Request, res: Response, next: NextFunction) => {
         const chatRoomRole = res.locals.chatRoomRole as ChatRoomRoleField;
 
         const myResponse: MyResponse<ChatRoomRoleField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-checkRole)',
+            message: 'Bắt đầu (Handle_GetLastMessage-isPassRole)',
         };
 
         const isRead = chatRoomRole.isRead;
@@ -133,6 +135,29 @@ class Handle_GetChatRoomRoleWithCridAaid {
             return;
         }
     };
+
+    main = async (req: Request<any, any, any, { chatRoomId: string }>, res: Response) => {
+        const chatRoomId = req.query.chatRoomId;
+
+        const myResponse: MyResponse<MessageV1Field<ZaloMessageType>> = {
+            isSuccess: false,
+            message: 'Bắt đầu (Handle_GetLastMessage-main)',
+        };
+
+        const result = await getLastMessage(Number(chatRoomId));
+
+        if (result) {
+            myResponse.data = result;
+            myResponse.message = 'Lấy tin nhắn phòng hội thoại thành công !';
+            myResponse.isSuccess = true;
+            res.status(200).json(myResponse);
+            return;
+        } else {
+            myResponse.message = 'Lấy tin nhắn phòng hội thoại KHÔNG thành công !';
+            res.status(200).json(myResponse);
+            return;
+        }
+    };
 }
 
-export default Handle_GetChatRoomRoleWithCridAaid;
+export default Handle_GetLastMessage;

@@ -13,7 +13,7 @@ import { useGetReplyAccountsQuery, useGetNotReplyAccountsQuery } from '@src/redu
 
 const ReplyMember = () => {
     const { id } = useParams<{ id: string }>();
-    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.Message1Slice.chatRoom);
+    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
 
     const notAddedlList_element = useRef<HTMLDivElement | null>(null);
     const [isShowAdded, setIsShowAdded] = useState<boolean>(false);

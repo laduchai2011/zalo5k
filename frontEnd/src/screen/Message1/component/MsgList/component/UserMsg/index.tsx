@@ -34,8 +34,8 @@ const UserMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Fie
     data,
 }) => {
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.Message1Slice.zaloOa);
-    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.Message1Slice.chatRoom);
+    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
+    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
     const userIdByApp = chatRoom?.userIdByApp;
     const [zaloUser, setZaloUser] = useState<ZaloUserField | undefined>(undefined);
 

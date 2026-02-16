@@ -9,7 +9,7 @@ import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
 import { useGetChatRoomRoleWithCridAaidQuery, useUpdateSetupChatRoomRoleMutation } from '@src/redux/query/chatRoomRTK';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Message1';
+import { setData_toastMessage, set_isLoading } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {

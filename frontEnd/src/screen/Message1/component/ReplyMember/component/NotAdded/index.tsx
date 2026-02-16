@@ -5,12 +5,12 @@ import { AppDispatch, RootState } from '@src/redux';
 import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { useCreateReplyAccountMutation } from '@src/redux/query/accountRTK';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Message1';
+import { setData_toastMessage, set_isLoading } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const NotAdded: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.Message1Slice.chatRoom);
+    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
     const [createReplyAccount] = useCreateReplyAccountMutation();
 
     const handleAdd = () => {

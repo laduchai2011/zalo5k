@@ -13,8 +13,8 @@ const initialState: state_props = {
     zaloOa: undefined,
 };
 
-const Message1Slice = createSlice({
-    name: 'Message1Slice',
+const MessageV1Slice = createSlice({
+    name: 'MessageV1Slice',
     initialState,
     reducers: {
         set_isLoading: (state, action: PayloadAction<boolean>) => {
@@ -32,5 +32,5 @@ const Message1Slice = createSlice({
     },
 });
 
-export const { set_isLoading, setData_toastMessage, setData_chatRoom, set_zaloOa } = Message1Slice.actions;
-export default Message1Slice.reducer;
+export const { set_isLoading, setData_toastMessage, setData_chatRoom, set_zaloOa } = MessageV1Slice.actions;
+export default MessageV1Slice.reducer;

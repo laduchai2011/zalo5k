@@ -158,9 +158,15 @@ export function hookData() {
             } else {
                 const dbMonggo = getDbMonggo();
                 const dataParse = parsedMessage.data;
-                const kq = await dbMonggo.collection<MessageSchemaType>('messages').insertOne(dataParse);
+                const kq_message = await dbMonggo.collection<MessageSchemaType>('messages').insertOne(dataParse);
 
-                // console.log(33333333, kq);
+                const { _id, ...doc } = dataParse as any;
+
+                await dbMonggo
+                    .collection<MessageSchemaType>('lastMessage')
+                    .updateOne({ chat_room_id: doc.chat_room_id }, { $set: doc }, { upsert: true });
+
+                console.log(33333333, kq_message);
             }
         }
     });

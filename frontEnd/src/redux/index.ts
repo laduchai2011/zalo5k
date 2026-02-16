@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import AppReducer from '@src/redux/slice/App';
 import Home1Reducer from '@src/redux/slice/Home1';
 import MessageReducer from '@src/redux/slice/Message';
-import Message1Reducer from '@src/redux/slice/Message1';
+import MessageV1Reducer from '@src/redux/slice/MessageV1';
 import ManageMembersReducer from '@src/redux/slice/ManageMembers';
 import MemberReceiveMessageReducer from '@src/redux/slice/MemberReceiveMessage';
 import OaReducer from '@src/redux/slice/Oa';
@@ -10,7 +10,7 @@ import OaSettingReducer from '@src/redux/slice/OaSetting';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
-import { message1RTK } from './query/messageV1RTK';
+import { messageV1RTK } from './query/messageV1RTK';
 import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
 import { chatRoomRTK } from './query/chatRoomRTK';
@@ -21,7 +21,7 @@ export const store = configureStore({
         AppSlice: AppReducer,
         Home1Slice: Home1Reducer,
         MessageSlice: MessageReducer,
-        Message1Slice: Message1Reducer,
+        MessageV1Slice: MessageV1Reducer,
         ManageMembersSlice: ManageMembersReducer,
         MemberReceiveMessageSlice: MemberReceiveMessageReducer,
         OaSlice: OaReducer,
@@ -29,7 +29,7 @@ export const store = configureStore({
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageRTK.reducerPath]: messageRTK.reducer,
-        [message1RTK.reducerPath]: message1RTK.reducer,
+        [messageV1RTK.reducerPath]: messageV1RTK.reducer,
         [zaloRTK.reducerPath]: zaloRTK.reducer,
         [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
         [chatRoomRTK.reducerPath]: chatRoomRTK.reducer,
@@ -39,7 +39,7 @@ export const store = configureStore({
             accountRTK.middleware,
             myCustomerRTK.middleware,
             messageRTK.middleware,
-            message1RTK.middleware,
+            messageV1RTK.middleware,
             zaloRTK.middleware,
             chatSessionRTK.middleware,
             chatRoomRTK.middleware

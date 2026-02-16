@@ -11,7 +11,7 @@ import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
-import { setData_chatRoom, setData_toastMessage, set_isLoading, set_zaloOa } from '@src/redux/slice/Message1';
+import { setData_chatRoom, setData_toastMessage, set_isLoading, set_zaloOa } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
 
