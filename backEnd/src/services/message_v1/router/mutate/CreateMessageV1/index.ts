@@ -20,6 +20,8 @@ class Handle_CreateMessageV1 {
 
         const result = await sendMessageToUser(zaloApp, zaloOa, payload);
 
+        console.log(11111, result);
+
         if (result?.message === 'Success') {
             myResponse.data = result;
             myResponse.message = 'Gửi tin thành công !';

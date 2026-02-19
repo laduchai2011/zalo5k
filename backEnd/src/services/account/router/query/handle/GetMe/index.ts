@@ -37,6 +37,7 @@ class Handle_GetMe {
             res.locals.accountId = id;
 
             next();
+            return;
         } else {
             myResponse.message = 'Vui lòng đăng nhập lại !';
             res.status(500).json(myResponse);

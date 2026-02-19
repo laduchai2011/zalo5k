@@ -7,7 +7,7 @@ export async function getMessagesFirst(
     limit: number
 ): Promise<PagedMessageV1Field<ZaloMessageType>> {
     const db = getDbMonggo();
-    const col = db.collection<MessageV1Field<ZaloMessageType>>('messages');
+    const col = db.collection<MessageV1Field<ZaloMessageType>>('message');
 
     const data = await col
         .find<MessageV1Field<ZaloMessageType>>({ chat_room_id }, { projection: { _id: 0 } })
@@ -29,7 +29,7 @@ export async function getMessagesMore(
     limit: number
 ): Promise<PagedMessageV1Field<ZaloMessageType>> {
     const db = getDbMonggo();
-    const col = db.collection<MessageV1Field<ZaloMessageType>>('messages');
+    const col = db.collection<MessageV1Field<ZaloMessageType>>('message');
 
     const cursorDate = new Date(cursor);
 

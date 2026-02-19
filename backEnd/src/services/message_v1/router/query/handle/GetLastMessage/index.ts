@@ -54,6 +54,7 @@ class Handle_GetLastMessage {
             res.locals.chatRoomRoleWithCridAaidBody = chatRoomRoleWithCridAaidBody_cp;
 
             next();
+            return;
         } else {
             myResponse.message = 'Vui lòng đăng nhập lại !';
             res.status(500).json(myResponse);
@@ -79,6 +80,7 @@ class Handle_GetLastMessage {
         if (chatRoomRole_redis) {
             res.locals.chatRoomRole = chatRoomRole_redis;
             next();
+            return;
         }
 
         const queryDB = new QueryDB_GetChatRoomRoleWithCridAaid();
@@ -103,6 +105,7 @@ class Handle_GetLastMessage {
                 }
                 res.locals.chatRoomRole = rData;
                 next();
+                return;
             } else {
                 myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại KHÔNG thành công 1 !';
                 res.status(200).json(myResponse);
@@ -129,6 +132,7 @@ class Handle_GetLastMessage {
 
         if (isSend || isRead) {
             next();
+            return;
         } else {
             myResponse.message = 'Bạn không có quyền xem nội dung này !';
             res.status(200).json(myResponse);
@@ -148,12 +152,12 @@ class Handle_GetLastMessage {
 
         if (result) {
             myResponse.data = result;
-            myResponse.message = 'Lấy tin nhắn phòng hội thoại thành công !';
+            myResponse.message = 'Lấy tin nhắn cuối cùng thành công !';
             myResponse.isSuccess = true;
             res.status(200).json(myResponse);
             return;
         } else {
-            myResponse.message = 'Lấy tin nhắn phòng hội thoại KHÔNG thành công !';
+            myResponse.message = 'Lấy tin nhắn cuối cùng KHÔNG thành công !';
             res.status(200).json(myResponse);
             return;
         }

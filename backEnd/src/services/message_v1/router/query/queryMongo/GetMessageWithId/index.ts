@@ -1,13 +1,16 @@
+import { ObjectId } from 'mongodb';
 import { getDbMonggo } from '@src/connect/mongo';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 
-export async function getLastMessage(chat_room_id: number): Promise<MessageV1Field<ZaloMessageType> | undefined> {
+export async function getMessageWithId(id: string): Promise<MessageV1Field<ZaloMessageType> | undefined> {
     const db = getDbMonggo();
-    const col = db.collection<MessageV1Field<ZaloMessageType>>('lastMessage');
+    const col = db.collection<MessageV1Field<ZaloMessageType>>('mesage');
+
+    const objId = new ObjectId(id);
 
     const data = await col
-        .find<MessageV1Field<ZaloMessageType>>({ chat_room_id }, { projection: { _id: 0 } })
+        .find<MessageV1Field<ZaloMessageType>>({ _id: objId }, { projection: { _id: 0 } })
         .sort({ timestamp: -1 })
         .limit(1)
         .toArray();

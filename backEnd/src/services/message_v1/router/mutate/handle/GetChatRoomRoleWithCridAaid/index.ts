@@ -56,6 +56,7 @@ class Handle_GetChatRoomRoleWithCridAaid {
             res.locals.chatRoomRoleWithCridAaidBody = chatRoomRoleWithCridAaidBody_cp;
 
             next();
+            return;
         } else {
             myResponse.message = 'Vui lòng đăng nhập lại !';
             res.status(500).json(myResponse);
@@ -80,6 +81,7 @@ class Handle_GetChatRoomRoleWithCridAaid {
         if (chatRoomRole_redis) {
             res.locals.chatRoomRole = chatRoomRole_redis;
             next();
+            return;
         }
 
         const queryDB = new QueryDB_GetChatRoomRoleWithCridAaid();
@@ -104,6 +106,7 @@ class Handle_GetChatRoomRoleWithCridAaid {
                 }
                 res.locals.chatRoomRole = rData;
                 next();
+                return;
             } else {
                 myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại KHÔNG thành công 1 !';
                 res.status(200).json(myResponse);
@@ -129,8 +132,9 @@ class Handle_GetChatRoomRoleWithCridAaid {
 
         if (isSend) {
             next();
+            return;
         } else {
-            myResponse.message = 'Bạn không có quyền xem nội dung này !';
+            myResponse.message = 'Bạn không có quyền này !';
             res.status(200).json(myResponse);
             return;
         }

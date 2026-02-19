@@ -11,9 +11,17 @@ import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
-import { setData_chatRoom, setData_toastMessage, set_isLoading, set_zaloOa } from '@src/redux/slice/MessageV1';
+import {
+    setData_chatRoom,
+    setData_toastMessage,
+    set_isLoading,
+    set_zaloOa,
+    set_socket,
+} from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
+import { SOCKET_URL } from '@src/const/api/socketUrl';
+import { SocketType } from '@src/dataStruct/socketIO';
 
 const Message1 = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,6 +29,33 @@ const Message1 = () => {
     const accountInformation: AccountInformationField | undefined = useSelector(
         (state: RootState) => state.AppSlice.accountInformation
     );
+    const socket: SocketType | undefined = useSelector((state: RootState) => state.MessageV1Slice.socket);
+
+    useEffect(() => {
+        const soc = io(SOCKET_URL || '', { path: '/socket.io/' });
+        // socket = io('wss://socketapp.5kaquarium.com', {
+        //     path: "/socket.io/",
+        // });
+        dispatch(set_socket(soc));
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!socket) return;
+        if (!id) return;
+
+        const chatRoomId = id;
+
+        socket.on('connect', () => {
+            console.log('Connected:', socket.id);
+        });
+
+        socket.emit('joinRoom', chatRoomId);
+
+        return () => {
+            socket.emit('leaveRoom', chatRoomId);
+            socket.disconnect();
+        };
+    }, [socket, id]);
 
     const {
         data: data_chatRoom,

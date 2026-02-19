@@ -1,13 +1,17 @@
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { consumeMessage, consumeMessageTD } from '@src/messageQueue/Consumer';
+import { consumeMessage, consumeMessageTD, consumeStringMessage } from '@src/messageQueue/Consumer';
 import { sendMessage, sendMessageTD } from '@src/messageQueue/Producer';
 import { MessageZaloField } from './messageQueue/type';
 import process from 'process';
 import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
+import { getEnv } from '@src/mode';
+import { myEnv } from '@src/mode/type';
 
 dotenv.config();
+
+const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
 const isProduct = process.env.NODE_ENV === 'production';
 const dev_prefix = isProduct ? '' : 'dev';
@@ -21,6 +25,10 @@ const io = new Server(httpServer, {
         methods: ['GET', 'POST'],
         credentials: true,
     },
+});
+
+consumeStringMessage(`store_msg_success${prefix}`, (msg) => {
+    console.log(11111, msg);
 });
 
 consumeMessage(customerSend_sendToMember, (data) => {

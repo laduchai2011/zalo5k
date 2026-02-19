@@ -1,5 +1,7 @@
 import { consumeHookData } from '@src/messageQueue/Consumer';
+import { sendStringMessage } from '@src/messageQueue/Producer';
 import { MessageSchemaType, MessageZodSchema } from '@src/schema/message';
+import { SocketMessageField } from '@src/dataStruct/message_v1';
 import { getDbMonggo } from '@src/connect/mongo';
 import { my_log } from '@src/log';
 import { mssql_server } from '@src/connect';
@@ -23,6 +25,10 @@ import { feedbackToTakeChatSession } from './handleHookData/feedbackToTakeChatSe
 import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { sendMessageToUser } from './sendMessageToUser';
 import { ensureIndexes } from './handleHookData/ensureIndexes';
+import { getEnv } from '@src/mode';
+import { myEnv } from '@src/mode/type';
+
+const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
 mssql_server.init();
 
@@ -34,7 +40,7 @@ ensureIndexes();
 const timeExpireat = 60 * 3; // 3p
 
 export function hookData() {
-    consumeHookData('zalo_hook_data_queue_dev', async (data) => {
+    consumeHookData(`zalo_hook_data_queue${prefix}`, async (data) => {
         // console.log('Hook Data Received:');
         console.dir(data, { depth: null });
         const app_id = data.app_id;
@@ -123,7 +129,7 @@ export function hookData() {
                     insertOne: { document: doc },
                 }));
                 const dbMonggo = getDbMonggo();
-                const kq = await dbMonggo.collection<MessageSchemaType>('messages').bulkWrite(ops, { ordered: false });
+                const kq = await dbMonggo.collection<MessageSchemaType>('message').bulkWrite(ops, { ordered: false });
                 // console.log(33333333, kq);
                 if (kq) {
                     if (!sender_id_of_user) return;
@@ -158,7 +164,7 @@ export function hookData() {
             } else {
                 const dbMonggo = getDbMonggo();
                 const dataParse = parsedMessage.data;
-                const kq_message = await dbMonggo.collection<MessageSchemaType>('messages').insertOne(dataParse);
+                const kq_message = await dbMonggo.collection<MessageSchemaType>('message').insertOne(dataParse);
 
                 const { _id, ...doc } = dataParse as any;
 
@@ -166,7 +172,12 @@ export function hookData() {
                     .collection<MessageSchemaType>('lastMessage')
                     .updateOne({ chat_room_id: doc.chat_room_id }, { $set: doc }, { upsert: true });
 
-                console.log(33333333, kq_message);
+                const socketMsg: SocketMessageField = {
+                    chatRoomId: doc.chat_room_id,
+                    _id: kq_message.insertedId.toString(),
+                };
+
+                sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
             }
         }
     });

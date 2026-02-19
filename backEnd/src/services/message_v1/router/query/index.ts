@@ -4,6 +4,7 @@ import authentication from '@src/auth';
 import Handle_GetChatRoomRoleWithCridAaid from './handle/GetChatRoomRoleWithCridAaid';
 import Handle_GetMessagesForChatScreen from './handle/GetMessagesForChatScreen';
 import Handle_GetLastMessage from './handle/GetLastMessage';
+import Handle_GetMessageWithId from './handle/GetMessageWithId';
 
 dotenv.config();
 const router_query_message_v1: Router = express.Router();
@@ -11,6 +12,7 @@ const router_query_message_v1: Router = express.Router();
 const handle_getChatRoomRoleWithCridAaid = new Handle_GetChatRoomRoleWithCridAaid();
 const handle_getMessagesForChatScreen = new Handle_GetMessagesForChatScreen();
 const handle_getLastMessage = new Handle_GetLastMessage();
+const handle_getMessageWithId = new Handle_GetMessageWithId();
 
 router_query_message_v1.post(
     '/getMessagesForChatScreen',
@@ -29,5 +31,7 @@ router_query_message_v1.get(
     handle_getLastMessage.isPassRole,
     handle_getLastMessage.main
 );
+
+router_query_message_v1.get('/getMessageWithId', authentication, handle_getMessageWithId.main);
 
 export default router_query_message_v1;

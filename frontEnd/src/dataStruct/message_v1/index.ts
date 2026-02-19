@@ -7,3 +7,8 @@ export interface PagedMessageV1Field<T> {
     items: MessageV1Field<T>[];
     cursor: string | null;
 }
+
+export interface SocketMessageField {
+    chatRoomId: number;
+    _id: string;
+}
