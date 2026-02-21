@@ -1,13 +1,15 @@
 import { consumeHookData } from '@src/messageQueue/Consumer';
 import { sendStringMessage } from '@src/messageQueue/Producer';
 import { MessageSchemaType, MessageZodSchema } from '@src/schema/message';
+import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
 import { SocketMessageField } from '@src/dataStruct/message_v1';
 import { getDbMonggo } from '@src/connect/mongo';
 import { my_log } from '@src/log';
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ChatRoomField } from '@src/dataStruct/chatRoom';
+import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
+import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
 import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
 import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
@@ -42,7 +44,7 @@ const timeExpireat = 60 * 3; // 3p
 export function hookData() {
     consumeHookData(`zalo_hook_data_queue${prefix}`, async (data) => {
         // console.log('Hook Data Received:');
-        console.dir(data, { depth: null });
+        // console.dir(data, { depth: null });
         const app_id = data.app_id;
         const oa_id = determineOaId(data);
         const sender_id_of_user = determineSenderIdOfUser(data);
@@ -92,6 +94,10 @@ export function hookData() {
                 chatRoom = await createChatRoom(zaloOa, data, chatSessionAdmin);
             } else {
                 chatRoom = await createChatRoom(zaloOa, data, chatSession);
+            }
+
+            if (chatRoom) {
+                createChatRoomRoleMongo(chatRoom, zaloOa);
             }
         }
 
@@ -378,37 +384,6 @@ async function getChatRoom(hookData: HookDataField, zaloOa: ZaloOaField): Promis
     }
 }
 
-// async function getChatSession(code: string, zaloOa: ZaloOaField): Promise<ChatSessionField | undefined> {
-//     const userTakeSessionToChatBody: UserTakeSessionToChatBodyField = {
-//         code: code,
-//         zaloOaId: zaloOa.id,
-//     };
-
-//     const queryDB = new QueryDB_UserTakeSessionToChat();
-//     queryDB.setUserTakeSessionToChatBody(userTakeSessionToChatBody);
-
-//     const connection_pool = mssql_server.get_connectionPool();
-//     if (connection_pool) {
-//         queryDB.set_connection_pool(connection_pool);
-//     } else {
-//         my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-//         return;
-//     }
-
-//     try {
-//         const result = await queryDB.run();
-//         if (result?.recordset.length && result?.recordset.length > 0) {
-//             const chatSession: ChatSessionField = result?.recordset[0];
-//             return chatSession;
-//         } else {
-//             return;
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         return;
-//     }
-// }
-
 async function createChatRoom(zaloOa: ZaloOaField, hookData: HookDataField, chatSession: ChatSessionField) {
     const chatRoomBody: ChatRoomBodyField = {
         userIdByApp: hookData.user_id_by_app,
@@ -439,6 +414,25 @@ async function createChatRoom(zaloOa: ZaloOaField, hookData: HookDataField, chat
     } catch (error) {
         console.error(error);
         return;
+    }
+}
+
+async function createChatRoomRoleMongo(chatRoom: ChatRoomField, zaloOa: ZaloOaField) {
+    const chatRommRoleSchema: ChatRoomRoleSchema = {
+        authorized_account_id: chatRoom.accountId,
+        is_read: true,
+        is_send: true,
+        chat_room_id: chatRoom.id,
+        zalo_oa_id: zaloOa.id,
+        account_id: chatRoom.accountId,
+    };
+    const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
+    if (!parsedChatRoomRole.success) {
+        console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
+    } else {
+        const dbMonggo = getDbMonggo();
+        const dataParse = parsedChatRoomRole.data;
+        await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
     }
 }
 

@@ -11,7 +11,7 @@ import { MessageField } from '@src/dataStruct/message';
 import { IoMdSend } from 'react-icons/io';
 import { useCreateMessageMutation } from '@src/redux/query/messageRTK';
 import io from 'socket.io-client';
-import { SocketType } from '@src/dataStruct/socketIO';
+import { SocketType } from '@src/dataStruct/socketIo';
 import { SOCKET_URL } from '@src/const/api/socketUrl';
 import { FaImage } from 'react-icons/fa';
 import { MdOndemandVideo } from 'react-icons/md';

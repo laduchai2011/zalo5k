@@ -2,11 +2,14 @@ import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
+import { ChatRoomRoleField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
 import MutateDB_UpdateSetupChatRoomRole from '../../mutateDB/UpdateSetupChatRoomRole';
 import { verifyRefreshToken } from '@src/token';
 import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
+import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
+import { getDbMonggo } from '@src/connect/mongo';
 
 class Handle_UpdateSetupChatRoomRole {
     private _mssql_server = mssql_server;
@@ -82,6 +85,9 @@ class Handle_UpdateSetupChatRoomRole {
             const result = await mutateDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const rData = result.recordset[0];
+
+                await updateChatRoomRoleMongo(rData);
+
                 const crid = rData.chatRoomId;
                 const aaid = rData.authorizedAccountId;
                 const keyRedis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
@@ -102,12 +108,77 @@ class Handle_UpdateSetupChatRoomRole {
                 return;
             }
         } catch (error) {
+            console.error(error);
             myResponse.message = 'Cập nhật KHÔNG thành công 2 !';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
         }
     };
+}
+
+// async function createChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
+//     const chatRommRoleSchema: ChatRoomRoleSchema = {
+//         authorized_account_id: chatRoomRole.authorizedAccountId,
+//         is_read: chatRoomRole.isRead,
+//         is_send: chatRoomRole.isSend,
+//         chat_room_id: chatRoomRole.chatRoomId,
+//         account_id: chatRoomRole.accountId,
+//     };
+//     console.log('createChatRoomRoleMongo');
+//     const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
+//     if (!parsedChatRoomRole.success) {
+//         console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
+//     } else {
+//         const dbMonggo = getDbMonggo();
+//         const dataParse = parsedChatRoomRole.data;
+//         const result = await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
+//         console.log(555555, result);
+//     }
+// }
+
+// export async function getChatRoomRoleWithCridAaid(crid: number, aaid: number): Promise<ChatRoomRoleSchema | undefined> {
+//     const db = getDbMonggo();
+//     const col = db.collection<ChatRoomRoleSchema>('chatRoomRole');
+
+//     const data = await col
+//         .find<ChatRoomRoleSchema>({ authorized_account_id: aaid, chat_room_id: crid }, { projection: { _id: 0 } })
+//         .sort({ timestamp: -1 })
+//         .limit(1)
+//         .toArray();
+
+//     return data.length > 0 ? data[0] : undefined;
+// }
+
+async function updateChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
+    const chatRommRoleSchema: ChatRoomRoleSchema = {
+        authorized_account_id: chatRoomRole.authorizedAccountId,
+        is_read: chatRoomRole.isRead,
+        is_send: chatRoomRole.isSend,
+        chat_room_id: chatRoomRole.chatRoomId,
+        zalo_oa_id: -1,
+        account_id: chatRoomRole.accountId,
+    };
+
+    const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
+    if (!parsedChatRoomRole.success) {
+        console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
+    } else {
+        const db = getDbMonggo();
+        const dataParse = parsedChatRoomRole.data;
+        const col = db.collection<ChatRoomRoleSchema>('chatRoomRole');
+
+        const { zalo_oa_id, ...doc } = dataParse as any;
+
+        const data = await col.updateOne(
+            {
+                chat_room_id: chatRommRoleSchema.chat_room_id,
+                authorized_account_id: chatRommRoleSchema.authorized_account_id,
+            },
+            { $set: doc },
+            { upsert: true }
+        );
+    }
 }
 
 export default Handle_UpdateSetupChatRoomRole;

@@ -21,7 +21,7 @@ class QueryDB_GetZaloOaWithId {
             try {
                 const result = await this._connectionPool
                     .request()
-                    .input('id', sql.Int, this._zaloOaWithIdBody.accountId)
+                    .input('id', sql.Int, this._zaloOaWithIdBody.id)
                     .input('accountId', sql.Int, this._zaloOaWithIdBody.accountId)
                     .execute('GetZaloOaWithId');
 

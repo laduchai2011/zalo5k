@@ -92,9 +92,10 @@ const InputMsg = () => {
         };
 
         createMessageV1(createMessageV1Body)
-            .then((res) => {
-                const resData = res.data;
-                console.log(111111, resData);
+            .then(() => {
+                // const resData = res.data;
+                // console.log(111111, resData);
+                setText('');
             })
             .catch((err) => console.error(err));
     };

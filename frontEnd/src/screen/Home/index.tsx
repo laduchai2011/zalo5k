@@ -9,7 +9,7 @@ import Header from '../Header';
 import { select_enum } from '@src/router/type';
 import { route_enum } from '@src/router/type';
 import { SOCKET_URL } from '@src/const/api/socketUrl';
-import { SocketType } from '@src/dataStruct/socketIO';
+import { SocketType } from '@src/dataStruct/socketIo';
 import { MyCustomerField } from '@src/dataStruct/myCustom';
 
 let socket: SocketType;

@@ -65,6 +65,7 @@ const UserMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Fie
     }, [isLoading_zaloUser]);
     useEffect(() => {
         const resData = data_zaloUser;
+        // console.log(resData);
         if (resData?.isSuccess && resData.data && resData.data) {
             setZaloUser(resData.data);
         }

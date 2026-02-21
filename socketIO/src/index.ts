@@ -6,12 +6,9 @@ import { sendMessage, sendMessageTD } from '@src/messageQueue/Producer';
 import { MessageZaloField } from './messageQueue/type';
 import process from 'process';
 import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
-import { getEnv } from '@src/mode';
-import { myEnv } from '@src/mode/type';
+import { SocketMessageField } from './dataStruct/message_v1';
 
 dotenv.config();
-
-const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
 const isProduct = process.env.NODE_ENV === 'production';
 const dev_prefix = isProduct ? '' : 'dev';
@@ -27,8 +24,9 @@ const io = new Server(httpServer, {
     },
 });
 
-consumeStringMessage(`store_msg_success${prefix}`, (msg) => {
-    console.log(11111, msg);
+consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
+    const socketMsg = JSON.parse(msg) as SocketMessageField;
+    io.to(socketMsg.chatRoomId.toString()).emit('socketMessage', socketMsg);
 });
 
 consumeMessage(customerSend_sendToMember, (data) => {

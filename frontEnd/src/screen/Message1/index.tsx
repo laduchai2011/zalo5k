@@ -11,17 +11,12 @@ import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
-import {
-    setData_chatRoom,
-    setData_toastMessage,
-    set_isLoading,
-    set_zaloOa,
-    set_socket,
-} from '@src/redux/slice/MessageV1';
+import { setData_chatRoom, setData_toastMessage, set_isLoading, set_zaloOa } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
-import { SOCKET_URL } from '@src/const/api/socketUrl';
-import { SocketType } from '@src/dataStruct/socketIO';
+import { ChatRoomField } from '@src/dataStruct/chatRoom';
+import { getSocket } from '@src/socketIo';
+// import { SocketMessageField } from '@src/dataStruct/message_v1';
 
 const Message1 = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -29,33 +24,32 @@ const Message1 = () => {
     const accountInformation: AccountInformationField | undefined = useSelector(
         (state: RootState) => state.AppSlice.accountInformation
     );
-    const socket: SocketType | undefined = useSelector((state: RootState) => state.MessageV1Slice.socket);
+    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
 
     useEffect(() => {
-        const soc = io(SOCKET_URL || '', { path: '/socket.io/' });
-        // socket = io('wss://socketapp.5kaquarium.com', {
-        //     path: "/socket.io/",
-        // });
-        dispatch(set_socket(soc));
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (!socket) return;
         if (!id) return;
 
+        const socket = getSocket();
         const chatRoomId = id;
 
-        socket.on('connect', () => {
-            console.log('Connected:', socket.id);
-        });
+        const onConnect = () => {
+            socket.emit('joinRoom', chatRoomId);
+        };
 
-        socket.emit('joinRoom', chatRoomId);
+        socket.on('connect', onConnect);
+
+        // nếu socket đã connect sẵn từ trước thì join luôn
+        if (socket.connected) {
+            onConnect();
+        }
 
         return () => {
             socket.emit('leaveRoom', chatRoomId);
-            socket.disconnect();
+            socket.off('connect', onConnect);
+
+            // ❌ KHÔNG disconnect ở đây
         };
-    }, [socket, id]);
+    }, [id]);
 
     const {
         data: data_chatRoom,
@@ -92,8 +86,8 @@ const Message1 = () => {
         isError: isError_zaloOa,
         error: error_zaloOa,
     } = useGetZaloOaWithIdQuery(
-        { id: Number(id) || -1, accountId: accountInformation?.addedById || -1 },
-        { skip: id === undefined || accountInformation === undefined }
+        { id: chatRoom?.zaloOaId || -1, accountId: accountInformation?.addedById || -1 },
+        { skip: chatRoom === undefined || accountInformation === undefined }
     );
     useEffect(() => {
         if (isError_zaloOa && error_zaloOa) {
@@ -111,6 +105,7 @@ const Message1 = () => {
     }, [dispatch, isLoading_zaloOa]);
     useEffect(() => {
         const resData = data_zaloOa;
+        // console.log(resData);
         if (resData?.isSuccess && resData.data) {
             // setZaloOa(resData.data);
             dispatch(set_zaloOa(resData.data));
