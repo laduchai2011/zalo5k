@@ -26,7 +26,14 @@ export async function getChatRoomsMongo(chatRoomsMongoBody: ChatRoomsMongoBodyFi
     const cursorDate = cursor ? new Date(cursor) : undefined;
 
     const pipeline: any[] = [
-        { $match: match },
+        {
+            $match: {
+                ...match,
+                $expr: {
+                    $ne: ['$authorized_account_id', '$account_id'],
+                },
+            },
+        },
 
         {
             $lookup: {

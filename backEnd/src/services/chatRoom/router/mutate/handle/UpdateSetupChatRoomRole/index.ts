@@ -8,7 +8,7 @@ import MutateDB_UpdateSetupChatRoomRole from '../../mutateDB/UpdateSetupChatRoom
 import { verifyRefreshToken } from '@src/token';
 import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
 import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
-import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
+// import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { getDbMonggo } from '@src/connect/mongo';
 
 class Handle_UpdateSetupChatRoomRole {
@@ -116,26 +116,6 @@ class Handle_UpdateSetupChatRoomRole {
         }
     };
 }
-
-// async function createChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
-//     const chatRommRoleSchema: ChatRoomRoleSchema = {
-//         authorized_account_id: chatRoomRole.authorizedAccountId,
-//         is_read: chatRoomRole.isRead,
-//         is_send: chatRoomRole.isSend,
-//         chat_room_id: chatRoomRole.chatRoomId,
-//         account_id: chatRoomRole.accountId,
-//     };
-//     console.log('createChatRoomRoleMongo');
-//     const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
-//     if (!parsedChatRoomRole.success) {
-//         console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
-//     } else {
-//         const dbMonggo = getDbMonggo();
-//         const dataParse = parsedChatRoomRole.data;
-//         const result = await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
-//         console.log(555555, result);
-//     }
-// }
 
 // export async function getChatRoomRoleWithCridAaid(crid: number, aaid: number): Promise<ChatRoomRoleSchema | undefined> {
 //     const db = getDbMonggo();

@@ -53,6 +53,23 @@
                     color: gray;
                     font-size: 0.9rem;
                 }
+
+                > .role {
+                    font-style: italic;
+                    opacity: 0.5;
+
+                    &.pass {
+                        opacity: 1;
+                    }
+                }
+
+                > .read {
+                    color: red;
+                }
+
+                > .send {
+                    color: blue;
+                }
             }
         }
     }

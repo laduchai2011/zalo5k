@@ -133,7 +133,7 @@ const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
                     </div>
                     <div className={style.send}>
                         <input checked={isSend} onChange={(e) => handleIsSend(e)} type="checkbox" />
-                        <div>Ghi</div>
+                        <div>Gửi</div>
                     </div>
                     <div className={style.colorSelect}>
                         <div

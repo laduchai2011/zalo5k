@@ -6,7 +6,7 @@ import Signout from '@src/screen/Signout';
 import Home1 from '@src/screen/Home1';
 // import Message from '@src/screen/Message';
 import Message1 from '@src/screen/Message1';
-import Members from '@src/screen/Members';
+import SupportRoom from '@src/screen/SupportRoom';
 import Note from '@src/screen/Note';
 import Profile from '@src/screen/Profile';
 import MemberReceiveMessage from '@src/screen/MemberReceiveMessage';
@@ -23,7 +23,7 @@ const router = createBrowserRouter(
         { path: route_enum.SIGNOUT, element: <Signout /> },
         { path: route_enum.HOME, element: <Home1 /> },
         { path: route_enum.MESSAGE1 + '/:id', element: <Message1 /> },
-        { path: route_enum.MEMBERS, element: <Members /> },
+        { path: route_enum.SUPPORT_ROOM, element: <SupportRoom /> },
         { path: route_enum.NOTE, element: <Note /> },
         { path: route_enum.PROFILE, element: <Profile /> },
         { path: route_enum.MEMBER_RECEIVE_MESSAGE, element: <MemberReceiveMessage /> },

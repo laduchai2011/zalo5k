@@ -48,6 +48,7 @@ router_mutate_account.post(
     '/createReplyAccount',
     authentication,
     handle_createReplyAccount.setup,
+    handle_createReplyAccount.getZaloOaId,
     handle_createReplyAccount.main
 );
 

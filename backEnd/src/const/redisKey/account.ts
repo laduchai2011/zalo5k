@@ -23,7 +23,7 @@ export const prefix_cache_replyAccounts = {
             ? 'prefix_cache_replyAccount_maxPage_with_chatRoomId'
             : 'prefix_cache_replyAccount_maxPage_with_chatRoomId_dev',
     },
-    time: 60 * 5, // 5p
+    time: 60 * 1, // 5p
 };
 
 export const prefix_cache_notReplyAccounts = {
@@ -38,5 +38,5 @@ export const prefix_cache_notReplyAccounts = {
             ? 'prefix_cache_notReplyAccount_maxPage_with_chatRoomId'
             : 'prefix_cache_notReplyAccount_maxPage_with_chatRoomId_dev',
     },
-    time: 60 * 5, // 5p
+    time: 60 * 1, // 5p
 };

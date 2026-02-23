@@ -21,7 +21,7 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 childs[0].classList.add(style.selected);
                 break;
             }
-            case select_enum.MEMBERS: {
+            case select_enum.SUPPORT_ROOM: {
                 childs[1].classList.add(style.selected);
                 break;
             }
@@ -46,8 +46,8 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 navigate(route_enum.HOME);
                 break;
             }
-            case select_enum.MEMBERS: {
-                navigate(route_enum.MEMBERS);
+            case select_enum.SUPPORT_ROOM: {
+                navigate(route_enum.SUPPORT_ROOM);
                 break;
             }
             case select_enum.NOTE: {
@@ -70,7 +70,7 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
             <div onClick={() => handleSelect(select_enum.HOME)}>
                 <IoMdHome />
             </div>
-            <div onClick={() => handleSelect(select_enum.MEMBERS)}>
+            <div onClick={() => handleSelect(select_enum.SUPPORT_ROOM)}>
                 <IoIosPeople />
             </div>
             <div onClick={() => handleSelect(select_enum.NOTE)}>

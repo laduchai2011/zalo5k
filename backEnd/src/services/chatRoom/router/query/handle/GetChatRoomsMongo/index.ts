@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { ChatRoomField, PagedChatRoomMongoField } from '@src/dataStruct/chatRoom';
-import { GetChatRoomWithIdBodyField, ChatRoomsMongoBodyField } from '@src/dataStruct/chatRoom/body';
-import QueryDB_GetChatRoomWithId from '../../queryDB/GetChatRoomWithId';
-import { prefix_cache_chatRoom_with_id } from '@src/const/redisKey/chatRoom';
+import { PagedChatRoomMongoField } from '@src/dataStruct/chatRoom';
+import { ChatRoomsMongoBodyField } from '@src/dataStruct/chatRoom/body';
 import { getChatRoomsMongo } from '../../queryMongo/GetChatRooms';
 
 class Handle_GetChatRoomsMongo {

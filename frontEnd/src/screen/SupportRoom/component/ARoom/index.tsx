@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import style from './style.module.scss';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
 
-const MemberBox = () => {
+const ARoom = () => {
     return (
         <div className={style.parent}>
             <div className={style.avatarContainer}>
@@ -14,10 +15,12 @@ const MemberBox = () => {
                 <div className={style.inforContainer}>
                     <div className={style.infor}>
                         <div>Khách hàng</div>
-                        <div>12</div>
                     </div>
                     <div className={style.infor}>
-                        <div>Tin nhắn mới</div>
+                        <div className={`${style.role} ${style.read}`}>Đọc</div>
+                        <div className={`${style.role} ${style.send}`}>Gửi</div>
+                    </div>
+                    <div className={style.infor}>
                         <div>12</div>
                     </div>
                 </div>
@@ -26,4 +29,4 @@ const MemberBox = () => {
     );
 };
 
-export default MemberBox;
+export default memo(ARoom);
