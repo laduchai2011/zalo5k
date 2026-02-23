@@ -31,3 +31,13 @@ export interface CreateChatRoomRoleBodyField {
     chatRoomId: number;
     accountId: number;
 }
+
+export interface ChatRoomsMongoBodyField {
+    limit: number;
+    cursor: string | null;
+    zaloOaId?: number;
+    authorizedAccountId?: number;
+    isRead?: boolean;
+    isSend?: boolean;
+    accountId?: number;
+}

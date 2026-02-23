@@ -34,3 +34,8 @@ export interface PagedChatRoomField {
     items: ChatRoomField[];
     totalCount: number;
 }
+
+export interface PagedChatRoomMongoField {
+    items: ChatRoomRoleSchema[];
+    cursor: string | null;
+}

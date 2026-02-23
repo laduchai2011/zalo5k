@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ChatRoomField, ChatRoomRoleField } from '@src/dataStruct/chatRoom';
+import { ChatRoomField, ChatRoomRoleField, PagedChatRoomMongoField } from '@src/dataStruct/chatRoom';
 import {
     GetChatRoomWithIdBodyField,
     ChatRoomRoleWithCridAaidBodyField,
     UpdateSetupChatRoomRoleBodyField,
+    ChatRoomsMongoBodyField,
 } from '@src/dataStruct/chatRoom/body';
 import { CHAT_ROOM_API } from '@src/const/api/chatRoom';
 import { MyResponse } from '@src/dataStruct/response';
@@ -28,6 +29,13 @@ export const chatRoomRTK = createApi({
             }),
             providesTags: (result) => [{ type: 'ChatRoomRole', id: result?.data?.id }],
         }),
+        getChatRoomsMongo: builder.query<MyResponse<PagedChatRoomMongoField>, ChatRoomsMongoBodyField>({
+            query: (body) => ({
+                url: CHAT_ROOM_API.GET_CHAT_ROOMS_MONGO,
+                method: 'POST',
+                body,
+            }),
+        }),
         updateSetupChatRoomRole: builder.mutation<MyResponse<ChatRoomRoleField>, UpdateSetupChatRoomRoleBodyField>({
             query: (body) => ({
                 url: CHAT_ROOM_API.UPDATE_SETUP_CHAT_ROOM_ROLE,
@@ -39,5 +47,9 @@ export const chatRoomRTK = createApi({
     }),
 });
 
-export const { useGetChatRoomsWithIdQuery, useGetChatRoomRoleWithCridAaidQuery, useUpdateSetupChatRoomRoleMutation } =
-    chatRoomRTK;
+export const {
+    useGetChatRoomsWithIdQuery,
+    useGetChatRoomRoleWithCridAaidQuery,
+    useLazyGetChatRoomsMongoQuery,
+    useUpdateSetupChatRoomRoleMutation,
+} = chatRoomRTK;

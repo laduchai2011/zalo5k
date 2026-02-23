@@ -33,6 +33,7 @@
         padding: 5px;
         height: 100%;
         @include center-of-row;
+        flex: 1;
 
         > .infor {
             flex: 1;

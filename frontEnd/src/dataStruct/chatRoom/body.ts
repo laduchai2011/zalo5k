@@ -25,3 +25,19 @@ export interface UpdateSetupChatRoomRoleBodyField {
     isSend: boolean;
     accountId: number; // để xác định người có quyền cập nhật
 }
+
+export interface CreateChatRoomRoleBodyField {
+    authorizedAccountId: string;
+    chatRoomId: number;
+    accountId: number;
+}
+
+export interface ChatRoomsMongoBodyField {
+    limit: number;
+    cursor: string | null;
+    zaloOaId?: number;
+    authorizedAccountId?: number;
+    isRead?: boolean;
+    isSend?: boolean;
+    accountId?: number;
+}
