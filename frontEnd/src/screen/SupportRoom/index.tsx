@@ -3,6 +3,7 @@ import ARoom from './component/ARoom';
 import { SUPPORT_ROOM } from '@src/const/text';
 import Header from '../Header';
 import OaList from './component/OaList';
+import RoomList from './component/RoomList';
 import { select_enum } from '@src/router/type';
 
 const SupportRoom = () => {
@@ -11,7 +12,8 @@ const SupportRoom = () => {
             <div className={style.main}>
                 <div className={style.header}>{SUPPORT_ROOM}</div>
                 <OaList />
-                <div className={style.list}>
+                <RoomList />
+                {/* <div className={style.list}>
                     <ARoom />
                     <ARoom />
                     <ARoom />
@@ -52,7 +54,7 @@ const SupportRoom = () => {
                     <ARoom />
                     <ARoom />
                     <ARoom />
-                </div>
+                </div> */}
                 <div className={style.headerTab}>
                     <Header selected={select_enum.SUPPORT_ROOM} />
                 </div>

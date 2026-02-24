@@ -52,12 +52,12 @@ class Handle_GetZaloUserInfor {
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Lấy thông tin zaloUserInfor KHÔNG thành công 1 !';
+                myResponse.message = 'Lấy thông tin zaloUserInfor KHÔNG thành công !';
                 res.status(204).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy thông tin zaloUserInfor KHÔNG thành công 2 !';
+            myResponse.message = 'Lấy thông tin zaloUserInfor KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
