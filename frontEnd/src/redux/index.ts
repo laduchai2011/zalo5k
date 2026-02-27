@@ -8,6 +8,7 @@ import MemberReceiveMessageReducer from '@src/redux/slice/MemberReceiveMessage';
 import OaReducer from '@src/redux/slice/Oa';
 import OaSettingReducer from '@src/redux/slice/OaSetting';
 import SupportRoomReducer from '@src/redux/slice/SupportRoom';
+import OrderReducer from '@src/redux/slice/Order';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
@@ -28,6 +29,7 @@ export const store = configureStore({
         OaSlice: OaReducer,
         OaSettingSlice: OaSettingReducer,
         SupportRoomSlice: SupportRoomReducer,
+        OrderSlice: OrderReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageRTK.reducerPath]: messageRTK.reducer,

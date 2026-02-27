@@ -1,4 +1,16 @@
-import { HOME, SIGNUP, SIGNIN, SIGNOUT, MESSAGE, SUPPORT_ROOM, PROFILE, NOTE, OA, OA_SETTING } from '@src/const/text';
+import {
+    HOME,
+    SIGNUP,
+    SIGNIN,
+    SIGNOUT,
+    MESSAGE,
+    SUPPORT_ROOM,
+    PROFILE,
+    NOTE,
+    OA,
+    OA_SETTING,
+    ORDER,
+} from '@src/const/text';
 
 const _HOME = HOME;
 const _SIGNUP = SIGNUP;
@@ -11,6 +23,7 @@ const _NOTE = NOTE;
 const _PROFILE = PROFILE;
 const _OA = OA;
 const _OA_SETTING = OA_SETTING;
+const _ORDER = ORDER;
 
 export enum select_enum {
     HOME = _HOME,
@@ -24,6 +37,7 @@ export enum select_enum {
     PROFILE = _PROFILE,
     OA = _OA,
     OA_SETTING = _OA_SETTING,
+    ORDER = _ORDER,
 }
 export type selected_type =
     | select_enum.HOME
@@ -36,7 +50,8 @@ export type selected_type =
     | select_enum.NOTE
     | select_enum.PROFILE
     | select_enum.OA
-    | select_enum.OA_SETTING;
+    | select_enum.OA_SETTING
+    | select_enum.ORDER;
 
 export enum route_enum {
     HOME = '/',
@@ -52,6 +67,7 @@ export enum route_enum {
     MANAGE_MEMBERS = '/manage_members',
     OA = '/oa',
     OA_SETTING = '/oa_setting',
+    ORDER = '/order',
 }
 export type routed_type =
     | route_enum.HOME
@@ -66,4 +82,5 @@ export type routed_type =
     | route_enum.MANAGE_MEMBERS
     | route_enum.PROFILE
     | route_enum.OA
-    | route_enum.OA_SETTING;
+    | route_enum.OA_SETTING
+    | route_enum.ORDER;

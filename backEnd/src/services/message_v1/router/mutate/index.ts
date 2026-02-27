@@ -16,6 +16,9 @@ router_mutate_message_v1.post(
     handle_getChatRoomRoleWithCridAaid.setup,
     handle_getChatRoomRoleWithCridAaid.main,
     handle_getChatRoomRoleWithCridAaid.passRole,
+    handle_createMessageV1.getZaloApp,
+    handle_createMessageV1.getZaloOa,
+    handle_createMessageV1.setup,
     handle_createMessageV1.main
 );
 

@@ -33,6 +33,11 @@ router_query_zalo.post(
     handle_getZaloOaWithId.main
 );
 
-router_query_zalo.post('/getZaloUserInfor', authentication, handle_getZaloUserInfor.main);
+router_query_zalo.post(
+    '/getZaloUserInfor',
+    authentication,
+    handle_getZaloUserInfor.getZaloApp,
+    handle_getZaloUserInfor.main
+);
 
 export default router_query_zalo;

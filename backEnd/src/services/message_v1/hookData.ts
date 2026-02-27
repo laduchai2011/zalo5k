@@ -148,6 +148,15 @@ export function hookData() {
                 }
             }
         } else {
+            const keyRedis = `replyAccountId_with_message_id_${data.message.msg_id}`;
+
+            let reply_account_id: number | null = null;
+            reply_account_id = await serviceRedis.getData<number>(keyRedis);
+
+            if (!reply_account_id) {
+                reply_account_id = -1;
+            }
+
             const hookDataSchema: HookDataSchema = {
                 event_name: data.event_name,
                 app_id: data.app_id,
@@ -156,7 +165,7 @@ export function hookData() {
                 user_id_by_app: data.user_id_by_app,
                 sender_id: data.sender.id,
                 recipient_id: data.recipient.id,
-                reply_account_id: chatRoom?.accountId || -1,
+                reply_account_id: reply_account_id,
                 message_id: data.message.msg_id,
                 message: data.message,
                 is_seen: false,

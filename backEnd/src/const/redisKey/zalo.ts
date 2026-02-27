@@ -21,7 +21,7 @@ export const prefix_cache_zaloUser = {
             ? 'prefix_cache_zaloOa_with_zaloAppId_userIdByApp'
             : 'prefix_cache_zaloOa_with_zaloAppId_userIdByApp_dev',
     },
-    time: 60 * 5, // 5p
+    time: 60 * 1, // 5p
 };
 
 export const prefix_cache_zaloOa = {
@@ -29,7 +29,7 @@ export const prefix_cache_zaloOa = {
         with_id: isProduct ? 'prefix_cache_zaloOa_with_id' : 'prefix_cache_zaloOa_with_id_dev',
     },
     roles: [accountType_enum.ADMIN, accountType_enum.MEMBER],
-    time: 60 * 5, // 5p
+    time: 60 * 1, // 5p
 };
 
 export const prefix_cache_zaloApp = {
@@ -38,5 +38,5 @@ export const prefix_cache_zaloApp = {
         // with_zaloOaId: isProduct ? 'prefix_cache_zaloApp_with_zaloOaId' : 'prefix_cache_zaloApp_with_zaloOaId_dev',
     },
     roles: [accountType_enum.ADMIN, accountType_enum.MEMBER],
-    time: 60 * 5, // 5p
+    time: 60 * 1, // 5p
 };

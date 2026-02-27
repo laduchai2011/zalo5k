@@ -4,6 +4,7 @@ import { IoMdHome } from 'react-icons/io';
 import { IoIosPeople } from 'react-icons/io';
 import { ImProfile } from 'react-icons/im';
 import { LuNotebookPen } from 'react-icons/lu';
+import { FaShoppingCart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { route_enum, select_enum, selected_type } from '@src/router/type';
 
@@ -25,12 +26,16 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 childs[1].classList.add(style.selected);
                 break;
             }
-            case select_enum.NOTE: {
+            case select_enum.ORDER: {
                 childs[2].classList.add(style.selected);
                 break;
             }
-            case select_enum.PROFILE: {
+            case select_enum.NOTE: {
                 childs[3].classList.add(style.selected);
+                break;
+            }
+            case select_enum.PROFILE: {
+                childs[4].classList.add(style.selected);
                 break;
             }
             default: {
@@ -48,6 +53,10 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
             }
             case select_enum.SUPPORT_ROOM: {
                 navigate(route_enum.SUPPORT_ROOM);
+                break;
+            }
+            case select_enum.ORDER: {
+                navigate(route_enum.ORDER);
                 break;
             }
             case select_enum.NOTE: {
@@ -72,6 +81,9 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
             </div>
             <div onClick={() => handleSelect(select_enum.SUPPORT_ROOM)}>
                 <IoIosPeople />
+            </div>
+            <div onClick={() => handleSelect(select_enum.ORDER)}>
+                <FaShoppingCart />
             </div>
             <div onClick={() => handleSelect(select_enum.NOTE)}>
                 <LuNotebookPen />

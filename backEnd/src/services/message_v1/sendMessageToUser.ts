@@ -37,7 +37,6 @@ export async function sendMessageToUser(zaloApp: ZaloAppField, zaloOa: ZaloOaFie
                 }
             );
 
-            // console.log('result1', result.data);
             return result1.data;
         }
         return result.data;
