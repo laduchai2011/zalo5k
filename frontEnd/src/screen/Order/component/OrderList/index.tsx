@@ -8,8 +8,10 @@ import { RootState, AppDispatch } from '@src/redux';
 import { AccountField } from '@src/dataStruct/account';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { SEE_MORE } from '@src/const/text';
+import Filter from './component/Filter';
+import OneOrder from './component/OneOrder';
 
-const UserList = () => {
+const OrderList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.Home1Slice.selectedOa);
@@ -17,11 +19,12 @@ const UserList = () => {
     const handleSeeMore = () => {};
 
     const list_chatRoomRole = [1, 2, 3, 4].map((item, index) => {
-        return <div key={index}></div>;
+        return <OneOrder key={index} index={index + 1} />;
     });
 
     return (
         <div className={style.parent}>
+            <Filter />
             {list_chatRoomRole}
             <div className={style.seeMore}>
                 <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>
@@ -30,4 +33,4 @@ const UserList = () => {
     );
 };
 
-export default memo(UserList);
+export default memo(OrderList);

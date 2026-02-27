@@ -7,4 +7,7 @@ export interface state_props {
         data: ToastMessage_Data_Props;
     };
     selectedOa?: ZaloOaField;
+    editOrderDialog: {
+        isShow: boolean;
+    };
 }

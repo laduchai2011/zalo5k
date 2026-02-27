@@ -5,7 +5,7 @@ CREATE TABLE [order] (
 	content NVARCHAR(255) NOT NULL,
 	money NVARCHAR(255) NOT NULL,
 	isPay BIT NOT NULL,
-	phone NVARCHAR(255) UNIQUE,
+	phone NVARCHAR(255),
     status NVARCHAR(255) NOT NULL,
 	chatRoomId INT NOT NULL, 
     accountId INT NOT NULL, 

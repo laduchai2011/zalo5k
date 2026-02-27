@@ -30,3 +30,7 @@ export const SESSION_LIST = 'Danh sách phiên';
 export const CREATE_NEW_SESSION = 'Tạo phiên mới';
 export const AGREE = 'Đồng ý';
 export const EXIT = 'Thoát';
+export const CONTENT = 'Nội dung';
+export const TITLE = 'Tiêu đề';
+export const PAY = 'Thanh toán';
+export const CHAT = 'Chat';

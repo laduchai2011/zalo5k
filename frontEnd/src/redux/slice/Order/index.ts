@@ -9,6 +9,9 @@ const initialState: state_props = {
         data: { type: undefined, message: '' },
     },
     selectedOa: undefined,
+    editOrderDialog: {
+        isShow: false,
+    },
 };
 
 const OrderSlice = createSlice({
@@ -24,8 +27,11 @@ const OrderSlice = createSlice({
         set_selectedOa: (state, action: PayloadAction<ZaloOaField>) => {
             state.selectedOa = action.payload;
         },
+        setIsShow_editOrderDialog: (state, action: PayloadAction<boolean>) => {
+            state.editOrderDialog.isShow = action.payload;
+        },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, set_selectedOa } = OrderSlice.actions;
+export const { set_isLoading, setData_toastMessage, set_selectedOa, setIsShow_editOrderDialog } = OrderSlice.actions;
 export default OrderSlice.reducer;

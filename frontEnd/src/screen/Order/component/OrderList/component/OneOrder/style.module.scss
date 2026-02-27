@@ -1,0 +1,73 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px 5px;
+    margin: 0 5px;
+    border-top: 1px solid blue;
+
+    > div {
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .index {
+        @include center-of-row;
+        justify-content: space-between;
+
+        > div:nth-child(1) {
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            @include center-of-rectangle;
+            background-color: blue;
+            color: white;
+        }
+
+        > div:nth-child(2) {
+            > svg {
+                cursor: pointer;
+                margin: 0 5px;
+            }
+        }
+    }
+
+    > .label {
+        font-weight: 500;
+    }
+
+    > .chat {
+        > div {
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 0.9rem;
+            width: max-content;
+            background-color: lab(83.75% -9.73 41.74);
+            border-radius: 10px;
+            color: rgb(255, 255, 0);
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 0 10px rgb(121, 119, 0);
+
+            &:hover {
+                box-shadow: 0 0 20px rgb(121, 119, 0);
+                scale: 1.05;
+            }
+        }
+    }
+
+    > .isPay {
+        @include center-of-row;
+
+        > div:nth-child(2) {
+            color: red;
+            margin-left: 15px;
+            font-size: 0.9rem;
+            font-style: italic;
+
+            &.paid {
+                color: green;
+            }
+        }
+    }
+}
