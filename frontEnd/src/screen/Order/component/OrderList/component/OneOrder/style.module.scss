@@ -27,12 +27,17 @@
         > div:nth-child(2) {
             color: gray;
             font-style: italic;
+            @include line-clamp(1);
+            flex: 1;
         }
 
         > div:nth-child(3) {
             > svg {
                 cursor: pointer;
-                margin: 0 5px;
+            }
+
+            > svg:nth-child(2) {
+                margin-left: 10px;
             }
         }
     }
@@ -107,6 +112,12 @@
         @include center-of-row;
 
         > div:nth-child(2) {
+            margin: 0 5px;
+            color: blue;
+            font-style: italic;
+        }
+
+        > div:nth-child(3) {
             color: red;
             margin-left: 15px;
             font-size: 0.9rem;

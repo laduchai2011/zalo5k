@@ -86,3 +86,10 @@ export function parseTextToParts(text: string): Part[] {
 
     return parts;
 }
+
+export const formatMoney = (value: string | number) => {
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    }).format(Number(value));
+};

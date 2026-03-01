@@ -1,12 +1,13 @@
 export interface OrdersFilterBodyField {
     page: number;
     size: number;
-    uuid: string;
-    moneyFrom: number;
-    moneyTo: number;
-    isPay: boolean;
-    phone: string;
-    chatRoomId: number;
+    uuid?: string;
+    moneyFrom?: number;
+    moneyTo?: number;
+    isPay?: boolean;
+    phone?: string;
+    chatRoomId?: number;
+    zaloOaId?: number;
     accountId: number;
 }
 
@@ -17,6 +18,7 @@ export interface CreateOrderBodyField {
     money: number;
     phone: string;
     chatRoomId: number;
+    zaloOaId: number;
     accountId: number;
 }
 

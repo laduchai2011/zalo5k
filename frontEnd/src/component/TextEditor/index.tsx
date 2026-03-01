@@ -23,12 +23,18 @@ import {
     // BiVideo,
 } from 'react-icons/bi';
 
-const TextEditor: FC<{ onChange?: (value: string) => void }> = ({ onChange }) => {
+const TextEditor: FC<{ value?: string; onChange?: (value: string) => void }> = ({ value, onChange }) => {
     const parent_element = useRef<HTMLDivElement | null>(null);
     const btnContainer_element = useRef<HTMLDivElement | null>(null);
     const editor_element = useRef<HTMLDivElement | null>(null);
     const [isShowBtn, setIsShowBtn] = useState<boolean>(true);
     const [fileName, setFileName] = useState('');
+
+    useEffect(() => {
+        if (editor_element.current && value !== undefined) {
+            editor_element.current.innerHTML = value;
+        }
+    }, [value]);
 
     useEffect(() => {
         if (!btnContainer_element.current) return;

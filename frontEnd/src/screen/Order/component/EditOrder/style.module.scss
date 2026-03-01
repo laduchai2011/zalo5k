@@ -40,6 +40,15 @@
             }
         }
 
+        > .uuidContainer {
+            @include center-of-rectangle;
+            color: gray;
+            font-style: italic;
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 0.8rem;
+        }
+
         > .contentContainer {
             > div {
                 box-sizing: border-box;
@@ -67,6 +76,14 @@
                         padding: 5px;
                         border-radius: 10px;
                     }
+                }
+            }
+
+            > .content {
+                > div:nth-child(2) {
+                    max-height: 400px;
+                    overflow-y: scroll;
+                    @include small-scroll-yy(1px);
                 }
             }
 

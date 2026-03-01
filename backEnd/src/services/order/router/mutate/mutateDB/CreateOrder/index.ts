@@ -27,6 +27,7 @@ class MutateDB_CreateOrder {
                     .input('money', sql.Int, this._createOrderBody.money)
                     .input('phone', sql.NVarChar(255), this._createOrderBody.phone)
                     .input('chatRoomId', sql.Int, this._createOrderBody.chatRoomId)
+                    .input('zaloOaId', sql.Int, this._createOrderBody.zaloOaId)
                     .input('accountId', sql.Int, this._createOrderBody.accountId)
                     .execute('CreateOrder');
 

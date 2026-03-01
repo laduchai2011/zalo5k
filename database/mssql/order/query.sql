@@ -7,7 +7,8 @@
 	@isPay BIT = NULL,
 	@phone NVARCHAR(255) = NULL,
 	@chatRoomId INT = NULL,
-    @accountId INT = NULL
+	@zaloOaId INT = NULL,
+    @accountId INT
 AS
 BEGIN
 	-- Tập kết quả 1: dữ liệu phân trang
@@ -23,7 +24,8 @@ BEGIN
 			AND (@isPay IS NULL OR isPay = @isPay)
 			AND (@phone IS NULL OR phone LIKE '%' + @phone + '%')
 			AND (@chatRoomId IS NULL OR chatRoomId = @chatRoomId)
-			AND (@accountId IS NULL OR accountId = @accountId)
+			AND (@zaloOaId IS NULL OR zaloOaId = @zaloOaId)
+			AND accountId = @accountId
     )
     SELECT *
     FROM orders
@@ -40,6 +42,7 @@ BEGIN
 			AND (@isPay IS NULL OR isPay = @isPay)
 			AND (@phone IS NULL OR phone LIKE '%' + @phone + '%')
 			AND (@chatRoomId IS NULL OR chatRoomId = @chatRoomId)
-			AND (@accountId IS NULL OR accountId = @accountId)
+			AND (@zaloOaId IS NULL OR zaloOaId = @zaloOaId)
+			AND accountId = @accountId
 END
 GO

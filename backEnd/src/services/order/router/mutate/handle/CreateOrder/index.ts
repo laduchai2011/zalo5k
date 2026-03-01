@@ -77,6 +77,7 @@ class Handle_CreateOrder {
 
         const chatRoom = await this._serviceRedis.getData<ChatRoomField>(keyRedis);
         if (chatRoom && chatRoom.accountId === accountId) {
+            res.locals.zaloOaId = chatRoom.zaloOaId;
             next();
             return;
         }
@@ -105,6 +106,7 @@ class Handle_CreateOrder {
                 }
 
                 if (r_chatRoom.accountId === accountId) {
+                    res.locals.zaloOaId = r_chatRoom.zaloOaId;
                     next();
                     return;
                 }
@@ -126,6 +128,7 @@ class Handle_CreateOrder {
 
     main = async (_: Request, res: Response) => {
         const createOrderBody = res.locals.createOrderBody as CreateOrderBodyField;
+        const zaloOaId = res.locals.zaloOaId as number;
 
         const myResponse: MyResponse<OrderField> = {
             isSuccess: false,
@@ -134,6 +137,7 @@ class Handle_CreateOrder {
 
         const uuid = uuidv4();
         createOrderBody.uuid = uuid;
+        createOrderBody.zaloOaId = zaloOaId;
 
         const mutateDB = new MutateDB_CreateOrder();
         mutateDB.setCreateOrderBody(createOrderBody);

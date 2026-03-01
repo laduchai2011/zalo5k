@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Order/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { ZaloOaField } from '@src/dataStruct/zalo';
+import { OrderField } from '@src/dataStruct/order';
 
 const initialState: state_props = {
     isLoading: false,
@@ -11,6 +12,7 @@ const initialState: state_props = {
     selectedOa: undefined,
     editOrderDialog: {
         isShow: false,
+        order: undefined,
     },
     payDialog: {
         isShow: false,
@@ -30,8 +32,8 @@ const OrderSlice = createSlice({
         set_selectedOa: (state, action: PayloadAction<ZaloOaField>) => {
             state.selectedOa = action.payload;
         },
-        setIsShow_editOrderDialog: (state, action: PayloadAction<boolean>) => {
-            state.editOrderDialog.isShow = action.payload;
+        set_editOrderDialog: (state, action: PayloadAction<{ isShow: boolean; order: OrderField | undefined }>) => {
+            state.editOrderDialog = action.payload;
         },
         setIsShow_payDialog: (state, action: PayloadAction<boolean>) => {
             state.payDialog.isShow = action.payload;
@@ -39,6 +41,6 @@ const OrderSlice = createSlice({
     },
 });
 
-export const { set_isLoading, setData_toastMessage, set_selectedOa, setIsShow_editOrderDialog, setIsShow_payDialog } =
+export const { set_isLoading, setData_toastMessage, set_selectedOa, set_editOrderDialog, setIsShow_payDialog } =
     OrderSlice.actions;
 export default OrderSlice.reducer;

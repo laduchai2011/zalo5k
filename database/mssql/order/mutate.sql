@@ -5,6 +5,7 @@
 	@money BIGINT,
 	@phone NVARCHAR(255),
 	@chatRoomId INT,
+	@zaloOaId INT,
 	@accountId INT
 AS
 BEGIN
@@ -18,6 +19,7 @@ BEGIN
 			FROM dbo.chatRoom
 			WHERE 
 				id = @chatRoomId
+				AND zaloOaId = @zaloOaId
 				AND accountId = @accountId
 		)
 		BEGIN
@@ -26,8 +28,8 @@ BEGIN
 
 		DECLARE @newOrderId INT;
 
-        INSERT INTO dbo.[order] (uuid, label, content, money, isPay, phone, status, chatRoomId, accountId, updateTime, createTime)
-        VALUES (@uuid, @label, @content, @money, 0, @phone, 'normal', @chatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+        INSERT INTO dbo.[order] (uuid, label, content, money, isPay, phone, status, chatRoomId, zaloOaId, accountId, updateTime, createTime)
+        VALUES (@uuid, @label, @content, @money, 0, @phone, 'normal', @chatRoomId, @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
 		SET @newOrderId = SCOPE_IDENTITY();
 

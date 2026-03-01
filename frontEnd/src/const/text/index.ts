@@ -38,3 +38,4 @@ export const CHAT = 'Chat';
 export const MONEY = 'Tiền';
 export const FROM = 'Từ';
 export const TO = 'Đến';
+export const SEARCH = 'Tìm kiếm';

@@ -1,5 +1,6 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { ZaloOaField } from '@src/dataStruct/zalo';
+import { OrderField } from '@src/dataStruct/order';
 
 export interface state_props {
     isLoading: boolean;
@@ -9,6 +10,7 @@ export interface state_props {
     selectedOa?: ZaloOaField;
     editOrderDialog: {
         isShow: boolean;
+        order?: OrderField;
     };
     payDialog: {
         isShow: boolean;

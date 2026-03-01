@@ -28,6 +28,7 @@
 
     > .checks {
         @include center-of-row;
+        justify-content: space-between;
         box-sizing: border-box;
         padding: 5px;
 
@@ -49,6 +50,16 @@
                 color: red;
                 font-size: 0.9rem;
                 text-decoration: line-through;
+            }
+        }
+
+        > div:nth-child(3) {
+            @include center-of-row;
+            margin: 0 5px;
+
+            > div {
+                color: rgb(0, 206, 221);
+                font-size: 0.9rem;
             }
         }
     }
@@ -73,6 +84,27 @@
         > input {
             width: 35%;
             outline: none;
+        }
+    }
+
+    > .searchContainer {
+        box-sizing: border-box;
+        padding: 5px;
+        margin-top: 10px;
+        @include center-of-rectangle;
+
+        > div {
+            box-sizing: border-box;
+            border: 1px solid gray;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+
+            &:active {
+                background-color: gray;
+                color: white;
+            }
         }
     }
 }
