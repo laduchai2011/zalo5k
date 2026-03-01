@@ -25,6 +25,11 @@
         }
 
         > div:nth-child(2) {
+            color: gray;
+            font-style: italic;
+        }
+
+        > div:nth-child(3) {
             > svg {
                 cursor: pointer;
                 margin: 0 5px;
@@ -33,11 +38,47 @@
     }
 
     > .label {
-        font-weight: 500;
+        > div:nth-child(1) {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        > div:nth-child(2) {
+            color: gray;
+            box-sizing: border-box;
+            padding: 0 5px;
+        }
+    }
+
+    > .content {
+        > div:nth-child(1) {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        > div:nth-child(2) {
+            color: gray;
+            box-sizing: border-box;
+            padding: 0 5px;
+        }
+    }
+
+    > .phone {
+        @include center-of-row;
+
+        > div:nth-child(1) {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        > div:nth-child(2) {
+            color: gray;
+            box-sizing: border-box;
+            padding: 0 5px;
+        }
     }
 
     > .chat {
-        > div {
+        @include center-of-row;
+
+        > div:nth-child(1) {
             box-sizing: border-box;
             padding: 5px;
             font-size: 0.9rem;
@@ -53,6 +94,12 @@
                 box-shadow: 0 0 20px rgb(121, 119, 0);
                 scale: 1.05;
             }
+        }
+
+        > div:nth-child(2) {
+            margin-left: 20px;
+            font-style: italic;
+            color: gray;
         }
     }
 

@@ -42,7 +42,7 @@ const EditOrder = () => {
         const timeout = setTimeout(() => {
             dispatch(set_isLoading(false));
             dispatch(setIsShow_editOrderDialog(false));
-            dispatch(setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Xóa thành công !' }));
+            dispatch(setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Chỉnh sửa thành công !' }));
             clearTimeout(timeout);
         }, 4000);
     };

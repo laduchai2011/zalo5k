@@ -130,6 +130,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_chatRoom = (await import('@src/services/chatRoom')).default;
         app.use(`${prefix}/service_chatRoom`, service_chatRoom);
     }
+
+    if (services.includes('order')) {
+        const service_order = (await import('@src/services/order')).default;
+        app.use(`${prefix}/service_order`, service_order);
+    }
 })();
 
 app.listen(port, () => {

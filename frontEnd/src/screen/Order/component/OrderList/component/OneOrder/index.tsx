@@ -5,7 +5,7 @@ import { AppDispatch } from '@src/redux';
 import { PHONE_NUMBER, CONTENT, TITLE, PAY, CHAT } from '@src/const/text';
 import { CiEdit } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
-import { setIsShow_editOrderDialog } from '@src/redux/slice/Order';
+import { setIsShow_editOrderDialog, setIsShow_payDialog } from '@src/redux/slice/Order';
 
 const OneOrder: FC<{ index: number }> = ({ index }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -30,27 +30,40 @@ const OneOrder: FC<{ index: number }> = ({ index }) => {
         dispatch(setIsShow_editOrderDialog(true));
     };
 
+    const handleOpenPay = () => {
+        dispatch(setIsShow_payDialog(true));
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.index}>
                 <div>{index}</div>
+                <div>uuid</div>
                 <div>
                     <CiEdit onClick={() => handleOpenEdit()} size={22} color="green" />
                     <MdDelete size={22} color="red" />
                 </div>
             </div>
-            <div className={style.label}>{TITLE}</div>
-            <div className={style.content}>{CONTENT}</div>
+            <div className={style.label}>
+                <div>{TITLE}</div>
+                <div>skdjfksdh kjsdhg skdjfksdh skdjfksdh skdjfksdh skdjfksdh skdjfksdh skdjfksdh</div>
+            </div>
+            <div className={style.content}>
+                <div>{CONTENT}</div>
+                <div>skdjfksdh kjsdhg skdjfksdh skdjfksdh skdjfksdh skdjfksdh skdjfksdh skdjfksdh</div>
+            </div>
             <div className={style.phone}>
                 <div>{PHONE_NUMBER}</div>
+                <div>0329384723</div>
             </div>
             <div className={style.chat}>
                 <div>{CHAT}</div>
+                <div>id</div>
             </div>
             <div className={style.isPay}>
                 <div>{PAY}</div>
                 <div ref={payText_element}>{payText}</div>
-                <div>{!isPay && <button>{PAY}</button>}</div>
+                <div>{!isPay && <button onClick={() => handleOpenPay()}>{PAY}</button>}</div>
             </div>
         </div>
     );

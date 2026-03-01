@@ -52,4 +52,27 @@
             }
         }
     }
+
+    > .money {
+        box-sizing: border-box;
+        padding: 5px;
+        @include center-of-row;
+        width: 100%;
+
+        > div:nth-child(1) {
+            margin-right: 5px;
+        }
+
+        > .txt {
+            color: gray;
+            font-size: 0.9rem;
+            font-style: italic;
+            margin: 0 5px;
+        }
+
+        > input {
+            width: 35%;
+            outline: none;
+        }
+    }
 }

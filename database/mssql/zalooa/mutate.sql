@@ -33,7 +33,8 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
-		UPDATE dbo.zaloOaToken WITH (ROWLOCK)
+		-- UPDATE dbo.zaloOaToken WITH (ROWLOCK)
+		UPDATE dbo.zaloOaToken
 		SET refreshToken = @refreshToken
 		WHERE zaloOaId = @zaloOaId
 
