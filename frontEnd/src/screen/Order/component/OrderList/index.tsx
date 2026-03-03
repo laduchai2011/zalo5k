@@ -1,12 +1,12 @@
-import { memo, useEffect, useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import style from './style.module.scss';
 // import User from './component/User';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@src/redux';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 // import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Home1';
 // import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+// import { AccountField } from '@src/dataStruct/account';
+// import { ZaloOaField } from '@src/dataStruct/zalo';
 import { SEE_MORE } from '@src/const/text';
 import Filter from './component/Filter';
 import OneOrder from './component/OneOrder';
@@ -17,8 +17,8 @@ import { set_isLoading } from '@src/redux/slice/Order';
 
 const OrderList = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OrderSlice.selectedOa);
+    // const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    // const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OrderSlice.selectedOa);
     const [filterBody, setFilterBody] = useState<OrdersFilterBodyField>({
         page: -1,
         size: 5,

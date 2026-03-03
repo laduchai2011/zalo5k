@@ -1,7 +1,7 @@
 ﻿ALTER PROCEDURE CreateOrder
 	@uuid NVARCHAR(255),
 	@label NVARCHAR(255),
-	@content NVARCHAR(255),
+	@content NVARCHAR(MAX),
 	@money BIGINT,
 	@phone NVARCHAR(255),
 	@chatRoomId INT,
@@ -44,10 +44,10 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE UpdateOrder
+ALTER PROCEDURE UpdateOrder
 	@id INT,
 	@label NVARCHAR(255),
-	@content NVARCHAR(255),
+	@content NVARCHAR(MAX),
 	@money BIGINT,
 	@phone NVARCHAR(255),
 	@accountId INT

@@ -30,3 +30,8 @@ export interface UpdateOrderBodyField {
     phone: string;
     accountId: number;
 }
+
+export interface GetMyOrderWithIdBodyField {
+    id: number;
+    accountId: number;
+}

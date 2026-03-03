@@ -13,6 +13,7 @@ const initialState: state_props = {
     editOrderDialog: {
         isShow: false,
         order: undefined,
+        newOrder: undefined,
     },
     payDialog: {
         isShow: false,
@@ -35,12 +36,24 @@ const OrderSlice = createSlice({
         set_editOrderDialog: (state, action: PayloadAction<{ isShow: boolean; order: OrderField | undefined }>) => {
             state.editOrderDialog = action.payload;
         },
+        setFinal_editOrderDialog: (
+            state,
+            action: PayloadAction<{ isShow: false; newOrder: OrderField | undefined }>
+        ) => {
+            state.editOrderDialog = action.payload;
+        },
         setIsShow_payDialog: (state, action: PayloadAction<boolean>) => {
             state.payDialog.isShow = action.payload;
         },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, set_selectedOa, set_editOrderDialog, setIsShow_payDialog } =
-    OrderSlice.actions;
+export const {
+    set_isLoading,
+    setData_toastMessage,
+    set_selectedOa,
+    set_editOrderDialog,
+    setFinal_editOrderDialog,
+    setIsShow_payDialog,
+} = OrderSlice.actions;
 export default OrderSlice.reducer;

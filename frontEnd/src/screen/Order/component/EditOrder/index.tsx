@@ -3,12 +3,19 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
-import { CLOSE, AGREE, EXIT, PHONE_NUMBER, CONTENT, TITLE } from '@src/const/text';
-import { setData_toastMessage, set_isLoading, set_editOrderDialog } from '@src/redux/slice/Order';
+import { CLOSE, AGREE, EXIT, PHONE_NUMBER, CONTENT, TITLE, MONEY } from '@src/const/text';
+import {
+    setData_toastMessage,
+    set_isLoading,
+    set_editOrderDialog,
+    setFinal_editOrderDialog,
+} from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import TextEditor from '@src/component/TextEditor';
 import { OrderField } from '@src/dataStruct/order';
 import { isValidPhoneNumber } from '@src/utility/string';
+import { formatMoney } from '@src/utility/string';
+import { useUpdateOrderMutation } from '@src/redux/query/orderRTK';
 
 const EditOrder = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -17,9 +24,14 @@ const EditOrder = () => {
     const order: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.editOrderDialog.order);
     const [newOrder, setNewOrder] = useState<OrderField | undefined>(order);
     const [content, setContent] = useState<string>('');
+    const [money, setMoney] = useState<string>('');
+    const [isFormattingMoney, setIsFormattingMoney] = useState(false);
+    const [updateOrder] = useUpdateOrderMutation();
 
     useEffect(() => {
+        if (!order) return;
         setNewOrder(order);
+        setMoney(order.money.toString());
     }, [order]);
 
     useEffect(() => {
@@ -47,13 +59,50 @@ const EditOrder = () => {
     };
 
     const handleAgree = () => {
-        // dispatch(setIsShow_editOrderDialog(true));
-        const timeout = setTimeout(() => {
-            dispatch(set_isLoading(false));
-            dispatch(set_editOrderDialog({ isShow: false, order: undefined }));
-            dispatch(setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Chỉnh sửa thành công !' }));
-            clearTimeout(timeout);
-        }, 4000);
+        if (!newOrder) return;
+
+        const label_t = newOrder.label.trim();
+        if (label_t.length === 0) {
+            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Tiêu đề không được để trống !' }));
+            return;
+        }
+
+        const phone_t = newOrder.phone.trim();
+        if (phone_t.length > 0 && !isValidPhoneNumber(phone_t)) {
+            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Số điện thoại không hợp lệ !' }));
+            return;
+        }
+
+        const orderBody = { ...newOrder };
+        orderBody.label = label_t;
+        orderBody.phone = phone_t;
+        orderBody.content = content;
+        orderBody.money = Number(money);
+
+        dispatch(set_isLoading(true));
+        updateOrder(orderBody)
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    dispatch(setFinal_editOrderDialog({ isShow: false, newOrder: resData.data }));
+                    dispatch(
+                        setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Cập nhật thành công !' })
+                    );
+                } else {
+                    dispatch(
+                        setData_toastMessage({ type: messageType_enum.ERROR, message: 'Cập nhật không thành công !' })
+                    );
+                }
+            })
+            .catch((err) => {
+                dispatch(
+                    setData_toastMessage({ type: messageType_enum.ERROR, message: 'Cập nhật không thành công !' })
+                );
+                console.error(err);
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+            });
     };
 
     const handleLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +117,12 @@ const EditOrder = () => {
     const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!newOrder) return;
         setNewOrder({ ...newOrder, phone: e.target.value });
+    };
+
+    const handleMoney = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const raw = value.replace(/\D/g, '');
+        setMoney(raw);
     };
 
     return (
@@ -94,6 +149,18 @@ const EditOrder = () => {
                         <div>{PHONE_NUMBER}</div>
                         <div>
                             <input value={newOrder?.phone || ''} onChange={(e) => handlePhone(e)} />
+                        </div>
+                    </div>
+                    <div className={style.money}>
+                        <div>{MONEY}</div>
+                        <div>
+                            <input
+                                value={isFormattingMoney && money ? formatMoney(money) : money}
+                                onChange={handleMoney}
+                                onFocus={() => setIsFormattingMoney(false)}
+                                onBlur={() => setIsFormattingMoney(true)}
+                                placeholder="VND"
+                            />
                         </div>
                     </div>
                 </div>

@@ -46,3 +46,12 @@ BEGIN
 			AND accountId = @accountId
 END
 GO
+
+CREATE PROCEDURE GetMyOrderWithId
+	@id INT,
+	@accountId INT
+AS
+BEGIN
+	SELECT * FROM dbo.[order] WHERE id = @id AND accountId = @accountId
+END
+GO

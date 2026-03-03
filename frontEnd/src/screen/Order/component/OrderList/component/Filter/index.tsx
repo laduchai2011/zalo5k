@@ -64,6 +64,8 @@ const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) =>
     const handleSearch = () => {
         const inputValue = selectedValue.trim();
 
+        if (selectedValue.length === 0) return;
+
         const newFilterBody = { ...filterBody };
         if (isPay && isNotPay) {
             newFilterBody.isPay = undefined;

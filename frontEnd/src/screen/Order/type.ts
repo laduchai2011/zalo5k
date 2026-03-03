@@ -11,6 +11,7 @@ export interface state_props {
     editOrderDialog: {
         isShow: boolean;
         order?: OrderField;
+        newOrder?: OrderField;
     };
     payDialog: {
         isShow: boolean;

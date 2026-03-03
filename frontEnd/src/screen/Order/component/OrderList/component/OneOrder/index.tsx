@@ -1,7 +1,7 @@
 import { memo, FC, useState, useRef, useEffect } from 'react';
 import style from './style.module.scss';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@src/redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
 import { PHONE_NUMBER, CONTENT, TITLE, PAY, CHAT } from '@src/const/text';
 import { CiEdit } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
@@ -11,6 +11,9 @@ import { formatMoney } from '@src/utility/string';
 
 const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const newOrder: OrderField | undefined = useSelector(
+        (state: RootState) => state.OrderSlice.editOrderDialog.newOrder
+    );
     const payText_element = useRef<HTMLDivElement | null>(null);
     const [order, setOrder] = useState<OrderField>(data);
     const [payText, setPayText] = useState<string>('Chưa thanh toán');
@@ -18,7 +21,6 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     useEffect(() => {
         if (!payText_element.current) return;
         const payTextElement = payText_element.current;
-
         if (order.isPay) {
             setPayText('Đã thanh toán');
             payTextElement.classList.add(style.paid);
@@ -27,6 +29,13 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
             payTextElement.classList.remove(style.paid);
         }
     }, [order]);
+
+    useEffect(() => {
+        if (!newOrder) return;
+        if (newOrder.id === order.id) {
+            setOrder(newOrder);
+        }
+    }, [newOrder, order]);
 
     const handleOpenEdit = () => {
         dispatch(set_editOrderDialog({ isShow: true, order: order }));
@@ -52,7 +61,7 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
             </div>
             <div className={style.content}>
                 <div>{CONTENT}</div>
-                <div>{order.content}</div>
+                <div dangerouslySetInnerHTML={{ __html: order.content }} />
             </div>
             <div className={style.phone}>
                 <div>{PHONE_NUMBER}</div>

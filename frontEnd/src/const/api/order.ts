@@ -6,4 +6,5 @@ const apiString = isProduct ? '' : '/api';
 export const ORDER_API = {
     GET_ORDERS: `${BASE_URL}${apiString}/service_order/query/getOrders`,
     CREATE_ORDER: `${BASE_URL}${apiString}/service_order/mutate/createOrder`,
+    UPDATE_ORDER: `${BASE_URL}${apiString}/service_order/mutate/updateOrder`,
 };
