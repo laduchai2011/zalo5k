@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { PROFILE, MEMBER_RECEIVE_MESSAGE, MANAGE_MEMBERS, SIGNOUT, OA } from '@src/const/text';
+import { PROFILE, MEMBER_RECEIVE_MESSAGE, MANAGE_MEMBERS, SIGNOUT, OA, ACCOUNT_RECEIVE_MESSAGE } from '@src/const/text';
 import Header from '../Header';
 import { select_enum, route_enum } from '@src/router/type';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
@@ -66,6 +66,10 @@ const Profile = () => {
         navigate(route_enum.OA);
     };
 
+    const goToAccountReceiveMessage = () => {
+        navigate(route_enum.ACCOUNT_RECEIVE_MESSAGE);
+    };
+
     const goToSignout = () => {
         navigate(route_enum.SIGNOUT);
     };
@@ -88,6 +92,9 @@ const Profile = () => {
                     </div>
                     <div className={style.option} onClick={() => goToOa()}>
                         {OA}
+                    </div>
+                    <div className={style.option} onClick={() => goToAccountReceiveMessage()}>
+                        {ACCOUNT_RECEIVE_MESSAGE}
                     </div>
                     <div className={style.option} onClick={() => goToSignout()}>
                         {SIGNOUT}

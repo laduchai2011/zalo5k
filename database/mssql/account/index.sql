@@ -12,11 +12,11 @@ CREATE TABLE account (
 );
 
 GO
-    CREATE NONCLUSTERED INDEX idx_id ON account(id);
+CREATE NONCLUSTERED INDEX idx_id ON account(id);
 GO
-    CREATE NONCLUSTERED INDEX idx_userName ON account(userName);
+CREATE NONCLUSTERED INDEX idx_userName ON account(userName);
 GO
-    CREATE NONCLUSTERED INDEX idx_phone ON account(phone);
+CREATE NONCLUSTERED INDEX idx_phone ON account(phone);
 GO
 
 
@@ -24,10 +24,19 @@ CREATE TABLE accountInformation (
     addedById INT,
     accountType NVARCHAR(255) NOT NULL,
 	accountId INT NOT NULL UNIQUE,
-
-	CONSTRAINT FK_accountInformation_Account FOREIGN KEY (accountId) REFERENCES account(id),
-	CONSTRAINT FK_accountInformation_AddedBy FOREIGN KEY (addedById) REFERENCES account(id)
+	
+	CONSTRAINT FK_accountInformation_AddedBy FOREIGN KEY (addedById) REFERENCES account(id),
+	CONSTRAINT FK_accountInformation_Account FOREIGN KEY (accountId) REFERENCES account(id)
 );
 GO
-    CREATE NONCLUSTERED INDEX idx_addedById ON accountInformation(addedById);
+CREATE NONCLUSTERED INDEX idx_addedById ON accountInformation(addedById);
+GO
+
+CREATE TABLE accountReceiveMessage (
+    accountIdReceiveMessage INT,
+	accountId INT NOT NULL UNIQUE,
+
+	CONSTRAINT FK_accountReceiveMessage_accountIdReceiveMessage FOREIGN KEY (accountIdReceiveMessage) REFERENCES account(id),
+	CONSTRAINT FK_accountReceiveMessage_Account FOREIGN KEY (accountId) REFERENCES account(id)
+);
 GO

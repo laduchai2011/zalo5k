@@ -23,7 +23,7 @@ export const prefix_cache_replyAccounts = {
             ? 'prefix_cache_replyAccount_maxPage_with_chatRoomId'
             : 'prefix_cache_replyAccount_maxPage_with_chatRoomId_dev',
     },
-    time: 60 * 1, // 5p
+    time: 60 * 5, // 5p
 };
 
 export const prefix_cache_notReplyAccounts = {
@@ -38,5 +38,14 @@ export const prefix_cache_notReplyAccounts = {
             ? 'prefix_cache_notReplyAccount_maxPage_with_chatRoomId'
             : 'prefix_cache_notReplyAccount_maxPage_with_chatRoomId_dev',
     },
-    time: 60 * 1, // 5p
+    time: 60 * 5, // 5p
+};
+
+export const prefix_cache_accountReceiveMessage = {
+    key: {
+        with_accountId: isProduct
+            ? 'prefix_cache_accountReceiveMessage_with_accountId'
+            : 'prefix_cache_accountReceiveMessage_with_accountId_dev',
+    },
+    time: 60 * 5, // 5p
 };

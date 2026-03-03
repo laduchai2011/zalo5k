@@ -8,7 +8,7 @@ import {
     GetNotReplyAccountBodyField,
     GetReplyAccountBodyField,
 } from '@src/dataStruct/account/body';
-import { ChatRoomRoleField, ChatRoomRoleSchema, ChatRoomField } from '@src/dataStruct/chatRoom';
+import { ChatRoomRoleSchema, ChatRoomField } from '@src/dataStruct/chatRoom';
 import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
 import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { GetChatRoomWithIdBodyField } from '@src/dataStruct/chatRoom/body';

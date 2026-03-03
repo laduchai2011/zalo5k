@@ -13,9 +13,10 @@ export interface AccountField {
 
 export interface AccountInformationField {
     addedById: number;
-    accountType: accountType_type;
+    accountType: string;
     accountId: number;
 }
+
 export enum accountType_enum {
     ADMIN = 'admin',
     MEMBER = 'member',
@@ -39,4 +40,9 @@ export interface AllMembersBodyField {
 export interface PagedAccountField {
     items: AccountField[];
     totalCount: number;
+}
+
+export interface AccountReceiveMessageField {
+    accountIdReceiveMessage: number;
+    accountId: number;
 }

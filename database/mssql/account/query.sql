@@ -143,6 +143,14 @@ BEGIN
 	END
 GO 
 
+CREATE PROCEDURE GetAccountReceiveMessage
+    @accountId INT
+AS
+BEGIN
+	SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId
+END
+GO
+
 EXEC dbo.GetNotReplyAccounts
     @page = 1,
     @size = 10,

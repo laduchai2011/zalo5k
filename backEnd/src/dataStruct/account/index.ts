@@ -41,3 +41,8 @@ export interface PagedAccountField {
     items: AccountField[];
     totalCount: number;
 }
+
+export interface AccountReceiveMessageField {
+    accountIdReceiveMessage: number;
+    accountId: number;
+}

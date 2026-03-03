@@ -93,3 +93,6 @@ export const formatMoney = (value: string | number) => {
         currency: 'VND',
     }).format(Number(value));
 };
+
+export const avatarnull =
+    'https://www.shutterstock.com/image-vector/default-avatar-social-media-display-600nw-2632690107.jpg';

@@ -16,3 +16,17 @@ export interface CreateReplyAccountBodyField {
     chatRoomId: number;
     accountId: number;
 }
+
+export interface GetAccountReceiveMessageBodyField {
+    accountId: number;
+}
+
+export interface CreateAccountReceiveMessageBodyField {
+    accountIdReceiveMessage: number;
+    accountId: number;
+}
+
+export interface UpdateAccountReceiveMessageBodyField {
+    accountIdReceiveMessage: number;
+    accountId: number;
+}

@@ -49,7 +49,8 @@ BEGIN
 		COMMIT TRANSACTION;
 	END TRY
 	BEGIN CATCH
-		ROLLBACK TRANSACTION;
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
 		THROW;
 	END CATCH
 END;
@@ -113,6 +114,58 @@ BEGIN
 		SELECT *
 		FROM dbo.account
 		WHERE status = 'normal' AND id = @authorizedAccountId
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+ALTER PROCEDURE CreateAccountReceiveMessage
+	@accountIdReceiveMessage INT = NULL,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+		BEGIN TRANSACTION;
+
+		-- Th�m medication
+        INSERT INTO dbo.accountReceiveMessage (accountIdReceiveMessage, accountId)
+        VALUES (@accountIdReceiveMessage, @accountId);
+
+		SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+ALTER PROCEDURE UpdateAccountReceiveMessage
+	@accountIdReceiveMessage INT = NULL,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+		BEGIN TRANSACTION;
+
+		UPDATE dbo.accountReceiveMessage
+		SET accountIdReceiveMessage = @accountIdReceiveMessage
+		WHERE accountId = @accountId;
+
+		SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId;
 
 		COMMIT TRANSACTION;
 	END TRY
