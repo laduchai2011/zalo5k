@@ -143,11 +143,12 @@ BEGIN
 	END
 GO 
 
-CREATE PROCEDURE GetAccountReceiveMessage
+ALTER PROCEDURE GetAccountReceiveMessage
+	@zaloOaId INT,
     @accountId INT
 AS
 BEGIN
-	SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId
+	SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId and zaloOaId = @zaloOaId
 END
 GO
 

@@ -21,6 +21,7 @@ class QueryDB_GetAccountReceiveMessage {
             try {
                 const result = await this._connectionPool
                     .request()
+                    .input('zaloOaId', sql.Int, this._getAccountReceiveMessageBody.zaloOaId)
                     .input('accountId', sql.Int, this._getAccountReceiveMessageBody.accountId)
                     .execute('GetAccountReceiveMessage');
 

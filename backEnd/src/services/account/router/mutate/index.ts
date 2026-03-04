@@ -7,6 +7,8 @@ import Handle_Signout from './handle/Signout';
 import Handle_AddMember from './handle/AddMember';
 import Handle_SetMemberReceiveMessage from './handle/SetMemberReceiveMessage';
 import Handle_CreateReplyAccount from './handle/CreateReplyAccount';
+import Handle_CreateAccountReceiveMessage from './handle/CreateAccountReceiveMessage';
+import Handle_UpdateAccountReceiveMessage from './handle/UpdateAccountReceiveMessage';
 
 dotenv.config();
 
@@ -17,6 +19,8 @@ const handle_signout = new Handle_Signout();
 const handle_addMember = new Handle_AddMember();
 const handle_setMemberReceiveMessage = new Handle_SetMemberReceiveMessage();
 const handle_createReplyAccount = new Handle_CreateReplyAccount();
+const handle_createAccountReceiveMessage = new Handle_CreateAccountReceiveMessage();
+const handle_updateAccountReceiveMessage = new Handle_UpdateAccountReceiveMessage();
 
 router_mutate_account.post('/', (_: Request, res: Response) => {
     res.send('(POST) Express + TypeScript Server: router_mutate_account');
@@ -50,6 +54,20 @@ router_mutate_account.post(
     handle_createReplyAccount.setup,
     handle_createReplyAccount.getZaloOaId,
     handle_createReplyAccount.main
+);
+
+router_mutate_account.post(
+    '/createAccountReceiveMessage',
+    authentication,
+    handle_createAccountReceiveMessage.setup,
+    handle_createAccountReceiveMessage.main
+);
+
+router_mutate_account.post(
+    '/updateAccountReceiveMessage',
+    authentication,
+    handle_updateAccountReceiveMessage.setup,
+    handle_updateAccountReceiveMessage.main
 );
 
 export default router_mutate_account;

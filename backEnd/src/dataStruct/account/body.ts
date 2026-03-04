@@ -18,15 +18,18 @@ export interface CreateReplyAccountBodyField {
 }
 
 export interface GetAccountReceiveMessageBodyField {
+    zaloOaId: number;
     accountId: number;
 }
 
 export interface CreateAccountReceiveMessageBodyField {
-    accountIdReceiveMessage: number;
+    accountIdReceiveMessage?: number;
+    zaloOaId: number;
     accountId: number;
 }
 
 export interface UpdateAccountReceiveMessageBodyField {
-    accountIdReceiveMessage: number;
+    accountIdReceiveMessage?: number;
+    zaloOaId: number;
     accountId: number;
 }

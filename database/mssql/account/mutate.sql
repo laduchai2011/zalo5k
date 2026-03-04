@@ -127,6 +127,7 @@ GO
 
 ALTER PROCEDURE CreateAccountReceiveMessage
 	@accountIdReceiveMessage INT = NULL,
+	@zaloOaId INT,
 	@accountId INT
 AS
 BEGIN
@@ -135,11 +136,20 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-		-- Th�m medication
-        INSERT INTO dbo.accountReceiveMessage (accountIdReceiveMessage, accountId)
-        VALUES (@accountIdReceiveMessage, @accountId);
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.zaloOa 
+			WHERE id = @zaloOaId AND accountId = @accountId
+		)
+		BEGIN
+			THROW 50001, N'Bạn không có quyền trên zaloOa này.', 1;
+		END
 
-		SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId;
+		-- Th�m medication
+        INSERT INTO dbo.accountReceiveMessage (accountIdReceiveMessage, zaloOaId, accountId)
+        VALUES (@accountIdReceiveMessage, @zaloOaId, @accountId);
+
+		SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId AND zaloOaId = @zaloOaId;
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -153,6 +163,7 @@ GO
 
 ALTER PROCEDURE UpdateAccountReceiveMessage
 	@accountIdReceiveMessage INT = NULL,
+	@zaloOaId INT,
 	@accountId INT
 AS
 BEGIN
@@ -161,11 +172,20 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.zaloOa 
+			WHERE id = @zaloOaId AND accountId = @accountId
+		)
+		BEGIN
+			THROW 50001, N'Bạn không có quyền trên zaloOa này.', 1;
+		END
+
 		UPDATE dbo.accountReceiveMessage
 		SET accountIdReceiveMessage = @accountIdReceiveMessage
-		WHERE accountId = @accountId;
+		WHERE accountId = @accountId AND zaloOaId = @zaloOaId;
 
-		SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId;
+		SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId AND zaloOaId = @zaloOaId;
 
 		COMMIT TRANSACTION;
 	END TRY

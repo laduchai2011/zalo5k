@@ -15,4 +15,7 @@ export const ACCOUNT_API = {
     GET_REPLY_ACCOUNt: `${BASE_URL}${apiString}/service_account/query/getReplyAccounts`,
     GET_NOT_REPLY_ACCOUNT: `${BASE_URL}${apiString}/service_account/query/getNotReplyAccounts`,
     CREATE_REPLY_ACCOUNT: `${BASE_URL}${apiString}/service_account/mutate/createReplyAccount`,
+    GET_ACCOUNT_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/query/getAccountReceiveMessage`,
+    CREATE_ACCOUNT_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/createAccountReceiveMessage`,
+    UPDATE_ACCOUNT_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/updateAccountReceiveMessage`,
 };

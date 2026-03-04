@@ -57,7 +57,7 @@ class Handle_CreateAccountReceiveMessage {
 
     main = async (_: Request, res: Response) => {
         const createAccountReceiveMessageBody = res.locals
-            .createAccountReceiveMessageBody as AccountReceiveMessageField;
+            .createAccountReceiveMessageBody as CreateAccountReceiveMessageBodyField;
 
         const myResponse: MyResponse<AccountReceiveMessageField> = {
             isSuccess: false,

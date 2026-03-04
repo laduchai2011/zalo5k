@@ -34,9 +34,11 @@ GO
 
 CREATE TABLE accountReceiveMessage (
     accountIdReceiveMessage INT,
-	accountId INT NOT NULL UNIQUE,
+	zaloOaId INT NOT NULL,
+	accountId INT NOT NULL,
 
 	CONSTRAINT FK_accountReceiveMessage_accountIdReceiveMessage FOREIGN KEY (accountIdReceiveMessage) REFERENCES account(id),
+	CONSTRAINT UQ_accountReceiveMessage_accountId_zaloOaId UNIQUE (accountId, zaloOaId),
 	CONSTRAINT FK_accountReceiveMessage_Account FOREIGN KEY (accountId) REFERENCES account(id)
 );
 GO

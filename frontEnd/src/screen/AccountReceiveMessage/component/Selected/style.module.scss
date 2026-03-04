@@ -52,11 +52,4 @@
             }
         }
     }
-
-    > .main1 {
-        > div {
-            @include center-of-rectangle;
-            font-weight: 600;
-        }
-    }
 }

@@ -42,3 +42,4 @@ export const TO = 'Đến';
 export const SEARCH = 'Tìm kiếm';
 export const SELECT = 'Chọn';
 export const UN_SELECTED = 'Bỏ chọn';
+export const ACTIVATE = 'Kích hoạt';

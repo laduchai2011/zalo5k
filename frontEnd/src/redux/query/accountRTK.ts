@@ -1,9 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AccountField, AddMemberBodyField, AllMembersBodyField, PagedAccountField } from '@src/dataStruct/account';
+import {
+    AccountField,
+    AddMemberBodyField,
+    AllMembersBodyField,
+    PagedAccountField,
+    AccountReceiveMessageField,
+} from '@src/dataStruct/account';
 import {
     GetReplyAccountBodyField,
     GetNotReplyAccountBodyField,
     CreateReplyAccountBodyField,
+    GetAccountReceiveMessageBodyField,
+    CreateAccountReceiveMessageBodyField,
+    UpdateAccountReceiveMessageBodyField,
 } from '@src/dataStruct/account/body';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
@@ -12,7 +21,14 @@ import { MyResponse } from '@src/dataStruct/response';
 export const accountRTK = createApi({
     reducerPath: 'accountRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['Account', 'MemberList', 'MemberReceiveMessage', 'ReplyAccounts', 'NotReplyAccounts'],
+    tagTypes: [
+        'Account',
+        'MemberList',
+        'MemberReceiveMessage',
+        'ReplyAccounts',
+        'NotReplyAccounts',
+        'AccountReceiveMessage',
+    ],
     endpoints: (builder) => ({
         getAccountWithId: builder.query<MyResponse<AccountField>, { id: number }>({
             query: ({ id }) => `${ACCOUNT_API.GET_ACCOUNT_WITH_ID}?id=${id}`,
@@ -44,6 +60,17 @@ export const accountRTK = createApi({
                 body,
             }),
             providesTags: (result, error, arg) => [{ type: 'NotReplyAccounts', id: `LIST-${arg.chatRoomId}` }],
+        }),
+        getAccountReceiveMessage: builder.query<
+            MyResponse<AccountReceiveMessageField>,
+            GetAccountReceiveMessageBodyField
+        >({
+            query: (body) => ({
+                url: ACCOUNT_API.GET_ACCOUNT_RECEIVE_MESSAGE,
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['AccountReceiveMessage'],
         }),
         // Mutation (POST)
         signup: builder.mutation<router_res_type, AccountField>({
@@ -96,6 +123,28 @@ export const accountRTK = createApi({
                 { type: 'ReplyAccounts', id: `LIST-${arg.chatRoomId}` },
             ],
         }),
+        createAccountReceiveMessage: builder.mutation<
+            MyResponse<AccountReceiveMessageField>,
+            CreateAccountReceiveMessageBodyField
+        >({
+            query: (body) => ({
+                url: ACCOUNT_API.CREATE_ACCOUNT_RECEIVE_MESSAGE,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['AccountReceiveMessage'],
+        }),
+        updateAccountReceiveMessage: builder.mutation<
+            MyResponse<AccountReceiveMessageField>,
+            UpdateAccountReceiveMessageBodyField
+        >({
+            query: (body) => ({
+                url: ACCOUNT_API.UPDATE_ACCOUNT_RECEIVE_MESSAGE,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['AccountReceiveMessage'],
+        }),
     }),
 });
 
@@ -111,4 +160,7 @@ export const {
     useAddMemberMutation,
     useSetMemberReceiveMessageMutation,
     useCreateReplyAccountMutation,
+    useGetAccountReceiveMessageQuery,
+    useCreateAccountReceiveMessageMutation,
+    useUpdateAccountReceiveMessageMutation,
 } = accountRTK;

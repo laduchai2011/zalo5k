@@ -24,8 +24,9 @@ class MutateDB_UpdateAccountReceiveMessage {
                     .input(
                         'accountIdReceiveMessage',
                         sql.Int,
-                        this._updateAccountReceiveMessageBody.accountIdReceiveMessage
+                        this._updateAccountReceiveMessageBody.accountIdReceiveMessage ?? null
                     )
+                    .input('zaloOaId', sql.Int, this._updateAccountReceiveMessageBody.zaloOaId)
                     .input('accountId', sql.Int, this._updateAccountReceiveMessageBody.accountId)
                     .execute('UpdateAccountReceiveMessage');
 

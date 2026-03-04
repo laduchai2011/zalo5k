@@ -43,6 +43,7 @@ export interface PagedAccountField {
 }
 
 export interface AccountReceiveMessageField {
-    accountIdReceiveMessage: number;
+    accountIdReceiveMessage: number | null;
+    zaloOaId: number;
     accountId: number;
 }

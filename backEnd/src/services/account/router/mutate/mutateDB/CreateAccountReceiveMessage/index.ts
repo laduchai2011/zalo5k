@@ -24,8 +24,9 @@ class MutateDB_CreateAccountReceiveMessage {
                     .input(
                         'accountIdReceiveMessage',
                         sql.Int,
-                        this._createAccountReceiveMessageBody.accountIdReceiveMessage
+                        this._createAccountReceiveMessageBody.accountIdReceiveMessage ?? null
                     )
+                    .input('zaloOaId', sql.Int, this._createAccountReceiveMessageBody.zaloOaId)
                     .input('accountId', sql.Int, this._createAccountReceiveMessageBody.accountId)
                     .execute('CreateAccountReceiveMessage');
 
