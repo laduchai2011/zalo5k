@@ -9,6 +9,7 @@ import {
     OA,
     ACCOUNT_RECEIVE_MESSAGE,
     MANAGE_AGENT,
+    MEMBER,
 } from '@src/const/text';
 import Header from '../Header';
 import { select_enum, route_enum } from '@src/router/type';
@@ -74,6 +75,10 @@ const Profile = () => {
         navigate(route_enum.OA);
     };
 
+    const goToMember = () => {
+        navigate(route_enum.MEMBER);
+    };
+
     const goToManageAgents = () => {
         navigate(route_enum.MANAGE_AGENT);
     };
@@ -104,6 +109,9 @@ const Profile = () => {
                     </div>
                     <div className={style.option} onClick={() => goToOa()}>
                         {OA}
+                    </div>
+                    <div className={style.option} onClick={() => goToMember()}>
+                        {MEMBER}
                     </div>
                     <div className={style.option} onClick={() => goToManageAgents()}>
                         {MANAGE_AGENT}
