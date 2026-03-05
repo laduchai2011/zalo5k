@@ -7,6 +7,8 @@ import { getDbMonggo } from '@src/connect/mongo';
 import { my_log } from '@src/log';
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
+import { AccountReceiveMessageField } from '@src/dataStruct/account';
+import { GetAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
@@ -15,6 +17,7 @@ import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField }
 import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
 import QueryDB_CheckZaloOaListWithZaloAppId from './handleHookData/queryDB/CheckZaloOaListWithZaloAppId';
 import QueryDB_UserTakeRoomToChat from './handleHookData/queryDB/UserTakeRoomToChat';
+import QueryDB_GetAccountReceiveMessage from './handleHookData/queryDB/GetAccountReceiveMessage';
 import MutateDB_CreateChatRoom from './handleHookData/mutateDB/CreateChatRoom';
 import {
     prefix_cache_zaloApp_with_appId,
@@ -91,8 +94,16 @@ export function hookData() {
                     updateTime: '',
                     createTime: '',
                 };
+                const getAccountReceiveMessage = await GetAccountReceiveMessage(zaloApp.accountId, zaloOa.id);
+                if (getAccountReceiveMessage?.accountIdReceiveMessage) {
+                    chatSessionAdmin.selectedAccountId = getAccountReceiveMessage.accountIdReceiveMessage;
+                }
                 chatRoom = await createChatRoom(zaloOa, data, chatSessionAdmin);
             } else {
+                const getAccountReceiveMessage = await GetAccountReceiveMessage(zaloApp.accountId, zaloOa.id);
+                if (getAccountReceiveMessage?.accountIdReceiveMessage) {
+                    chatSession.selectedAccountId = getAccountReceiveMessage.accountIdReceiveMessage;
+                }
                 chatRoom = await createChatRoom(zaloOa, data, chatSession);
             }
 
@@ -442,6 +453,37 @@ async function createChatRoomRoleMongo(chatRoom: ChatRoomField, zaloOa: ZaloOaFi
         const dbMonggo = getDbMonggo();
         const dataParse = parsedChatRoomRole.data;
         await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
+    }
+}
+
+async function GetAccountReceiveMessage(selectedAccountId: number, zaloOaId: number) {
+    const getAccountReceiveMessageBody: GetAccountReceiveMessageBodyField = {
+        zaloOaId: zaloOaId,
+        accountId: selectedAccountId,
+    };
+
+    const queryDB = new QueryDB_GetAccountReceiveMessage();
+    queryDB.setGetAccountReceiveMessageBody(getAccountReceiveMessageBody);
+
+    const connection_pool = mssql_server.get_connectionPool();
+    if (connection_pool) {
+        queryDB.set_connection_pool(connection_pool);
+    } else {
+        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
+        return;
+    }
+
+    try {
+        const result = await queryDB.run();
+        if (result?.recordset.length && result?.recordset.length > 0) {
+            const accountReceiveMessage: AccountReceiveMessageField = result?.recordset[0];
+            return accountReceiveMessage;
+        } else {
+            return;
+        }
+    } catch (error) {
+        console.error(error);
+        return;
     }
 }
 

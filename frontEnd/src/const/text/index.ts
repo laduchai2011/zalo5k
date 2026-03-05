@@ -20,6 +20,7 @@ export const PROFILE = 'Trang cá nhân';
 export const MEMBER_RECEIVE_MESSAGE = 'Người nhận tin nhắn';
 export const ACCOUNT_RECEIVE_MESSAGE = 'Tài khoản nhận tin nhắn';
 export const MANAGE_MEMBERS = 'Quản lý thành viên';
+export const MANAGE_AGENT = 'Quản lý nhân viên';
 export const ADD_MEMBER = 'Thêm thành viên';
 export const ADD = 'Thêm';
 export const CLOSE = 'Đóng';

@@ -136,10 +136,17 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
+		DECLARE @addedById INT
+		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
+		IF @addedById IS NULL
+		BEGIN
+			THROW 50002, N'Account này không có quyền thực hiện thao tác.', 1;
+		END
+
 		IF NOT EXISTS (
 			SELECT 1
 			FROM dbo.zaloOa 
-			WHERE id = @zaloOaId AND accountId = @accountId
+			WHERE id = @zaloOaId AND accountId = @addedById
 		)
 		BEGIN
 			THROW 50001, N'Bạn không có quyền trên zaloOa này.', 1;
@@ -172,10 +179,17 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
+		DECLARE @addedById INT
+		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
+		IF @addedById IS NULL
+		BEGIN
+			THROW 50002, N'Account này không có quyền thực hiện thao tác.', 1;
+		END
+
 		IF NOT EXISTS (
 			SELECT 1
 			FROM dbo.zaloOa 
-			WHERE id = @zaloOaId AND accountId = @accountId
+			WHERE id = @zaloOaId AND accountId = @addedById
 		)
 		BEGIN
 			THROW 50001, N'Bạn không có quyền trên zaloOa này.', 1;

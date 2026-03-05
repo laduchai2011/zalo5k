@@ -3,7 +3,6 @@ import style from './style.module.scss';
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import { avatarnull } from '@src/utility/string';
-import { UN_SELECTED } from '@src/const/text';
 import { AccountField, AccountReceiveMessageField } from '@src/dataStruct/account';
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
 
@@ -12,15 +11,6 @@ const Selected = () => {
         (state: RootState) => state.AccountReceiveMessageSlice.accountReceiveMessage
     );
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
-    const [isSelect, setIsSelect] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (accountReceiveMessage) {
-            setIsSelect(true);
-        } else {
-            setIsSelect(false);
-        }
-    }, [accountReceiveMessage]);
 
     const {
         data: data_account_wid,
@@ -47,21 +37,14 @@ const Selected = () => {
         }
     }, [data_account_wid]);
 
-    const handleSelect = () => {
-        setIsSelect(false);
-    };
-
     return (
         <div className={style.parent}>
-            {isSelect && (
+            {accountReceiveMessage?.accountIdReceiveMessage && (
                 <div className={style.main}>
                     <div className={style.avatarContainer}>
                         <img src={accountWId?.avatar || avatarnull} alt="avatar" />
                     </div>
                     <div className={style.nameContainer}>{`${accountWId?.firstName} ${accountWId?.lastName}`}</div>
-                    <div className={style.btnContainer}>
-                        <div onClick={() => handleSelect()}>{UN_SELECTED}</div>
-                    </div>
                 </div>
             )}
         </div>

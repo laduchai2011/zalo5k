@@ -16,6 +16,7 @@ import Oa from '@src/screen/Oa';
 import OaSetting from '@src/screen/OaSetting';
 import Order from '@src/screen/Order';
 import AccountReceiveMessage from '@src/screen/AccountReceiveMessage';
+import ManageAgent from '@src/screen/ManageAgent';
 import { route_enum } from './type';
 
 const router = createBrowserRouter(
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
         { path: route_enum.OA_SETTING + '/:id', element: <OaSetting /> },
         { path: route_enum.ORDER, element: <Order /> },
         { path: route_enum.ACCOUNT_RECEIVE_MESSAGE, element: <AccountReceiveMessage /> },
+        { path: route_enum.MANAGE_AGENT, element: <ManageAgent /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

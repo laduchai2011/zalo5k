@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { PROFILE, MEMBER_RECEIVE_MESSAGE, MANAGE_MEMBERS, SIGNOUT, OA, ACCOUNT_RECEIVE_MESSAGE } from '@src/const/text';
+import {
+    PROFILE,
+    MEMBER_RECEIVE_MESSAGE,
+    MANAGE_MEMBERS,
+    SIGNOUT,
+    OA,
+    ACCOUNT_RECEIVE_MESSAGE,
+    MANAGE_AGENT,
+} from '@src/const/text';
 import Header from '../Header';
 import { select_enum, route_enum } from '@src/router/type';
 import avatarnull from '@src/asset/avatar/avatarnull.png';
@@ -66,6 +74,10 @@ const Profile = () => {
         navigate(route_enum.OA);
     };
 
+    const goToManageAgents = () => {
+        navigate(route_enum.MANAGE_AGENT);
+    };
+
     const goToAccountReceiveMessage = () => {
         navigate(route_enum.ACCOUNT_RECEIVE_MESSAGE);
     };
@@ -92,6 +104,9 @@ const Profile = () => {
                     </div>
                     <div className={style.option} onClick={() => goToOa()}>
                         {OA}
+                    </div>
+                    <div className={style.option} onClick={() => goToManageAgents()}>
+                        {MANAGE_AGENT}
                     </div>
                     <div className={style.option} onClick={() => goToAccountReceiveMessage()}>
                         {ACCOUNT_RECEIVE_MESSAGE}

@@ -10,6 +10,7 @@ import OaSettingReducer from '@src/redux/slice/OaSetting';
 import SupportRoomReducer from '@src/redux/slice/SupportRoom';
 import OrderReducer from '@src/redux/slice/Order';
 import AccountReceiveMessageReducer from '@src/redux/slice/AccountReceiveMessage';
+import ManageAgentReducer from '@src/redux/slice/ManageAgent';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
@@ -33,6 +34,7 @@ export const store = configureStore({
         SupportRoomSlice: SupportRoomReducer,
         OrderSlice: OrderReducer,
         AccountReceiveMessageSlice: AccountReceiveMessageReducer,
+        ManageAgentSlice: ManageAgentReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageRTK.reducerPath]: messageRTK.reducer,
