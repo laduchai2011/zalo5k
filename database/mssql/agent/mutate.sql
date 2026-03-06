@@ -38,9 +38,14 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
-		UPDATE dbo.accountInformation
-		SET addedById = @accountId
-		WHERE accountId = @agentAccountId;
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE addedById = @accountId AND accountId = @agentAccountId
+		)
+		BEGIN
+			THROW 50002, N'Thành viên này chưa có trong danh sách !', 1;
+		END
 
 		UPDATE dbo.agent
 		SET agentAccountId = @agentAccountId

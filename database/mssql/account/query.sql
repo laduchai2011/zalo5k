@@ -1,4 +1,4 @@
-CREATE FUNCTION Signin (@userName NVARCHAR(100), @password NVARCHAR(100)) RETURNS TABLE AS RETURN (
+﻿CREATE FUNCTION Signin (@userName NVARCHAR(100), @password NVARCHAR(100)) RETURNS TABLE AS RETURN (
     SELECT
         *
     FROM
@@ -9,6 +9,45 @@ CREATE FUNCTION Signin (@userName NVARCHAR(100), @password NVARCHAR(100)) RETURN
 );
 GO
 
+
+ALTER PROCEDURE GetMembers
+	@page INT,
+    @size INT,
+	@searchedAccountId INT = NULL,
+    @accountId INT
+AS
+BEGIN
+	DECLARE @addedById INT;
+
+	SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId
+
+	IF @addedById IS NOT NULL
+	BEGIN
+		WITH accounts AS (
+			SELECT a.*,
+				ROW_NUMBER() OVER (ORDER BY a.id DESC) AS rn
+			FROM dbo.account AS a
+			JOIN accountInformation ai ON ai.accountId = a.id
+			WHERE 
+				a.status = 'normal' 
+				AND ai.addedById = @addedById
+				AND (@searchedAccountId IS NULL OR a.id = @searchedAccountId)
+		)
+		SELECT *
+		FROM accounts
+		WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+
+		-- Tập kết quả 2: tổng số dòng
+		SELECT COUNT(*) AS totalCount
+		FROM dbo.account AS a
+		JOIN accountInformation ai ON ai.accountId = a.id
+		WHERE 
+			a.status = 'normal' 
+			AND ai.addedById = @addedById
+			AND (@searchedAccountId IS NULL OR a.id = @searchedAccountId)
+	END
+END
+GO
 
 CREATE PROCEDURE GetAllMembers
     @addedById INT

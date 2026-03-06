@@ -56,6 +56,67 @@ BEGIN
 END;
 GO
 
+ALTER PROCEDURE AddMemberV1
+	@addedById INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+		BEGIN TRANSACTION;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE accountId = @addedById AND accountType = 'admin'
+		)
+		BEGIN
+			THROW 50001, N'Không phải tài khoản admin .', 1;
+		END
+
+		-- thử UPDATE trước
+		UPDATE dbo.accountInformation
+		SET addedById = @addedById
+		WHERE accountId = @accountId
+		AND addedById IS NULL;
+
+		-- nếu UPDATE thành công
+		IF @@ROWCOUNT > 0
+		BEGIN
+			SELECT *
+			FROM dbo.accountInformation
+			WHERE accountId = @accountId;
+
+			COMMIT TRANSACTION;
+			RETURN;
+		END
+
+		-- nếu chưa có account thì INSERT
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE accountId = @accountId
+		)
+		BEGIN
+			INSERT INTO dbo.accountInformation (addedById, accountType, accountId)
+			VALUES (@addedById, 'member', @accountId);
+
+			SELECT *
+			FROM dbo.accountInformation
+			WHERE accountId = @accountId;
+		END
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
 
 ALTER PROCEDURE CreateReplyAccount
 	@authorizedAccountId NVARCHAR(255),

@@ -18,4 +18,6 @@ export const ACCOUNT_API = {
     GET_ACCOUNT_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/query/getAccountReceiveMessage`,
     CREATE_ACCOUNT_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/createAccountReceiveMessage`,
     UPDATE_ACCOUNT_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/updateAccountReceiveMessage`,
+    GET_MEMBERS: `${BASE_URL}${apiString}/service_account/query/getMembers`,
+    ADD_MEMBERV1: `${BASE_URL}${apiString}/service_account/mutate/addMemberV1`,
 };

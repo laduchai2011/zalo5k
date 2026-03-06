@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
     AccountField,
+    AccountInformationField,
     AddMemberBodyField,
     AllMembersBodyField,
     PagedAccountField,
@@ -13,6 +14,8 @@ import {
     GetAccountReceiveMessageBodyField,
     CreateAccountReceiveMessageBodyField,
     UpdateAccountReceiveMessageBodyField,
+    GetMembersBodyField,
+    AddMemberV1BodyField,
 } from '@src/dataStruct/account/body';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
@@ -23,6 +26,7 @@ export const accountRTK = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
     tagTypes: [
         'Account',
+        'MemberV1',
         'MemberList',
         'MemberReceiveMessage',
         'ReplyAccounts',
@@ -71,6 +75,14 @@ export const accountRTK = createApi({
                 body,
             }),
             providesTags: ['AccountReceiveMessage'],
+        }),
+        getMembers: builder.query<MyResponse<PagedAccountField>, GetMembersBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.GET_MEMBERS,
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['MemberV1'],
         }),
         // Mutation (POST)
         signup: builder.mutation<router_res_type, AccountField>({
@@ -145,15 +157,25 @@ export const accountRTK = createApi({
             }),
             invalidatesTags: ['AccountReceiveMessage'],
         }),
+        addMemberV1: builder.mutation<MyResponse<AccountInformationField>, AddMemberV1BodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.ADD_MEMBERV1,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['MemberV1'], // dùng nếu muốn refetch danh sách sau khi thêm
+        }),
     }),
 });
 
 export const {
     useGetAccountWithIdQuery,
+    useLazyGetAccountWithIdQuery,
     useGetMemberReceiveMessageQuery,
     useGetAllMembersQuery,
     useGetReplyAccountsQuery,
     useGetNotReplyAccountsQuery,
+    useLazyGetMembersQuery,
     useSignupMutation,
     useSigninMutation,
     useSignoutMutation,
@@ -163,4 +185,5 @@ export const {
     useGetAccountReceiveMessageQuery,
     useCreateAccountReceiveMessageMutation,
     useUpdateAccountReceiveMessageMutation,
+    useAddMemberV1Mutation,
 } = accountRTK;

@@ -1,13 +1,15 @@
+import { memo, FC } from 'react';
 import style from './style.module.scss';
 import { avatarnull } from '@src/utility/string';
+import { AccountField } from '@src/dataStruct/account';
 
-const OneMember = () => {
+const OneMember: FC<{ data: AccountField }> = ({ data }) => {
     return (
         <div className={style.parent}>
-            <img src={avatarnull} alt="avatar" />
-            <div>name</div>
+            <img src={data.avatar ? data.avatar : avatarnull} alt="avatar" />
+            <div>{`${data.firstName} ${data.lastName}`}</div>
         </div>
     );
 };
 
-export default OneMember;
+export default memo(OneMember);

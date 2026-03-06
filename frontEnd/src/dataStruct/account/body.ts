@@ -33,3 +33,15 @@ export interface UpdateAccountReceiveMessageBodyField {
     zaloOaId: number;
     accountId: number;
 }
+
+export interface GetMembersBodyField {
+    page: number;
+    size: number;
+    searchedAccountId?: number;
+    accountId: number;
+}
+
+export interface AddMemberV1BodyField {
+    addedById: number;
+    accountId: number;
+}

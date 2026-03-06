@@ -10,6 +10,7 @@ import Handle_GetAccountWithId from './handle/GetAccountWithId';
 import Handle_GetReplyAccounts from './handle/GetReplyAccounts';
 import Handle_GetNotReplyAccounts from './handle/GetNotReplyAccounts';
 import Handle_GetAccountReceiveMessage from './handle/GetAccountReceiveMessage';
+import Handle_GetMembers from './handle/GetMembers';
 
 dotenv.config();
 const router_query_account: Router = express.Router();
@@ -23,6 +24,7 @@ const handle_getAccountWithId = new Handle_GetAccountWithId();
 const handle_getReplyAccounts = new Handle_GetReplyAccounts();
 const handle_getNotReplyAccounts = new Handle_GetNotReplyAccounts();
 const handle_getAccountReceiveMessage = new Handle_GetAccountReceiveMessage();
+const handle_getMembers = new Handle_GetMembers();
 
 router_query_account.get('/isSignin', authentication, handle_isSignin.main);
 
@@ -46,5 +48,7 @@ router_query_account.post('/getReplyAccounts', authentication, handle_getReplyAc
 router_query_account.post('/getNotReplyAccounts', authentication, handle_getNotReplyAccounts.main);
 
 router_query_account.post('/getAccountReceiveMessage', authentication, handle_getAccountReceiveMessage.main);
+
+router_query_account.post('/getMembers', authentication, handle_getMembers.setup, handle_getMembers.main);
 
 export default router_query_account;

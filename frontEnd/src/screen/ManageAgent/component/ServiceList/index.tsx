@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import style from './style.module.scss';
 import OneService from './component/OneService';
 
@@ -9,4 +10,4 @@ const ServiceList = () => {
     return <div className={style.parent}>{list_service}</div>;
 };
 
-export default ServiceList;
+export default memo(ServiceList);
