@@ -34,6 +34,7 @@ class QueryDB_GetAgents {
                     .request()
                     .input('page', sql.Int, this._getAgentsBody.page)
                     .input('size', sql.Int, this._getAgentsBody.size)
+                    .input('offset', sql.Int, this._getAgentsBody.offset)
                     .input('accountId', sql.Int, this._getAgentsBody.accountId)
                     .execute('GetAgents');
 

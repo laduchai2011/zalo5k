@@ -10,5 +10,6 @@ export interface AgentAddAccountBodyField {
 export interface GetAgentsBodyField {
     page: number;
     size: number;
+    offset: number;
     accountId: number;
 }

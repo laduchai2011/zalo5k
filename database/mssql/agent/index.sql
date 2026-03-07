@@ -1,11 +1,10 @@
 CREATE TABLE agent (
     id INT PRIMARY KEY IDENTITY(1,1),
 	type NVARCHAR(255) NOT NULL,
-	isActivity BIT NOT NULL,
 	expiry DATETIMEOFFSET(7),
 	status NVARCHAR(255) NOT NULL,
-    agentAccountId INT UNIQUE,
-	accountId INT UNIQUE NOT NULL,
+    agentAccountId INT,
+	accountId INT NOT NULL,
     updateTime DATETIMEOFFSET(7) NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL,
 
@@ -14,4 +13,6 @@ CREATE TABLE agent (
 )
 GO
 CREATE NONCLUSTERED INDEX idx_account_id ON agent(accountId);
+GO
+CREATE UNIQUE INDEX UX_agent_agentAccountId ON agent(agentAccountId) WHERE agentAccountId IS NOT NULL;
 GO

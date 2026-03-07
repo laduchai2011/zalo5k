@@ -7,6 +7,6 @@ dotenv.config();
 const router_query_agent: Router = express.Router();
 const handle_getAgents = new Handle_GetAgents();
 
-router_query_agent.post('/createAgent', authentication, handle_getAgents.setup, handle_getAgents.main);
+router_query_agent.post('/getAgents', authentication, handle_getAgents.setup, handle_getAgents.main);
 
 export default router_query_agent;

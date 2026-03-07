@@ -20,6 +20,7 @@ import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
 import { chatRoomRTK } from './query/chatRoomRTK';
 import { orderRTK } from './query/orderRTK';
+import { agentRTK } from './query/agentRTK';
 
 export const store = configureStore({
     reducer: {
@@ -45,6 +46,7 @@ export const store = configureStore({
         [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
         [chatRoomRTK.reducerPath]: chatRoomRTK.reducer,
         [orderRTK.reducerPath]: orderRTK.reducer,
+        [agentRTK.reducerPath]: agentRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -55,7 +57,8 @@ export const store = configureStore({
             zaloRTK.middleware,
             chatSessionRTK.middleware,
             chatRoomRTK.middleware,
-            orderRTK.middleware
+            orderRTK.middleware,
+            agentRTK.middleware
         ),
 });
 

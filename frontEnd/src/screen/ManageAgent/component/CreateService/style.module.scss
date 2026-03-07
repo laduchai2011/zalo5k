@@ -1,24 +1,10 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
-    @include center-of-rectangle;
     box-sizing: border-box;
     padding: 10px;
 
-    > div {
-        background-color: greenyellow;
-        box-sizing: border-box;
-        border: 1px solid greenyellow;
-        padding: 5px;
-        border-radius: 5px;
-        user-select: none;
-
-        &:hover {
-            background-color: white;
-        }
-
-        &:active {
-            background-color: greenyellow;
-        }
+    > svg {
+        cursor: pointer;
     }
 }

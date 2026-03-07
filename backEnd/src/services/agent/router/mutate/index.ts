@@ -12,6 +12,11 @@ const handle_agentAddAccount = new Handle_AgentAddAccount();
 
 router_mutate_agent.post('/createAgent', authentication, handle_createAgent.setup, handle_createAgent.main);
 
-router_mutate_agent.post('/agentAddAccount', authentication, handle_agentAddAccount.setup, handle_agentAddAccount.main);
+router_mutate_agent.patch(
+    '/agentAddAccount',
+    authentication,
+    handle_agentAddAccount.setup,
+    handle_agentAddAccount.main
+);
 
 export default router_mutate_agent;

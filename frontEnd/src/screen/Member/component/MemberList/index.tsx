@@ -17,6 +17,7 @@ const MemberList = () => {
     const [members, setMembers] = useState<AccountField[]>([]);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
+    const size = 10;
 
     const [getMembers] = useLazyGetMembersQuery();
 
@@ -28,7 +29,6 @@ const MemberList = () => {
     useEffect(() => {
         const searchedAccountId_cp = searchedAccountId.trim();
         dispatch(set_isLoading(true));
-        const size = 10;
         getMembers({
             page: 1,
             size: size,
@@ -62,7 +62,6 @@ const MemberList = () => {
         if (!hasMore) return;
         const searchedAccountId_cp = searchedAccountId.trim();
         dispatch(set_isLoading(true));
-        const size = 10;
         getMembers({
             page: page,
             size: size,

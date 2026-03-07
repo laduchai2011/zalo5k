@@ -1,6 +1,7 @@
 ﻿ALTER PROCEDURE GetAgents
 	@page INT,
 	@size INT,
+	@offset INT,
     @accountId INT
 AS
 BEGIN
@@ -15,7 +16,7 @@ BEGIN
     )
     SELECT *
     FROM agents
-    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+    WHERE rn BETWEEN (((@page - 1) * @size + 1) + @offset) AND ((@page * @size) + @offset);
 
     -- Tập kết quả 2: tổng số dòng
     SELECT COUNT(*) AS totalCount

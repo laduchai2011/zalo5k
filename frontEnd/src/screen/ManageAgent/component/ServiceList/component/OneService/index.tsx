@@ -1,10 +1,11 @@
-import { memo, useState } from 'react';
+import { FC, memo, useState } from 'react';
 import style from './style.module.scss';
 import { BASIC, UPGRADE, DELETE } from '@src/const/text';
 import { avatarnull } from '@src/utility/string';
 import { IoIosMore, IoMdAdd } from 'react-icons/io';
+import { AgentField } from '@src/dataStruct/agent';
 
-const OneService = () => {
+const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) => {
     const [agent, setAgent] = useState<number | undefined>(undefined);
 
     const handleAddAgent = () => {
@@ -18,7 +19,7 @@ const OneService = () => {
     return (
         <div className={style.parent}>
             <div className={style.header}>
-                <div>1</div>
+                <div>{index + 1}</div>
                 <div>
                     <div>{BASIC}</div>
                     <div>{UPGRADE}</div>

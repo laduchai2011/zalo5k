@@ -5,4 +5,20 @@
     flex: 1;
     overflow-y: scroll;
     @include small-scroll-yy(3px);
+
+    > .seeMore {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            user-select: none;
+            color: blue;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
 }
