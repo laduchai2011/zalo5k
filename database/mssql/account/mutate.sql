@@ -75,6 +75,15 @@ BEGIN
 			THROW 50001, N'Không phải tài khoản admin .', 1;
 		END
 
+		IF EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE accountId = @accountId AND accountType = 'admin'
+		)
+		BEGIN
+			THROW 50001, N'Thành viên thêm vào không được là 1 tài khoản admin .', 1;
+		END
+
 		-- thử UPDATE trước
 		UPDATE dbo.accountInformation
 		SET addedById = @addedById

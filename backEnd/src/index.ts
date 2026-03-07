@@ -135,6 +135,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_order = (await import('@src/services/order')).default;
         app.use(`${prefix}/service_order`, service_order);
     }
+
+    if (services.includes('agent')) {
+        const service_agent = (await import('@src/services/agent')).default;
+        app.use(`${prefix}/service_agent`, service_agent);
+    }
 })();
 
 app.listen(port, () => {

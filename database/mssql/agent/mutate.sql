@@ -1,19 +1,25 @@
 ﻿ALTER PROCEDURE CreateAgent
-	@type NVARCHAR(255),
-	@isActivity BIT,
-	@expiry DATETIMEOFFSET(7),
-	@agentAccountId INT,
 	@accountId INT
 AS
 BEGIN
 	SET NOCOUNT ON;
 	BEGIN TRY
         BEGIN TRANSACTION;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE accountId = @accountId AND accountType = 'admin'
+		)
+		BEGIN
+			THROW 50001, N'Không phải tài khoản admin .', 1;
+		END
+
 		DECLARE @newAgentId INT;
 
 		-- Thêm medication
-        INSERT INTO dbo.agent (type, isActivity, expiry, status, agentAccountId, accountId, updateTime, createTime)
-        VALUES (@type, @isActivity, @expiry, 'normal', @agentAccountId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+        INSERT INTO dbo.agent (type, expiry, status, agentAccountId, accountId, updateTime, createTime)
+        VALUES ('basic', NULL, 'normal', NULL, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
 		SET @newAgentId = SCOPE_IDENTITY();
 
@@ -37,6 +43,15 @@ BEGIN
 	SET NOCOUNT ON;
 	BEGIN TRY
         BEGIN TRANSACTION;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE accountId = @accountId AND accountType = 'admin'
+		)
+		BEGIN
+			THROW 50001, N'Không phải tài khoản admin .', 1;
+		END
 
 		IF NOT EXISTS (
 			SELECT 1
