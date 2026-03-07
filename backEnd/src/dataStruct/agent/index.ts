@@ -3,7 +3,7 @@ export interface AgentField {
     type: string;
     expiry: string;
     status: string;
-    agentAccountId: number;
+    agentAccountId: number | null;
     accountId: number;
     updateTime: string;
     createTime: string;

@@ -21,6 +21,7 @@ class MutateDB_AgentAddAccount {
             try {
                 const result = await this._connectionPool
                     .request()
+                    .input('id', sql.Int, this._agentAddAccountBody.id)
                     .input('agentAccountId', sql.Int, this._agentAddAccountBody.agentAccountId)
                     .input('accountId', sql.Int, this._agentAddAccountBody.accountId)
                     .execute('AgentAddAccount');

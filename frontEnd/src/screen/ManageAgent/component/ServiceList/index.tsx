@@ -19,12 +19,12 @@ const ServiceList = () => {
     const size = 10;
 
     useEffect(() => {
+        if (newAgents.length === 0) return;
         setAgents((prev) => [newAgents[newAgents.length - 1], ...prev]);
     }, [newAgents]);
 
     useEffect(() => {
         dispatch(set_isLoading(true));
-
         getAgents({ page: 1, size: size, offset: 0, accountId: -1 })
             .then((res) => {
                 const resData = res.data;
@@ -71,15 +71,17 @@ const ServiceList = () => {
     };
 
     const list_service = agents.map((item, index) => {
-        return <OneService data={item} key={index} index={index} />;
+        return <OneService data={item} key={item.id} index={index} />;
     });
 
     return (
         <div className={style.parent}>
             <div>{list_service}</div>
-            <div className={style.seeMore}>
-                <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>
-            </div>
+            {hasMore && (
+                <div className={style.seeMore}>
+                    <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>
+                </div>
+            )}
         </div>
     );
 };

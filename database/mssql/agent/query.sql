@@ -2,6 +2,7 @@
 	@page INT,
 	@size INT,
 	@offset INT,
+	@agentAccountId INT = NULL,
     @accountId INT
 AS
 BEGIN
@@ -12,6 +13,7 @@ BEGIN
         FROM dbo.agent AS a
 		WHERE 
 			status = 'normal' 
+			AND (@agentAccountId IS NULL OR agentAccountId = @agentAccountId)
 			AND accountId = @accountId
     )
     SELECT *
@@ -23,6 +25,7 @@ BEGIN
 	FROM dbo.agent AS a
 		WHERE 
 			status = 'normal' 
+			AND (@agentAccountId IS NULL OR agentAccountId = @agentAccountId)
 			AND accountId = @accountId
 END
 GO

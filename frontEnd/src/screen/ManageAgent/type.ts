@@ -7,4 +7,8 @@ export interface state_props {
         data: ToastMessage_Data_Props;
     };
     newAgents: AgentField[];
+    memberListDialog: {
+        isShow: boolean;
+        agent?: AgentField;
+    };
 }

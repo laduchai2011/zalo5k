@@ -36,6 +36,7 @@ END;
 GO
 
 ALTER PROCEDURE AgentAddAccount
+	@id INT,
 	@agentAccountId INT,
 	@accountId INT
 AS
@@ -59,14 +60,23 @@ BEGIN
 			WHERE addedById = @accountId AND accountId = @agentAccountId
 		)
 		BEGIN
-			THROW 50002, N'Thành viên này chưa có trong danh sách !', 1;
+			THROW 50002, N'Thành viên này chưa có trong danh sách !', 2;
+		END
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.agent
+			WHERE id = @id AND accountId = @accountId
+		)
+		BEGIN
+			THROW 50003, N'Agent này không phải của bạn !', 3;
 		END
 
 		UPDATE dbo.agent
 		SET agentAccountId = @agentAccountId
-		WHERE accountId = @accountId;
+		WHERE id = @id;
 
-		SELECT * FROM dbo.agent WHERE status = 'normal' AND accountId = @accountId AND agentAccountId = @agentAccountId;
+		SELECT * FROM dbo.agent WHERE status = 'normal' AND id = @id;
 
 		COMMIT TRANSACTION;
 	END TRY

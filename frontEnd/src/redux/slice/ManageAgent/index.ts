@@ -9,6 +9,10 @@ const initialState: state_props = {
         data: { type: undefined, message: '' },
     },
     newAgents: [],
+    memberListDialog: {
+        isShow: false,
+        agent: undefined,
+    },
 };
 
 const ManageAgentSlice = createSlice({
@@ -27,8 +31,21 @@ const ManageAgentSlice = createSlice({
         clear_newAgents: (state) => {
             state.newAgents = [];
         },
+        setIsShow_memberListDialog: (state, action: PayloadAction<boolean>) => {
+            state.memberListDialog.isShow = action.payload;
+        },
+        set_agent_memberListDialog: (state, action: PayloadAction<AgentField>) => {
+            state.memberListDialog.agent = action.payload;
+        },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, setData_addNewAgent, clear_newAgents } = ManageAgentSlice.actions;
+export const {
+    set_isLoading,
+    setData_toastMessage,
+    setData_addNewAgent,
+    clear_newAgents,
+    setIsShow_memberListDialog,
+    set_agent_memberListDialog,
+} = ManageAgentSlice.actions;
 export default ManageAgentSlice.reducer;

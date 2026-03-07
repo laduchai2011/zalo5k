@@ -3,6 +3,7 @@ export interface CreateAgentBodyField {
 }
 
 export interface AgentAddAccountBodyField {
+    id: number;
     agentAccountId: number;
     accountId: number;
 }
@@ -11,5 +12,6 @@ export interface GetAgentsBodyField {
     page: number;
     size: number;
     offset: number;
+    agentAccountId?: number;
     accountId: number;
 }

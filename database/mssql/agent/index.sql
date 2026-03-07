@@ -14,5 +14,5 @@ CREATE TABLE agent (
 GO
 CREATE NONCLUSTERED INDEX idx_account_id ON agent(accountId);
 GO
-CREATE UNIQUE INDEX UX_agent_agentAccountId ON agent(agentAccountId) WHERE agentAccountId IS NOT NULL;
+CREATE UNIQUE INDEX UX_agent_agentAccountId ON agent(accountId, agentAccountId) WHERE agentAccountId IS NOT NULL;
 GO

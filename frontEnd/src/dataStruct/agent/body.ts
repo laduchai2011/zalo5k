@@ -3,6 +3,7 @@ export interface CreateAgentBodyField {
 }
 
 export interface AgentAddAccountBodyField {
+    id: number;
     agentAccountId: number;
     accountId: number;
 }
