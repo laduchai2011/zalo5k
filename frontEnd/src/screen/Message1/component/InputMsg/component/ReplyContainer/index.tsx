@@ -1,15 +1,29 @@
 import { FC, memo } from 'react';
 import style from './style.module.scss';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import ReplyText from './component/ReplyText';
+import ReplyImage from './component/ReplyImage';
+import ReplyVideo from './component/ReplyVideo';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType, MessageTextField } from '@src/dataStruct/zalo/hookData';
+import {
+    ZaloMessageType,
+    MessageTextField,
+    MessageImageField,
+    MessageMultiImageField,
+    MessageVideoField,
+    MessageAudioField,
+} from '@src/dataStruct/zalo/hookData';
+import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 
-const ReplyContainer: FC<{ data?: MessageV1Field<ZaloMessageType> }> = ({ data }) => {
+const ReplyContainer: FC<{ data: MessageV1Field<ZaloMessageType> }> = ({ data }) => {
+    const dispatch = useDispatch<AppDispatch>();
+
+    // console.log('ReplyContainer', data);
+
     const ReplyMsg = () => {
-        if (!data) return;
-
         const event_name = data.event_name;
 
         switch (event_name) {
@@ -17,15 +31,31 @@ const ReplyContainer: FC<{ data?: MessageV1Field<ZaloMessageType> }> = ({ data }
                 const data_t = data as MessageV1Field<MessageTextField>;
                 return <ReplyText data={data_t} />;
             }
-            // case Zalo_Event_Name_Enum.oa_send_image: {
-            //     const data_t = data as MessageV1Field<MessageImageField | MessageMultiImageField>;
-
-            // }
+            case Zalo_Event_Name_Enum.user_send_text: {
+                const data_t = data as MessageV1Field<MessageTextField>;
+                return <ReplyText data={data_t} />;
+            }
+            case Zalo_Event_Name_Enum.oa_send_image: {
+                const data_t = data as MessageV1Field<MessageImageField | MessageMultiImageField>;
+                return <ReplyImage data={data_t} />;
+            }
+            case Zalo_Event_Name_Enum.user_send_image: {
+                const data_t = data as MessageV1Field<MessageImageField | MessageMultiImageField>;
+                return <ReplyImage data={data_t} />;
+            }
             // case Zalo_Event_Name_Enum.oa_send_video: {
             //     const data_t = data as MessageV1Field<MessageVideoField>;
-            //     return <MsgVideo msgList_element={msgList_element} data={data_t} />;
+            //     return <ReplyVideo data={data_t} />;
             // }
+            case Zalo_Event_Name_Enum.user_send_video: {
+                const data_t = data as MessageV1Field<MessageVideoField>;
+                return <ReplyVideo data={data_t} />;
+            }
             // case Zalo_Event_Name_Enum.oa_send_audio: {
+            //     const data_t = data as MessageV1Field<MessageAudioField>;
+
+            // }
+            // case Zalo_Event_Name_Enum.user_send_audio: {
             //     const data_t = data as MessageV1Field<MessageAudioField>;
 
             // }
@@ -43,6 +73,10 @@ const ReplyContainer: FC<{ data?: MessageV1Field<ZaloMessageType> }> = ({ data }
         }
     };
 
+    const handleCloseReply = () => {
+        dispatch(set_repliedMessage(undefined));
+    };
+
     return (
         <div className={style.parent}>
             <div />
@@ -51,7 +85,7 @@ const ReplyContainer: FC<{ data?: MessageV1Field<ZaloMessageType> }> = ({ data }
                 <div>{ReplyMsg()}</div>
             </div>
             <div>
-                <IoMdClose />
+                <IoMdClose onClick={() => handleCloseReply()} />
             </div>
         </div>
     );

@@ -47,7 +47,7 @@ const timeExpireat = 60 * 3; // 3p
 export function hookData() {
     consumeHookData(`zalo_hook_data_queue${prefix}`, async (data) => {
         // console.log('Hook Data Received:');
-        // console.dir(data, { depth: null });
+        console.dir(data, { depth: null });
         const app_id = data.app_id;
         const oa_id = determineOaId(data);
         const sender_id_of_user = determineSenderIdOfUser(data);

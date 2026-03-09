@@ -1,7 +1,7 @@
 import { FC, memo, useState, useEffect } from 'react';
 import style from './style.module.scss';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@src/redux';
 import { IoIosMore } from 'react-icons/io';
 import MsgText from './MsgText';
 import MsgImage from './MsgImage';
@@ -28,12 +28,14 @@ import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { timeAgoSmart } from '@src/utility/time';
 import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
+import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 
 const UserMsg: FC<{
     msgList_element?: HTMLDivElement | null;
     data: MessageV1Field<ZaloMessageType>;
     messages: MessageV1Field<ZaloMessageType>[];
 }> = ({ msgList_element, data, messages }) => {
+    const dispatch = useDispatch<AppDispatch>();
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
     const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
@@ -125,6 +127,10 @@ const UserMsg: FC<{
         }
     };
 
+    const handleToReply = () => {
+        dispatch(set_repliedMessage(data));
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.avatarContainer}>{isAvatar && <img src={zaloUser?.data.avatar} alt="avatar" />}</div>
@@ -137,7 +143,7 @@ const UserMsg: FC<{
                 <IoIosMore onClick={() => handleShowMore()} size={25} />
                 {isMore && (
                     <div className={style.moreContainer}>
-                        <div>Trả lời</div>
+                        <div onClick={() => handleToReply()}>Trả lời</div>
                         <div>Chia sẻ</div>
                     </div>
                 )}

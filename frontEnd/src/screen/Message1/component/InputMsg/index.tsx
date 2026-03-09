@@ -19,6 +19,9 @@ const InputMsg = () => {
     const textarea_element = useRef<HTMLTextAreaElement | null>(null);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
+    const repliedMessage: MessageV1Field<ZaloMessageType> | undefined = useSelector(
+        (state: RootState) => state.MessageV1Slice.repliedMessage
+    );
     const [text, setText] = useState<string>('');
     const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
     const [createMessageV1] = useCreateMessageV1Mutation();
@@ -109,7 +112,7 @@ const InputMsg = () => {
                 <MdAttachFile size={20} />
                 <PiSmileyStickerLight size={20} />
             </div>
-            <ReplyContainer />
+            {repliedMessage && <ReplyContainer data={repliedMessage} />}
             <div className={style.textInput}>
                 <div>
                     <textarea

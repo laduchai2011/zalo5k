@@ -48,3 +48,5 @@ export const BASIC = 'Cơ bản';
 export const UPGRADE = 'Nâng cấp';
 export const DELETE = 'Xóa';
 export const CREATE = 'Tạo';
+export const IMAGE = 'Hình ảnh';
+export const VIDEO = 'Thước phim';

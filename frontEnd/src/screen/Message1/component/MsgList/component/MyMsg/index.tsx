@@ -1,7 +1,7 @@
 import { FC, memo, useState, useEffect, useRef } from 'react';
 import style from './style.module.scss';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@src/redux';
 import { useParams } from 'react-router-dom';
 import { IoIosMore } from 'react-icons/io';
 import MsgText from './MsgText';
@@ -27,12 +27,14 @@ import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { timeAgoSmart } from '@src/utility/time';
 import { useGetChatRoomRoleWithCridAaidQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
+import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 
 const MyMsg: FC<{
     msgList_element?: HTMLDivElement | null;
     data: MessageV1Field<ZaloMessageType>;
     messages: MessageV1Field<ZaloMessageType>[];
 }> = ({ msgList_element, data, messages }) => {
+    const dispatch = useDispatch<AppDispatch>();
     const defaultColor = '#EBEBEB';
     const parent_element = useRef<HTMLDivElement | null>(null);
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
@@ -160,13 +162,17 @@ const MyMsg: FC<{
         parentElement.style.setProperty('--msgBackground', `${background}`);
     }, [chatRoomRole]);
 
+    const handleToReply = () => {
+        dispatch(set_repliedMessage(data));
+    };
+
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.iconContainer}>
                 <IoIosMore onClick={() => handleShowMore()} size={25} />
                 {isMore && (
                     <div className={style.moreContainer}>
-                        <div>Trả lời</div>
+                        <div onClick={() => handleToReply()}>Trả lời</div>
                         <div>Chia sẻ</div>
                     </div>
                 )}
