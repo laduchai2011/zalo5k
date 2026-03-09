@@ -5,8 +5,9 @@ import { ChatRoomsMongoBodyField } from '@src/dataStruct/chatRoom/body';
 export async function getChatRoomsMongo(chatRoomsMongoBody: ChatRoomsMongoBodyField): Promise<PagedChatRoomMongoField> {
     const db = getDbMonggo();
     const col = db.collection<ChatRoomRoleSchema>('chatRoomRole');
+    // const col = db.collection<ChatRoomRoleSchema>('lastMessage');
 
-    const { limit, cursor, authorizedAccountId, isRead, isSend, zaloOaId, accountId } = chatRoomsMongoBody;
+    const { limit, cursor, isMy, authorizedAccountId, isRead, isSend, zaloOaId, accountId } = chatRoomsMongoBody;
 
     const authorized_account_id = authorizedAccountId;
     const is_read = isRead;
@@ -25,13 +26,15 @@ export async function getChatRoomsMongo(chatRoomsMongoBody: ChatRoomsMongoBodyFi
 
     const cursorDate = cursor ? new Date(cursor) : undefined;
 
+    const exprCondition = isMy
+        ? { $eq: ['$authorized_account_id', '$account_id'] }
+        : { $ne: ['$authorized_account_id', '$account_id'] };
+
     const pipeline: any[] = [
         {
             $match: {
                 ...match,
-                $expr: {
-                    $ne: ['$authorized_account_id', '$account_id'],
-                },
+                $expr: exprCondition,
             },
         },
 

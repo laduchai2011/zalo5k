@@ -72,7 +72,7 @@
             > .name {
                 @include line-clamp(1);
                 font-weight: 700;
-                font-size: 1.1rem;
+                font-size: 0.8rem;
                 box-sizing: border-box;
                 padding: 5px;
                 line-height: 24px;
@@ -96,7 +96,7 @@
     }
 
     > .avatarContainer {
-        width: 50px;
+        width: 35px;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;

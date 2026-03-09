@@ -37,7 +37,7 @@ GO
 
 ALTER PROCEDURE AgentAddAccount
 	@id INT,
-	@agentAccountId INT,
+	@agentAccountId INT = NULL,
 	@accountId INT
 AS
 BEGIN
@@ -74,6 +74,40 @@ BEGIN
 
 		UPDATE dbo.agent
 		SET agentAccountId = @agentAccountId
+		WHERE id = @id;
+
+		SELECT * FROM dbo.agent WHERE status = 'normal' AND id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE AgentDelAccount
+	@id INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.agent
+			WHERE id = @id AND accountId = @accountId
+		)
+		BEGIN
+			THROW 50003, N'Agent này không phải của bạn !', 3;
+		END
+
+		UPDATE dbo.agent
+		SET agentAccountId = NULL
 		WHERE id = @id;
 
 		SELECT * FROM dbo.agent WHERE status = 'normal' AND id = @id;

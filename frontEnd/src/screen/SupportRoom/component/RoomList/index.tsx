@@ -27,6 +27,7 @@ const RoomList = () => {
         getChatRoomsMongo({
             limit: limit,
             cursor: null,
+            isMy: false,
             authorizedAccountId: account.id,
             zaloOaId: selectedOa.id,
         })
@@ -59,6 +60,7 @@ const RoomList = () => {
         getChatRoomsMongo({
             limit: 30,
             cursor: cursor,
+            isMy: false,
             authorizedAccountId: account.id,
             zaloOaId: selectedOa.id,
         })

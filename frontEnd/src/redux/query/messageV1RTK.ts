@@ -20,6 +20,7 @@ export const messageV1RTK = createApi({
         }),
         getLastMessage: builder.query<MyResponse<MessageV1Field<ZaloMessageType>>, { chatRoomId: string }>({
             query: ({ chatRoomId }) => `${MESSAGEV1_API.GET_LAST_MESSAGE}?chatRoomId=${chatRoomId}`,
+            keepUnusedDataFor: 0,
         }),
         getMessageWithId: builder.query<MyResponse<MessageV1Field<ZaloMessageType>>, { id: string }>({
             query: ({ id }) => `${MESSAGEV1_API.GET_MESSAGE_WITH_ID}?id=${id}`,

@@ -136,11 +136,11 @@ const MsgList = () => {
         const isOaSend = eventName.startsWith('oa_send');
 
         if (isUserSend) {
-            return <UserMsg key={index} msgList_element={parent_element.current} data={item} />;
+            return <UserMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
         }
 
         if (isOaSend) {
-            return <MyMsg key={index} msgList_element={parent_element.current} data={item} />;
+            return <MyMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
         }
 
         return;

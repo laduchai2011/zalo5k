@@ -28,25 +28,45 @@ import { timeAgoSmart } from '@src/utility/time';
 import { useGetChatRoomRoleWithCridAaidQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
 
-const MyMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field<ZaloMessageType> }> = ({
-    msgList_element,
-    data,
-}) => {
+const MyMsg: FC<{
+    msgList_element?: HTMLDivElement | null;
+    data: MessageV1Field<ZaloMessageType>;
+    messages: MessageV1Field<ZaloMessageType>[];
+}> = ({ msgList_element, data, messages }) => {
     const defaultColor = '#EBEBEB';
     const parent_element = useRef<HTMLDivElement | null>(null);
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const { id } = useParams<{ id: string }>();
     const [isMore, setIsMore] = useState<boolean>(false);
     const [chatRoomRole, setChatRoomRole] = useState<ChatRoomRoleField | undefined>(undefined);
-    const youString: string | null = data?.reply_account_id === account?.id ? 'Bạn' : null;
+    const isYou = data?.reply_account_id === account?.id;
+    const youString: string | null = isYou ? 'Bạn' : null;
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
+    const [isAvatar, setIsAvatar] = useState<boolean>(true);
+
+    useEffect(() => {
+        // const isUserSend_data = eventName.startsWith('user_send');
+        // const isOaSend = eventName.startsWith('oa_send');
+        const indexMessage = messages.indexOf(data);
+        if (indexMessage <= 0) return;
+        const befor_message = messages[indexMessage - 1];
+        const isOaSend_dataBefor = befor_message.event_name.startsWith('oa_send');
+        if (isOaSend_dataBefor) {
+            if (befor_message.reply_account_id === data.reply_account_id) {
+                setIsAvatar(false);
+            } else {
+                setIsAvatar(true);
+            }
+        } else {
+            setIsAvatar(true);
+        }
+    }, [data, messages]);
 
     const handleShowMore = () => {
         setIsMore(!isMore);
     };
 
     const msg = () => {
-        if (!data) return;
         const event_name = data.event_name;
 
         switch (event_name) {
@@ -152,19 +172,27 @@ const MyMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field
                 )}
             </div>
             <div className={style.msgContainer}>
-                <div className={style.nameContainer}>
-                    {youString && <div className={style.youString}>{`(${youString})`}</div>}
-                    <div className={style.name}>{accountWId?.firstName + ' ' + accountWId?.lastName}</div>
-                </div>
+                {!isYou && (
+                    <div className={style.nameContainer}>
+                        {youString && <div className={style.youString}>{`(${youString})`}</div>}
+                        {isAvatar && (
+                            <div className={style.name}>{accountWId?.firstName + ' ' + accountWId?.lastName}</div>
+                        )}
+                    </div>
+                )}
                 <div>{msg()}</div>
-                {data?.timestamp && <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>}
+                <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>
             </div>
-            <div className={style.avatarContainer}>
-                <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNzSvQMx07eqW79xIar2vd4x_1NUKPZ7kKUw&s"
-                    alt="avatar"
-                />
-            </div>
+            {!isYou && (
+                <div className={style.avatarContainer}>
+                    {isAvatar && (
+                        <img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNzSvQMx07eqW79xIar2vd4x_1NUKPZ7kKUw&s"
+                            alt="avatar"
+                        />
+                    )}
+                </div>
+            )}
         </div>
     );
 };

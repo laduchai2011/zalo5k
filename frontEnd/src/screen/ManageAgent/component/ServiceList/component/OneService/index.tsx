@@ -11,6 +11,7 @@ import { setIsShow_memberListDialog, set_agent_memberListDialog } from '@src/red
 import { useLazyGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/ManageAgent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import { useAgentAddAccountMutation, useAgentDelAccountMutation } from '@src/redux/query/agentRTK';
 
 const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,6 +23,7 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
         (state: RootState) => state.ManageAgentSlice.memberListDialog.agent
     );
 
+    const [agentDelAccount] = useAgentDelAccountMutation();
     const [getAccountWithId] = useLazyGetAccountWithIdQuery();
 
     useEffect(() => {
@@ -76,7 +78,32 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
         dispatch(set_agent_memberListDialog(data));
     };
 
-    const handleDelAgent = () => {};
+    const handleDelAgent = () => {
+        dispatch(set_isLoading(true));
+        agentDelAccount({ id: data.id, accountId: -1 })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setAccount(undefined);
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.SUCCESS,
+                            message: 'Xóa thành công !',
+                        })
+                    );
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Đã có lỗi xảy ra !',
+                    })
+                );
+            })
+            .finally(() => dispatch(set_isLoading(false)));
+    };
 
     return (
         <div className={style.parent}>

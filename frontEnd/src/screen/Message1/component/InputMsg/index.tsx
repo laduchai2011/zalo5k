@@ -1,8 +1,8 @@
 import { memo, useRef, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@src/redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '@src/redux';
 import { IoSend } from 'react-icons/io5';
 import { CiImageOn } from 'react-icons/ci';
 import { MdOutlineOndemandVideo, MdAttachFile } from 'react-icons/md';
@@ -12,6 +12,7 @@ import { useCreateMessageV1Mutation, useGetLastMessageQuery } from '@src/redux/q
 import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import ReplyContainer from './component/ReplyContainer';
 
 const InputMsg = () => {
     const { id } = useParams<{ id: string }>();
@@ -108,6 +109,7 @@ const InputMsg = () => {
                 <MdAttachFile size={20} />
                 <PiSmileyStickerLight size={20} />
             </div>
+            <ReplyContainer />
             <div className={style.textInput}>
                 <div>
                     <textarea

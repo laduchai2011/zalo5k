@@ -27,6 +27,7 @@ const UserList = () => {
         getChatRoomsMongo({
             limit: limit,
             cursor: null,
+            isMy: true,
             zaloOaId: selectedOa.id,
             accountId: account.id,
         })
@@ -59,6 +60,7 @@ const UserList = () => {
         getChatRoomsMongo({
             limit: 30,
             cursor: cursor,
+            isMy: true,
             zaloOaId: selectedOa.id,
             accountId: account.id,
         })

@@ -6,6 +6,29 @@
     overflow-y: scroll;
     @include small-scroll-yy(3px);
 
+    > .search {
+        @include center-of-row;
+        justify-content: flex-end;
+
+        > div {
+            @include center-of-row;
+            box-sizing: border-box;
+            padding: 5px;
+            border-radius: 10px;
+            background-color: rgb(233, 233, 233);
+
+            > input {
+                border: none;
+                outline: none;
+                font-size: 1.05rem;
+            }
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+    }
+
     > .seeMore {
         @include center-of-rectangle;
         box-sizing: border-box;

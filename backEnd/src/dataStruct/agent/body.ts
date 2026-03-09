@@ -4,7 +4,12 @@ export interface CreateAgentBodyField {
 
 export interface AgentAddAccountBodyField {
     id: number;
-    agentAccountId: number;
+    agentAccountId?: number;
+    accountId: number;
+}
+
+export interface AgentDelAccountBodyField {
+    id: number;
     accountId: number;
 }
 

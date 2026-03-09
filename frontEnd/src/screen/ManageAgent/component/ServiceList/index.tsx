@@ -3,6 +3,7 @@ import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
+import { CiSearch } from 'react-icons/ci';
 import OneService from './component/OneService';
 import { useLazyGetAgentsQuery } from '@src/redux/query/agentRTK';
 import { AgentField } from '@src/dataStruct/agent';
@@ -13,10 +14,13 @@ const ServiceList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const newAgents: AgentField[] = useSelector((state: RootState) => state.ManageAgentSlice.newAgents);
     const [agents, setAgents] = useState<AgentField[]>([]);
-    const [getAgents] = useLazyGetAgentsQuery();
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
+    const [searchInput, setSearchInput] = useState<string>('');
+    const [isSearch, setIsSearch] = useState<boolean>(true);
     const size = 10;
+
+    const [getAgents] = useLazyGetAgentsQuery();
 
     useEffect(() => {
         if (newAgents.length === 0) return;
@@ -24,8 +28,17 @@ const ServiceList = () => {
     }, [newAgents]);
 
     useEffect(() => {
+        if (!isSearch) return;
+        const searchInput_t = searchInput.trim();
         dispatch(set_isLoading(true));
-        getAgents({ page: 1, size: size, offset: 0, accountId: -1 })
+        getAgents({
+            page: 1,
+            size: size,
+            offset: 0,
+            agentAccountId:
+                searchInput_t.length > 0 && !isNaN(Number(searchInput_t)) ? Number(searchInput_t) : undefined,
+            accountId: -1,
+        })
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
@@ -43,13 +56,24 @@ const ServiceList = () => {
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
-    }, [dispatch, getAgents]);
+            .finally(() => {
+                dispatch(set_isLoading(false));
+                setIsSearch(false);
+            });
+    }, [dispatch, getAgents, isSearch, searchInput]);
 
     const handleSeeMore = () => {
         if (!hasMore) return;
+        const searchInput_t = searchInput.trim();
         dispatch(set_isLoading(true));
-        getAgents({ page: page, size: size, offset: 0, accountId: -1 })
+        getAgents({
+            page: page,
+            size: size,
+            offset: 0,
+            agentAccountId:
+                searchInput_t.length > 0 && !isNaN(Number(searchInput_t)) ? Number(searchInput_t) : undefined,
+            accountId: -1,
+        })
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
@@ -70,12 +94,27 @@ const ServiceList = () => {
             .finally(() => dispatch(set_isLoading(false)));
     };
 
+    const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchInput(value);
+    };
+
+    const handleSearch = () => {
+        setIsSearch(true);
+    };
+
     const list_service = agents.map((item, index) => {
         return <OneService data={item} key={item.id} index={index} />;
     });
 
     return (
         <div className={style.parent}>
+            <div className={style.search}>
+                <div>
+                    <input value={searchInput} onChange={(e) => handleSearchInput(e)} />
+                    <CiSearch onClick={() => handleSearch()} size={25} />
+                </div>
+            </div>
             <div>{list_service}</div>
             {hasMore && (
                 <div className={style.seeMore}>

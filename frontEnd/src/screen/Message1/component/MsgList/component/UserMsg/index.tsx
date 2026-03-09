@@ -29,15 +29,31 @@ import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { timeAgoSmart } from '@src/utility/time';
 import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
 
-const UserMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field<ZaloMessageType> }> = ({
-    msgList_element,
-    data,
-}) => {
+const UserMsg: FC<{
+    msgList_element?: HTMLDivElement | null;
+    data: MessageV1Field<ZaloMessageType>;
+    messages: MessageV1Field<ZaloMessageType>[];
+}> = ({ msgList_element, data, messages }) => {
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
     const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
     const userIdByApp = chatRoom?.userIdByApp;
     const [zaloUser, setZaloUser] = useState<ZaloUserField | undefined>(undefined);
+    const [isAvatar, setIsAvatar] = useState<boolean>(true);
+
+    useEffect(() => {
+        // const isUserSend_data = eventName.startsWith('user_send');
+        // const isOaSend = eventName.startsWith('oa_send');
+        const indexMessage = messages.indexOf(data);
+        if (indexMessage <= 0) return;
+        const befor_message = messages[indexMessage - 1];
+        const isUserSend_dataBefor = befor_message.event_name.startsWith('user_send');
+        if (isUserSend_dataBefor) {
+            setIsAvatar(false);
+        } else {
+            setIsAvatar(true);
+        }
+    }, [data, messages]);
 
     const {
         data: data_zaloUser,
@@ -52,12 +68,6 @@ const UserMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Fie
     useEffect(() => {
         if (isError_zaloUser && error_zaloUser) {
             console.error(error_zaloUser);
-            // dispatch(
-            //     setData_toastMessage({
-            //         type: messageType_enum.ERROR,
-            //         message: 'Lấy dữ liệu phòng hội thoại KHÔNG thành công !',
-            //     })
-            // );
         }
     }, [isError_zaloUser, error_zaloUser]);
     useEffect(() => {
@@ -78,7 +88,6 @@ const UserMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Fie
     };
 
     const msg = () => {
-        if (!data) return;
         const event_name = data.event_name;
 
         switch (event_name) {
@@ -118,13 +127,11 @@ const UserMsg: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Fie
 
     return (
         <div className={style.parent}>
-            <div className={style.avatarContainer}>
-                <img src={zaloUser?.data.avatar} alt="avatar" />
-            </div>
+            <div className={style.avatarContainer}>{isAvatar && <img src={zaloUser?.data.avatar} alt="avatar" />}</div>
             <div className={style.msgContainer}>
-                <div className={style.name}>{zaloUser?.data.display_name}</div>
+                {isAvatar && <div className={style.name}>{zaloUser?.data.display_name}</div>}
                 <div>{msg()}</div>
-                {data?.timestamp && <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>}
+                <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>
             </div>
             <div className={style.iconContainer}>
                 <IoIosMore onClick={() => handleShowMore()} size={25} />

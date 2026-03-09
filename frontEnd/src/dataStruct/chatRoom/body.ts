@@ -35,6 +35,7 @@ export interface CreateChatRoomRoleBodyField {
 export interface ChatRoomsMongoBodyField {
     limit: number;
     cursor: string | null;
+    isMy: boolean;
     zaloOaId?: number;
     authorizedAccountId?: number;
     isRead?: boolean;
