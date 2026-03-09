@@ -50,3 +50,5 @@ export const DELETE = 'Xóa';
 export const CREATE = 'Tạo';
 export const IMAGE = 'Hình ảnh';
 export const VIDEO = 'Thước phim';
+export const AUDIO = 'Thoại';
+export const STICKER = 'Sticker';
