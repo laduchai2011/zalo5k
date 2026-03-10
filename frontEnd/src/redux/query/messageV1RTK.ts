@@ -25,6 +25,13 @@ export const messageV1RTK = createApi({
         getMessageWithId: builder.query<MyResponse<MessageV1Field<ZaloMessageType>>, { id: string }>({
             query: ({ id }) => `${MESSAGEV1_API.GET_MESSAGE_WITH_ID}?id=${id}`,
         }),
+        getMessageWithMsgId: builder.query<
+            MyResponse<MessageV1Field<ZaloMessageType>>,
+            { chat_room_id: number; msg_id: string }
+        >({
+            query: ({ chat_room_id, msg_id }) =>
+                `${MESSAGEV1_API.GET_MESSAGE_WITH_MSG_ID}?chat_room_id=${chat_room_id}&msg_id=${msg_id}`,
+        }),
         createMessageV1: builder.mutation<MyResponse<ResultSendToZaloField>, CreateMessageV1BodyField>({
             query: (body) => ({
                 url: MESSAGEV1_API.CREATE_MESSAGEV1,
@@ -39,5 +46,6 @@ export const {
     useLazyGetMessagesForChatScreenQuery,
     useGetLastMessageQuery,
     useLazyGetMessageWithIdQuery,
+    useLazyGetMessageWithMsgIdQuery,
     useCreateMessageV1Mutation,
 } = messageV1RTK;

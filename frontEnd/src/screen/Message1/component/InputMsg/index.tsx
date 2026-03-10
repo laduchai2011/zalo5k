@@ -1,8 +1,8 @@
 import { memo, useRef, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@src/redux';
 import { IoSend } from 'react-icons/io5';
 import { CiImageOn } from 'react-icons/ci';
 import { MdOutlineOndemandVideo, MdAttachFile } from 'react-icons/md';
@@ -13,8 +13,10 @@ import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import ReplyContainer from './component/ReplyContainer';
+import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 
 const InputMsg = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
     const textarea_element = useRef<HTMLTextAreaElement | null>(null);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
@@ -81,6 +83,13 @@ const InputMsg = () => {
             u_senderId = lastMessage.recipient_id;
         }
 
+        const newMessage = repliedMessage?.message_id
+            ? {
+                  text: txt,
+                  quote_message_id: repliedMessage.message_id,
+              }
+            : { text: txt };
+
         const createMessageV1Body: CreateMessageV1BodyField = {
             zaloApp: zaloApp,
             zaloOa: zaloOa,
@@ -89,9 +98,7 @@ const InputMsg = () => {
                 recipient: {
                     user_id: u_senderId,
                 },
-                message: {
-                    text: txt,
-                },
+                message: newMessage,
             },
         };
 
@@ -100,6 +107,7 @@ const InputMsg = () => {
                 // const resData = res.data;
                 // console.log(111111, resData);
                 setText('');
+                dispatch(set_repliedMessage(undefined));
             })
             .catch((err) => console.error(err));
     };

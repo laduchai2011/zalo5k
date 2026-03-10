@@ -7,6 +7,7 @@ export interface HookDataBodyField<T = ZaloMessageBodyType> {
 
 interface MessageTextBodyField {
     text: string;
+    quote_message_id?: string;
 }
 
 interface MessageImageBodyField {
