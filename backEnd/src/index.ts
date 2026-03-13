@@ -85,6 +85,8 @@ app.use(`${apiString}/hello`, (req, res) => {
     if (services.includes('image')) {
         const service_image = (await import('./services/image')).default;
         app.use(`${prefix}/service_image`, service_image);
+        const service_image_v1 = (await import('./services/image_v1')).default;
+        app.use(`${prefix}/service_image_v1`, service_image_v1);
     }
 
     if (services.includes('video')) {

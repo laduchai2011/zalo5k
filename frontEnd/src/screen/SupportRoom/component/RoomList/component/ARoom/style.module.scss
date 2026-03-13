@@ -73,6 +73,23 @@
                 > .send {
                     color: blue;
                 }
+
+                > .time {
+                    width: 40px;
+                    height: 100%;
+                    @include center-of-rectangle;
+                    font-size: 0.8rem;
+                    color: gray;
+                }
+
+                > .newMsgAmount {
+                    @include center-of-rectangle;
+                    color: white;
+                    background-color: red;
+                    border-radius: 50%;
+                    width: 25px;
+                    height: 25px;
+                }
             }
         }
     }

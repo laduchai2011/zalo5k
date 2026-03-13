@@ -10,7 +10,7 @@ interface MessageTextBodyField {
     quote_message_id?: string;
 }
 
-interface MessageImageBodyField {
+export interface MessageImageBodyField {
     text: string;
     attachment: {
         type: 'template';
@@ -19,7 +19,8 @@ interface MessageImageBodyField {
             elements: [
                 {
                     media_type: 'image';
-                    url: string;
+                    url?: string;
+                    attachment_id?: string;
                 },
             ];
         };

@@ -90,10 +90,16 @@ class Handle_UpdateSetupChatRoomRole {
 
                 const crid = rData.chatRoomId;
                 const aaid = rData.authorizedAccountId;
-                const keyRedis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
-                const isDel = this._serviceRedis.deleteData(keyRedis);
-                if (!isDel) {
-                    console.error('Failed to delete key in Redis', keyRedis);
+                const chatRoomId = rData.chatRoomId;
+                const key1Redis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
+                const key2Redis = `${prefix_cache_chatRoomRole.key.get_all_with_chatRoom_id}_${chatRoomId}`;
+                const isDel1 = this._serviceRedis.deleteData(key1Redis);
+                if (!isDel1) {
+                    console.error('Failed to delete key in Redis', key1Redis);
+                }
+                const isDel2 = this._serviceRedis.deleteData(key2Redis);
+                if (!isDel2) {
+                    console.error('Failed to delete key in Redis', key2Redis);
                 }
 
                 const data = rData;

@@ -20,6 +20,9 @@ export const prefix_cache_chatRoomRole = {
         with_crid_Aaid: isProduct
             ? 'prefix_cache_chatRoomRole_with_crid_Aaid'
             : 'prefix_cache_chatRoomRole_with_crid_Aaid_dev',
+        get_all_with_chatRoom_id: isProduct
+            ? 'prefix_cache_chatRoomRole_with_chatRoom_id'
+            : 'prefix_cache_chatRoomRole_with_chatRoom_id_dev',
     },
     time: 60 * 5, // 5p
 };

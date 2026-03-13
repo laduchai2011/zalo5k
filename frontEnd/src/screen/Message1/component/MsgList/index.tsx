@@ -41,7 +41,7 @@ const MsgList = () => {
                         setMessages((prev) => [...prev, newMsg]);
                         setTimeout(() => {
                             scrollToBottom();
-                        }, 0);
+                        }, 10);
                     }
                 })
                 .catch((err) => console.error(err));

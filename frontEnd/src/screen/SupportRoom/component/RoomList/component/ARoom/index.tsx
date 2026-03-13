@@ -5,15 +5,16 @@ import { RootState } from '@src/redux';
 import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
 import { ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
+import { MessageV1Field, NewMessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { ZaloOaField, ZaloAppField } from '@src/dataStruct/zalo';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { AccountField } from '@src/dataStruct/account';
-import { useGetLastMessageQuery } from '@src/redux/query/messageV1RTK';
+import { useGetLastMessageQuery, useLazyGetAllNewMessagesQuery } from '@src/redux/query/messageV1RTK';
 import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
 import { timeAgoSmart } from '@src/utility/time';
+import { handleNewMsgAmount } from './handle';
 
 const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSchema }) => {
     const navigate = useNavigate();
@@ -25,6 +26,9 @@ const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSch
     const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
     const [zaloUser, setZaloUser] = useState<ZaloUserField | undefined>(undefined);
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
+    const [newMessage, setNewMessage] = useState<NewMessageV1Field<ZaloMessageType>[]>([]);
+
+    const [getAllNewMessages] = useLazyGetAllNewMessagesQuery();
 
     const {
         data: data_lastMessage,
@@ -112,6 +116,20 @@ const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSch
         }
     }, [chatRoomRole]);
 
+    useEffect(() => {
+        const chatRoomId = chatRoomRole.chat_room_id;
+        getAllNewMessages({ chatRoomId: chatRoomId.toString() })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setNewMessage(resData.data);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [chatRoomRole, getAllNewMessages]);
+
     const handleGotoMessage1 = () => {
         navigate(route_enum.MESSAGE1 + '/' + `${chatRoomRole.chat_room_id}`);
     };
@@ -138,7 +156,12 @@ const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSch
                         </div>
                     </div>
                     <div className={style.infor}>
-                        {lastMessage && <div className={style.time}>{timeAgoSmart(lastMessage.timestamp)}</div>}
+                        {newMessage.length === 0 && lastMessage && (
+                            <div className={style.time}>{timeAgoSmart(lastMessage.timestamp)}</div>
+                        )}
+                        {newMessage.length > 0 && (
+                            <div className={style.newMsgAmount}>{handleNewMsgAmount(newMessage.length)}</div>
+                        )}
                     </div>
                 </div>
             </div>

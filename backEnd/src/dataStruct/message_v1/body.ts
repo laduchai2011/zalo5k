@@ -13,3 +13,8 @@ export interface CreateMessageV1BodyField {
     payload: HookDataBodyField;
     chatRoomId: number;
 }
+
+export interface AllNewMessagesBodyField {
+    chatRoomId: number;
+    accountId: number;
+}

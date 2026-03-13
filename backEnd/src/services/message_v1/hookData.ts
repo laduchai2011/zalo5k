@@ -1,6 +1,7 @@
 import { consumeHookData } from '@src/messageQueue/Consumer';
 import { sendStringMessage } from '@src/messageQueue/Producer';
-import { MessageSchemaType, MessageZodSchema } from '@src/schema/message';
+import { MessageSchemaType, MessageZodSchema, NewMessageSchemaType, NewMessageZodSchema } from '@src/schema/message';
+import { NewMessageV1Field } from '@src/dataStruct/message_v1';
 import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
 import { SocketMessageField } from '@src/dataStruct/message_v1';
 import { getDbMonggo } from '@src/connect/mongo';
@@ -10,7 +11,7 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { AccountReceiveMessageField } from '@src/dataStruct/account';
 import { GetAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
+import { ChatRoomField, ChatRoomRoleSchema, ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
 import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
@@ -18,14 +19,16 @@ import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloApp
 import QueryDB_CheckZaloOaListWithZaloAppId from './handleHookData/queryDB/CheckZaloOaListWithZaloAppId';
 import QueryDB_UserTakeRoomToChat from './handleHookData/queryDB/UserTakeRoomToChat';
 import QueryDB_GetAccountReceiveMessage from './handleHookData/queryDB/GetAccountReceiveMessage';
+import QueryDB_GetAllChatRoomRolesWithChatRoomId from './handleHookData/queryDB/GetAllChatRoomRolesWithChatRoomId';
 import MutateDB_CreateChatRoom from './handleHookData/mutateDB/CreateChatRoom';
 import {
     prefix_cache_zaloApp_with_appId,
     prefix_cache_zaloOa_list_with_zaloAppId,
     prefix_cache_chatRoom_with_zaloOaId_userIdByApp,
 } from '@src/const/redisKey';
+import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
 import { IsPassField, WaitSessionField } from './type';
-import { HookDataField, HookDataSchema } from '@src/dataStruct/zalo/hookData';
+import { HookDataField, HookDataSchema, ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { feedbackToTakeChatSession } from './handleHookData/feedbackToTakeChatSession';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { sendMessageToUser } from './sendMessageToUser';
@@ -47,7 +50,7 @@ const timeExpireat = 60 * 3; // 3p
 export function hookData() {
     consumeHookData(`zalo_hook_data_queue${prefix}`, async (data) => {
         // console.log('Hook Data Received:');
-        console.dir(data, { depth: null });
+        // console.dir(data, { depth: null });
         const app_id = data.app_id;
         const oa_id = determineOaId(data);
         const sender_id_of_user = determineSenderIdOfUser(data);
@@ -204,6 +207,28 @@ export function hookData() {
                 };
 
                 sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
+            }
+
+            const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
+            if (!allChatRoomRoles) {
+                return;
+            }
+            for (let i: number = 0; i < allChatRoomRoles.length; i++) {
+                const newMessage: NewMessageV1Field<ZaloMessageType> = {
+                    ...hookDataSchema,
+                    account_id: allChatRoomRoles[i].authorizedAccountId,
+                    created_at: new Date(),
+                };
+
+                const parsedNewMessage = NewMessageZodSchema.safeParse(newMessage);
+
+                if (!parsedNewMessage.success) {
+                    console.error('Invalid message format:', parsedNewMessage.error);
+                } else {
+                    const dbMonggo = getDbMonggo();
+                    const dataNewMessageParse = parsedNewMessage.data;
+                    await dbMonggo.collection<NewMessageSchemaType>('newMessage').insertOne(dataNewMessageParse);
+                }
             }
         }
     });
@@ -478,6 +503,44 @@ async function GetAccountReceiveMessage(selectedAccountId: number, zaloOaId: num
         if (result?.recordset.length && result?.recordset.length > 0) {
             const accountReceiveMessage: AccountReceiveMessageField = result?.recordset[0];
             return accountReceiveMessage;
+        } else {
+            return;
+        }
+    } catch (error) {
+        console.error(error);
+        return;
+    }
+}
+
+async function GetAllChatRoomRolesWithChatRoomId(chatRoomId: number) {
+    const keyRedis = `${prefix_cache_chatRoomRole.key.get_all_with_chatRoom_id}_${chatRoomId}`;
+    const timeExpireat = prefix_cache_chatRoomRole.time;
+
+    const allChatRoomRoles_redis = await serviceRedis.getData<ChatRoomRoleField[]>(keyRedis);
+    if (allChatRoomRoles_redis) {
+        return allChatRoomRoles_redis;
+    }
+
+    const queryDB = new QueryDB_GetAllChatRoomRolesWithChatRoomId();
+    queryDB.setChatRoomId(chatRoomId);
+
+    const connection_pool = mssql_server.get_connectionPool();
+    if (connection_pool) {
+        queryDB.set_connection_pool(connection_pool);
+    } else {
+        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
+        return;
+    }
+
+    try {
+        const result = await queryDB.run();
+        if (result?.recordset.length && result?.recordset.length > 0) {
+            const rAllData = result?.recordset;
+            const isSet = await serviceRedis.setData<ChatRoomRoleField[]>(keyRedis, rAllData, timeExpireat);
+            if (!isSet) {
+                console.error('Failed to set thông tin tất cả chatRoomRole in Redis', keyRedis);
+            }
+            return rAllData;
         } else {
             return;
         }

@@ -52,6 +52,12 @@
                 height: 50%;
                 @include line-clamp(1);
                 line-height: 28px;
+
+                @include center-of-row;
+
+                > div {
+                    margin: 0 2px;
+                }
             }
         }
 
@@ -61,6 +67,15 @@
             @include center-of-rectangle;
             font-size: 0.8rem;
             color: gray;
+        }
+
+        > .newMsgAmount {
+            @include center-of-rectangle;
+            color: white;
+            background-color: red;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
         }
     }
 }

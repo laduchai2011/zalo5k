@@ -6,9 +6,28 @@
     background-color: rgb(240, 240, 240);
 
     > .icons {
-        > svg {
-            margin: 0 5px;
-            cursor: pointer;
+        @include center-of-row;
+
+        > .icons1 {
+            width: 50%;
+
+            > input {
+                display: none;
+            }
+
+            > svg {
+                margin: 0 5px;
+                cursor: pointer;
+            }
+        }
+
+        > .icons2 {
+            width: 50%;
+
+            > svg {
+                margin: 0 5px;
+                cursor: pointer;
+            }
         }
     }
 

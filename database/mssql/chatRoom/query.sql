@@ -35,3 +35,11 @@ BEGIN
 			AND (@chatRoomId IS NULL OR crr.chatRoomId = @chatRoomId)
 END
 GO
+
+CREATE PROCEDURE GetAllChatRoomRolesWithChatRoomId
+	@chatRoomId INT
+AS
+BEGIN
+    SELECT * FROM dbo.chatRoomRole WHERE status = 'normal' AND chatRoomId = @chatRoomId
+END
+GO
