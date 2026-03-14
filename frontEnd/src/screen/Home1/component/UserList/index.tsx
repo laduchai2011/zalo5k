@@ -4,12 +4,15 @@ import User from './component/User';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { useLazyGetChatRoomsMongoQuery } from '@src/redux/query/chatRoomRTK';
+// import { useLazyGetMessageWithIdQuery } from '@src/redux/query/messageV1RTK';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Home1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { SEE_MORE } from '@src/const/text';
+import { getSocket } from '@src/socketIo';
+import { SocketMessageField } from '@src/dataStruct/message_v1';
 
 const UserList = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +23,48 @@ const UserList = () => {
     const limit = 30;
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [getChatRoomsMongo] = useLazyGetChatRoomsMongoQuery();
+    // const [getMessageWithId] = useLazyGetMessageWithIdQuery();
+
+    useEffect(() => {
+        const socket = getSocket();
+        // const chatRoomId = chatRoomRole.chat_room_id;
+
+        const onConnect = () => {
+            socket.emit('joinRoom', 'allRoom');
+        };
+
+        const onSocketMessageAllRoom = (socketMsg: SocketMessageField) => {
+            // const msgId = socketMsg._id;
+            const chatRoomId = socketMsg.chatRoomId;
+
+            setTimeout(() => {
+                setChatRoomRoleSchemas((prev) => {
+                    const index = prev.findIndex((item) => item.chat_room_id === chatRoomId);
+                    if (index <= 0) return prev;
+
+                    const result = prev.filter((item) => item.chat_room_id !== chatRoomId);
+
+                    const item = prev[index];
+
+                    return [item, ...result];
+                });
+            }, 10);
+        };
+
+        socket.on('connect', onConnect);
+        socket.on('socketMessageAllRoom', onSocketMessageAllRoom);
+
+        // nếu socket đã connect sẵn từ trước thì join luôn
+        if (socket.connected) {
+            onConnect();
+        }
+
+        return () => {
+            socket.off('socketMessageAllRoom', onSocketMessageAllRoom);
+            socket.emit('leaveRoom', 'allRoom');
+            socket.off('connect', onConnect);
+        };
+    }, []);
 
     useEffect(() => {
         if (!selectedOa || !account) return;
@@ -87,8 +132,8 @@ const UserList = () => {
             });
     };
 
-    const list_chatRoomRole = chatRoomRoleSchemas.map((item) => {
-        return <User key={item.chat_room_id} chatRoomRoleSchema={item} />;
+    const list_chatRoomRole = chatRoomRoleSchemas.map((item, index) => {
+        return <User key={index} chatRoomRoleSchema={item} />;
     });
 
     return (

@@ -10,4 +10,5 @@ export const MESSAGEV1_API = {
     GET_MESSAGE_WITH_MSG_ID: `${BASE_URL}${apiString}/service_message_v1/query/getMessageWithMsgId`,
     CREATE_MESSAGEV1: `${BASE_URL}${apiString}/service_message_v1/mutate/createMessageV1`,
     GET_ALL_NEW_MESSAGE: `${BASE_URL}${apiString}/service_message_v1/query/getAllNewMessages`,
+    DEL_ALL_NEW_MESSAGE: `${BASE_URL}${apiString}/service_message_v1/mutate/delAllNewMessages`,
 };

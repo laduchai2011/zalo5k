@@ -9,7 +9,7 @@ import { ResultSendToZaloField } from '@src/dataStruct/zalo/hookData';
 export const messageV1RTK = createApi({
     reducerPath: 'messageV1RTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: [],
+    tagTypes: ['AllNewMessages'],
     endpoints: (builder) => ({
         getMessagesForChatScreen: builder.query<MyResponse<PagedMessageV1Field<ZaloMessageType>>, MessageV1BodyField>({
             query: (body) => ({
@@ -43,14 +43,20 @@ export const messageV1RTK = createApi({
                 body,
             }),
         }),
+        delAllNewMessages: builder.query<MyResponse<any>, { chatRoomId: string }>({
+            query: ({ chatRoomId }) => `${MESSAGEV1_API.DEL_ALL_NEW_MESSAGE}?chatRoomId=${chatRoomId}`,
+            keepUnusedDataFor: 0,
+        }),
     }),
 });
 
 export const {
     useLazyGetMessagesForChatScreenQuery,
     useGetLastMessageQuery,
+    useLazyGetLastMessageQuery,
     useLazyGetMessageWithIdQuery,
     useLazyGetMessageWithMsgIdQuery,
     useLazyGetAllNewMessagesQuery,
     useCreateMessageV1Mutation,
+    useLazyDelAllNewMessagesQuery,
 } = messageV1RTK;

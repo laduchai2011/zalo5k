@@ -3,7 +3,11 @@ import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
 import UserMsg from './component/UserMsg';
 import MyMsg from './component/MyMsg';
-import { useLazyGetMessagesForChatScreenQuery, useLazyGetMessageWithIdQuery } from '@src/redux/query/messageV1RTK';
+import {
+    useLazyGetMessagesForChatScreenQuery,
+    useLazyGetMessageWithIdQuery,
+    useLazyDelAllNewMessagesQuery,
+} from '@src/redux/query/messageV1RTK';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { getSocket } from '@src/socketIo';
@@ -20,10 +24,23 @@ const MsgList = () => {
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [getMessageWithId] = useLazyGetMessageWithIdQuery();
+    const [delAllNewMessages] = useLazyDelAllNewMessagesQuery();
 
     useEffect(() => {
         if (!id) return;
         const socket = getSocket();
+
+        const handleDelMsg = () => {
+            delAllNewMessages({ chatRoomId: id })
+                .then((res) => {
+                    const resData = res.data;
+                    console.log('delAllNewMessages', resData);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        };
+        handleDelMsg();
 
         const scrollToBottom = () => {
             if (!bottom_element.current) return;
@@ -41,6 +58,7 @@ const MsgList = () => {
                         setMessages((prev) => [...prev, newMsg]);
                         setTimeout(() => {
                             scrollToBottom();
+                            handleDelMsg();
                         }, 10);
                     }
                 })
@@ -52,7 +70,7 @@ const MsgList = () => {
         return () => {
             socket.off('socketMessage', onSocketMessage);
         };
-    }, [id, getMessageWithId]);
+    }, [id, getMessageWithId, delAllNewMessages]);
 
     const [getMessages] = useLazyGetMessagesForChatScreenQuery();
     useEffect(() => {

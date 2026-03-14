@@ -22,7 +22,7 @@ const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSch
     const send_element = useRef<HTMLDivElement | null>(null);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.SupportRoomSlice.selectedOa);
-    const [chatRoomRole, setChatRoomRole] = useState<ChatRoomRoleSchema>(chatRoomRoleSchema);
+    const chatRoomRole: ChatRoomRoleSchema = chatRoomRoleSchema;
     const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
     const [zaloUser, setZaloUser] = useState<ZaloUserField | undefined>(undefined);
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);

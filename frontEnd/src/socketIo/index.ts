@@ -10,6 +10,14 @@ export const getSocket = () => {
         // socket = io('wss://socketapp.5kaquarium.com', {
         //     path: "/socket.io/",
         // });
+
+        socket.on('connect', () => {
+            console.log('socket connected', socket?.id);
+        });
+
+        socket.on('connect_error', (err: any) => {
+            console.log('socket connect error', err);
+        });
     }
     return socket;
 };

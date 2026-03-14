@@ -27,6 +27,7 @@ const io = new Server(httpServer, {
 consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
     const socketMsg = JSON.parse(msg) as SocketMessageField;
     io.to(socketMsg.chatRoomId.toString()).emit('socketMessage', socketMsg);
+    io.to('allRoom').emit('socketMessageAllRoom', socketMsg);
 });
 
 consumeMessage(customerSend_sendToMember, (data) => {
