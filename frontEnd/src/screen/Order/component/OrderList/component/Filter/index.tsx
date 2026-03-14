@@ -1,5 +1,6 @@
-import { FC, memo, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import { PAY, MONEY, FROM, TO, SEARCH } from '@src/const/text';
@@ -9,6 +10,7 @@ import { formatMoney } from '@src/utility/string';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 
 const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) => void }> = ({ handleGetOrders }) => {
+    const location = useLocation();
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OrderSlice.selectedOa);
     const [isPay, setIsPay] = useState<boolean>(true);
     const [isNotPay, setIsNotPay] = useState<boolean>(true);
@@ -19,13 +21,20 @@ const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) =>
     const [isFormattingMoneyTo, setIsFormattingMoneyTo] = useState(false);
     const [selectedValue, setSelectedValue] = useState<string>('');
     const [selectedOption, setSelectedOption] = useState<SelectFilterType>(SelectFilterEnum.ChatRoomId);
-
+    const chatRoomId = location.state?.chatRoomId;
     const filterBody: OrdersFilterBodyField = {
         page: 1,
         size: 5,
         zaloOaId: isOa ? selectedOa?.id : undefined,
         accountId: -1,
     };
+
+    useEffect(() => {
+        if (chatRoomId) {
+            setSelectedOption(SelectFilterEnum.ChatRoomId);
+            setSelectedValue(chatRoomId);
+        }
+    }, [chatRoomId]);
 
     const handleSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value as SelectFilterType;

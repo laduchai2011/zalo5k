@@ -1,6 +1,7 @@
 import { memo, useRef, useState, useEffect, useId } from 'react';
 import style from './style.module.scss';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { route_enum } from '@src/router/type';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { IoSend } from 'react-icons/io5';
@@ -20,6 +21,7 @@ import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 import { uploadAImageToZalo } from '../../handle';
 
 const InputMsg = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
     const textarea_element = useRef<HTMLTextAreaElement | null>(null);
@@ -186,6 +188,12 @@ const InputMsg = () => {
         }
     };
 
+    const handleGoToOrder = () => {
+        navigate(route_enum.ORDER, {
+            state: { chatRoomId: id || '' },
+        });
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.icons}>
@@ -203,7 +211,7 @@ const InputMsg = () => {
                     <PiSmileyStickerLight size={20} />
                 </div>
                 <div className={style.icons2}>
-                    <FaShoppingCart size={20} />
+                    <FaShoppingCart onClick={() => handleGoToOrder()} size={20} />
                     <LuNotebookPen size={20} />
                 </div>
             </div>

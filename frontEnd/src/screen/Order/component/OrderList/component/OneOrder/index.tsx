@@ -8,6 +8,7 @@ import { MdDelete } from 'react-icons/md';
 import { set_editOrderDialog, setIsShow_payDialog } from '@src/redux/slice/Order';
 import { OrderField } from '@src/dataStruct/order';
 import { formatMoney } from '@src/utility/string';
+import { timeAgoSmart } from '@src/utility/time';
 
 const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -77,6 +78,7 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                 <div ref={payText_element}>{payText}</div>
                 <div>{!order.isPay && <button onClick={() => handleOpenPay()}>{PAY}</button>}</div>
             </div>
+            <div className={style.time}>{timeAgoSmart(data.createTime)}</div>
         </div>
     );
 };

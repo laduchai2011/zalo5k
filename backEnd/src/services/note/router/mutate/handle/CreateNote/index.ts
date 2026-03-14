@@ -1,7 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { NoteField, CreateNoteBodyField } from '@src/dataStruct/note';
+import { NoteField } from '@src/dataStruct/note';
+import { CreateNoteBodyField } from '@src/dataStruct/note/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateNote from '../../mutateDB/CreateNote';
 // import { produceTask } from '@src/queueRedis/producer';
@@ -60,12 +61,12 @@ class Handle_CreateNote {
             isSuccess: false,
         };
 
-        const mutateDB_createNote = new MutateDB_CreateNote();
-        mutateDB_createNote.setCreateNoteBody(createNoteBody);
+        const mutateDB = new MutateDB_CreateNote();
+        mutateDB.setCreateNoteBody(createNoteBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
-            mutateDB_createNote.set_connection_pool(connection_pool);
+            mutateDB.set_connection_pool(connection_pool);
         } else {
             myResponse.message = 'Kết nối cơ sở dữ liệu không thành công !';
             res.status(500).json(myResponse);
@@ -73,7 +74,7 @@ class Handle_CreateNote {
         }
 
         try {
-            const result = await mutateDB_createNote.run();
+            const result = await mutateDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const data = result.recordset[0];
                 // produceTask<OrderField>('addOrder-to-provider', data);

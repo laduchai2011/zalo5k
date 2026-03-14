@@ -2,26 +2,14 @@ export interface NoteField {
     id: number;
     note: string;
     status: string;
-    customerId: string;
+    chatRoomId: number;
+    zaloOaId: number;
     accountId: number;
-    updateTime: string;
-    createTime: string;
-}
-
-export interface NoteBodyField {
-    page: number;
-    size: number;
-    customerId: number;
-    accountId: number;
+    updateTime: Date;
+    createTime: Date;
 }
 
 export interface PagedNoteField {
     items: NoteField[];
     totalCount: number;
-}
-
-export interface CreateNoteBodyField {
-    note: string;
-    customerId: number;
-    accountId: number;
 }

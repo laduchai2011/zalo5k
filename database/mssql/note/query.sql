@@ -1,7 +1,9 @@
-﻿CREATE PROCEDURE GetMyNotes
+﻿ALTER PROCEDURE GetMyNotes
 	@page INT,
     @size INT,
-	@customerId NVARCHAR(255),
+	@offset INT,
+	@chatRoomId INT = NULL,
+	@zaloOaId INT = NULL,
     @accountId INT
 AS
 BEGIN
@@ -12,19 +14,21 @@ BEGIN
         FROM dbo.note AS n
 		WHERE 
 			status = 'normal' 
-			AND (@customerId IS NULL OR n.customerId = @customerId) 
-			AND (@accountId IS NULL OR n.accountId = @accountId) 
+			AND (@chatRoomId IS NULL OR chatRoomId = @chatRoomId)
+			AND (@zaloOaId IS NULL OR zaloOaId = @zaloOaId)
+			AND accountId = @accountId 
     )
     SELECT *
     FROM notes
-    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+    WHERE rn BETWEEN (((@page - 1) * @size + 1) + @offset) AND ((@page * @size) + @offset);
 
     -- Tập kết quả 2: tổng số dòng
     SELECT COUNT(*) AS totalCount
 	FROM dbo.note AS n
 		WHERE 
 			status = 'normal' 
-			AND (@customerId IS NULL OR n.customerId = @customerId) 
-			AND (@accountId IS NULL OR n.accountId = @accountId) 
+			AND (@chatRoomId IS NULL OR chatRoomId = @chatRoomId)
+			AND (@zaloOaId IS NULL OR zaloOaId = @zaloOaId)
+			AND accountId = @accountId 
 END
 GO

@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { QueryDB } from '@src/services/note/interface';
-import { NoteField, NoteBodyField } from '@src/dataStruct/note';
+import { NoteField } from '@src/dataStruct/note';
+import { GetNotesBodyField } from '@src/dataStruct/note/body';
 
 interface TotalCountField {
     totalCount: number;
@@ -13,31 +13,31 @@ type NoteQueryResult = {
     output: Record<string, unknown>;
 };
 
-class QueryDB_GetNotes extends QueryDB {
+class QueryDB_GetNotes {
     private _connectionPool: sql.ConnectionPool | undefined;
-    private _noteBody: NoteBodyField | undefined;
+    private _getNotesBodyField: GetNotesBodyField | undefined;
 
-    constructor() {
-        super();
-    }
+    constructor() {}
 
     set_connection_pool(connectionPool: sql.ConnectionPool): void {
         this._connectionPool = connectionPool;
     }
 
-    setNoteBody(noteBody: NoteBodyField): void {
-        this._noteBody = noteBody;
+    setGetNotesBody(getNoteBodyField: GetNotesBodyField): void {
+        this._getNotesBodyField = getNoteBodyField;
     }
 
     async run(): Promise<NoteQueryResult | void> {
-        if (this._connectionPool !== undefined && this._noteBody !== undefined) {
+        if (this._connectionPool !== undefined && this._getNotesBodyField !== undefined) {
             try {
                 const result = await this._connectionPool
                     .request()
-                    .input('page', sql.Int, this._noteBody.page)
-                    .input('size', sql.Int, this._noteBody.size)
-                    .input('customerId', sql.NVarChar(255), this._noteBody.customerId)
-                    .input('accountId', sql.Int, this._noteBody.accountId)
+                    .input('page', sql.Int, this._getNotesBodyField.page)
+                    .input('size', sql.Int, this._getNotesBodyField.size)
+                    .input('offset', sql.Int, this._getNotesBodyField.offset)
+                    .input('chatRoomId', sql.Int, this._getNotesBodyField.chatRoomId ?? null)
+                    .input('zaloOaId', sql.Int, this._getNotesBodyField.zaloOaId ?? null)
+                    .input('accountId', sql.Int, this._getNotesBodyField.accountId)
                     .execute('GetMyNotes');
 
                 return result as unknown as NoteQueryResult;

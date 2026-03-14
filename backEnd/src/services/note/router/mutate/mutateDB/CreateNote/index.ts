@@ -1,6 +1,7 @@
 import sql from 'mssql';
 import { MutateDB } from '@src/services/note/interface';
-import { NoteField, CreateNoteBodyField } from '@src/dataStruct/note';
+import { NoteField } from '@src/dataStruct/note';
+import { CreateNoteBodyField } from '@src/dataStruct/note/body';
 
 class MutateDB_CreateNote extends MutateDB {
     private _connectionPool: sql.ConnectionPool | undefined;
@@ -24,7 +25,7 @@ class MutateDB_CreateNote extends MutateDB {
                 const result = await this._connectionPool
                     .request()
                     .input('note', sql.NVarChar(255), this._createNoteBody.note)
-                    .input('customerId', sql.NVarChar(255), this._createNoteBody.customerId)
+                    .input('chatRoomId', sql.Int, this._createNoteBody.chatRoomId)
                     .input('accountId', sql.Int, this._createNoteBody.accountId)
                     .execute('CreateNote');
 

@@ -12,6 +12,7 @@ import OrderReducer from '@src/redux/slice/Order';
 import AccountReceiveMessageReducer from '@src/redux/slice/AccountReceiveMessage';
 import ManageAgentReducer from '@src/redux/slice/ManageAgent';
 import MemberReducer from '@src/redux/slice/Member';
+import NoteReducer from '@src/redux/slice/Note';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
@@ -38,6 +39,7 @@ export const store = configureStore({
         AccountReceiveMessageSlice: AccountReceiveMessageReducer,
         ManageAgentSlice: ManageAgentReducer,
         MemberSlice: MemberReducer,
+        NoteSlice: NoteReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageRTK.reducerPath]: messageRTK.reducer,

@@ -10,8 +10,8 @@ export interface OrderField {
     chatRoomId: number;
     zaloOaId: number;
     accountId: number;
-    updateTime: string;
-    createTime: string;
+    updateTime: Date;
+    createTime: Date;
 }
 
 export interface PagedOrderField {
