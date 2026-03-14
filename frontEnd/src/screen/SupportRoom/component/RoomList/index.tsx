@@ -10,6 +10,8 @@ import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { SEE_MORE } from '@src/const/text';
+import { getSocket } from '@src/socketIo';
+import { SocketMessageField } from '@src/dataStruct/message_v1';
 
 const RoomList = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +22,84 @@ const RoomList = () => {
     const limit = 30;
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [getChatRoomsMongo] = useLazyGetChatRoomsMongoQuery();
+    const [socketMsg, setSocketMsg] = useState<SocketMessageField | undefined>(undefined);
+
+    useEffect(() => {
+        const socket = getSocket();
+        // const chatRoomId = chatRoomRole.chat_room_id;
+
+        const onConnect = () => {
+            socket.emit('joinRoom', 'allRoom');
+        };
+
+        const onSocketMessageAllRoom = (socketMsg: SocketMessageField) => {
+            const chatRoomId = socketMsg.chatRoomId;
+
+            setTimeout(() => {
+                setChatRoomRoleSchemas((prev) => {
+                    const index = prev.findIndex((item) => item.chat_room_id === chatRoomId);
+                    if (index <= 0) {
+                        setSocketMsg(socketMsg);
+                        return prev;
+                    }
+
+                    const result = prev.filter((item) => item.chat_room_id !== chatRoomId);
+
+                    const item = prev[index];
+
+                    return [item, ...result];
+                });
+            }, 10);
+        };
+
+        socket.on('connect', onConnect);
+        socket.on('socketMessageAllRoom', onSocketMessageAllRoom);
+
+        // nếu socket đã connect sẵn từ trước thì join luôn
+        if (socket.connected) {
+            onConnect();
+        }
+
+        return () => {
+            socket.off('socketMessageAllRoom', onSocketMessageAllRoom);
+            socket.emit('leaveRoom', 'allRoom');
+            socket.off('connect', onConnect);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!selectedOa || !account) return;
+        if (!socketMsg) return;
+        dispatch(set_isLoading(true));
+        getChatRoomsMongo({
+            limit: 1,
+            cursor: null,
+            isMy: true,
+            zaloOaId: selectedOa.id,
+            accountId: account.id,
+        })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setChatRoomRoleSchemas((prev) => [...(resData.data?.items || []), ...prev]);
+                    // setCursor(resData.data.cursor);
+                    // setHasMore(resData.data.items.length === limit);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Lấy danh sách phòng chat KHÔNG thành công !',
+                    })
+                );
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+                setSocketMsg(undefined);
+            });
+    }, [socketMsg, dispatch, getChatRoomsMongo, selectedOa, account]);
 
     useEffect(() => {
         if (!selectedOa || !account) return;

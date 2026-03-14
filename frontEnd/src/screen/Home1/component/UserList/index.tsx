@@ -4,7 +4,6 @@ import User from './component/User';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { useLazyGetChatRoomsMongoQuery } from '@src/redux/query/chatRoomRTK';
-// import { useLazyGetMessageWithIdQuery } from '@src/redux/query/messageV1RTK';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Home1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
@@ -23,7 +22,7 @@ const UserList = () => {
     const limit = 30;
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [getChatRoomsMongo] = useLazyGetChatRoomsMongoQuery();
-    // const [getMessageWithId] = useLazyGetMessageWithIdQuery();
+    const [socketMsg, setSocketMsg] = useState<SocketMessageField | undefined>(undefined);
 
     useEffect(() => {
         const socket = getSocket();
@@ -34,13 +33,15 @@ const UserList = () => {
         };
 
         const onSocketMessageAllRoom = (socketMsg: SocketMessageField) => {
-            // const msgId = socketMsg._id;
             const chatRoomId = socketMsg.chatRoomId;
 
             setTimeout(() => {
                 setChatRoomRoleSchemas((prev) => {
                     const index = prev.findIndex((item) => item.chat_room_id === chatRoomId);
-                    if (index <= 0) return prev;
+                    if (index <= 0) {
+                        setSocketMsg(socketMsg);
+                        return prev;
+                    }
 
                     const result = prev.filter((item) => item.chat_room_id !== chatRoomId);
 
@@ -65,6 +66,40 @@ const UserList = () => {
             socket.off('connect', onConnect);
         };
     }, []);
+
+    useEffect(() => {
+        if (!selectedOa || !account) return;
+        if (!socketMsg) return;
+        dispatch(set_isLoading(true));
+        getChatRoomsMongo({
+            limit: 1,
+            cursor: null,
+            isMy: true,
+            zaloOaId: selectedOa.id,
+            accountId: account.id,
+        })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setChatRoomRoleSchemas((prev) => [...(resData.data?.items || []), ...prev]);
+                    // setCursor(resData.data.cursor);
+                    // setHasMore(resData.data.items.length === limit);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Lấy danh sách phòng chat KHÔNG thành công !',
+                    })
+                );
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+                setSocketMsg(undefined);
+            });
+    }, [socketMsg, dispatch, getChatRoomsMongo, selectedOa, account]);
 
     useEffect(() => {
         if (!selectedOa || !account) return;

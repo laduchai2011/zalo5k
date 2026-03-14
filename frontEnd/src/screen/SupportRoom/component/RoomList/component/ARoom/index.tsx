@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useState, useRef } from 'react';
+import { FC, memo, useEffect, useState, useRef, useCallback } from 'react';
 import style from './style.module.scss';
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
@@ -10,11 +10,17 @@ import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { ZaloOaField, ZaloAppField } from '@src/dataStruct/zalo';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { AccountField } from '@src/dataStruct/account';
-import { useGetLastMessageQuery, useLazyGetAllNewMessagesQuery } from '@src/redux/query/messageV1RTK';
+import {
+    useLazyGetLastMessageQuery,
+    useLazyGetAllNewMessagesQuery,
+    useLazyGetMessageWithIdQuery,
+} from '@src/redux/query/messageV1RTK';
 import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
 import { timeAgoSmart } from '@src/utility/time';
 import { handleNewMsgAmount } from './handle';
+import { getSocket } from '@src/socketIo';
+import { SocketMessageField } from '@src/dataStruct/message_v1';
 
 const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSchema }) => {
     const navigate = useNavigate();
@@ -28,29 +34,70 @@ const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSch
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
     const [newMessage, setNewMessage] = useState<NewMessageV1Field<ZaloMessageType>[]>([]);
 
+    const [getLastMessage] = useLazyGetLastMessageQuery();
+    const [getMessageWithId] = useLazyGetMessageWithIdQuery();
     const [getAllNewMessages] = useLazyGetAllNewMessagesQuery();
 
-    const {
-        data: data_lastMessage,
-        // isFetching,
-        isLoading: isLoading_lastMessage,
-        isError: isError_lastMessage,
-        error: error_lastMessage,
-    } = useGetLastMessageQuery({ chatRoomId: chatRoomRole.chat_room_id.toString() });
+    const handleGetAllNewMessages = useCallback(
+        (chatRoomId: number) => {
+            getAllNewMessages({ chatRoomId: chatRoomId.toString() })
+                .then((res) => {
+                    const resData = res.data;
+                    if (resData?.isSuccess && resData.data) {
+                        setNewMessage(resData.data);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        },
+        [getAllNewMessages]
+    );
+
     useEffect(() => {
-        if (isError_lastMessage && error_lastMessage) {
-            console.error(error_lastMessage);
-        }
-    }, [isError_lastMessage, error_lastMessage]);
+        const chatRoomId = chatRoomRoleSchema.chat_room_id;
+        handleGetAllNewMessages(chatRoomId);
+        getLastMessage({ chatRoomId: chatRoomId.toString() })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setLastMessage(resData.data);
+                }
+            })
+            .catch((err) => console.error(err));
+    }, [chatRoomRoleSchema, handleGetAllNewMessages, getLastMessage]);
+
     useEffect(() => {
-        // dispatch(set_isLoading(isLoading_zaloOa));
-    }, [isLoading_lastMessage]);
-    useEffect(() => {
-        const resData = data_lastMessage;
-        if (resData?.isSuccess && resData.data) {
-            setLastMessage(resData.data);
-        }
-    }, [data_lastMessage]);
+        const socket = getSocket();
+        const chatRoomId = chatRoomRoleSchema.chat_room_id;
+
+        const onSocketMessage = (socketMsg: SocketMessageField) => {
+            if (socketMsg.chatRoomId !== chatRoomId) return;
+            handleGetAllNewMessages(chatRoomId);
+            getLastMessage({ chatRoomId: chatRoomId.toString() })
+                .then((res) => {
+                    const resData = res.data;
+                    if (resData?.isSuccess && resData.data) {
+                        setLastMessage(resData.data);
+                    }
+                })
+                .catch((err) => console.error(err));
+        };
+
+        // socket.on('connect', onConnect);
+        socket.on('socketMessageAllRoom', onSocketMessage);
+
+        // nếu socket đã connect sẵn từ trước thì join luôn
+        // if (socket.connected) {
+        //     onConnect();
+        // }
+
+        return () => {
+            socket.off('socketMessageAllRoom', onSocketMessage);
+            // socket.emit('leaveRoom', chatRoomId);
+            // socket.off('connect', onConnect);
+        };
+    }, [chatRoomRoleSchema.chat_room_id, getMessageWithId, getLastMessage, handleGetAllNewMessages]);
 
     const {
         data: data_zaloUser,
