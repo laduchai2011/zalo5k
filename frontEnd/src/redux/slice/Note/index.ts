@@ -31,7 +31,7 @@ const NoteSlice = createSlice({
         set_selectedOa: (state, action: PayloadAction<ZaloOaField>) => {
             state.selectedOa = action.payload;
         },
-        set_editNoteDialog: (state, action: PayloadAction<{ isShow: boolean; order: NoteField | undefined }>) => {
+        set_editNoteDialog: (state, action: PayloadAction<{ isShow: boolean; note: NoteField | undefined }>) => {
             state.editNoteDialog = action.payload;
         },
         setFinal_editNoteDialog: (state, action: PayloadAction<{ isShow: false; newNote: NoteField | undefined }>) => {

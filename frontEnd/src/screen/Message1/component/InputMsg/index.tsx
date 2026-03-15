@@ -194,6 +194,12 @@ const InputMsg = () => {
         });
     };
 
+    const handleGoToNote = () => {
+        navigate(route_enum.NOTE, {
+            state: { chatRoomId: id || '' },
+        });
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.icons}>
@@ -212,7 +218,7 @@ const InputMsg = () => {
                 </div>
                 <div className={style.icons2}>
                     <FaShoppingCart onClick={() => handleGoToOrder()} size={20} />
-                    <LuNotebookPen size={20} />
+                    <LuNotebookPen onClick={() => handleGoToNote()} size={20} />
                 </div>
             </div>
             {repliedMessage && <ReplyContainer data={repliedMessage} />}

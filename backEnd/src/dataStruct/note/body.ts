@@ -13,3 +13,9 @@ export interface GetNotesBodyField {
     zaloOaId?: number;
     accountId: number;
 }
+
+export interface UpdateNoteBodyField {
+    id: number;
+    note: string;
+    accountId: number;
+}

@@ -2,15 +2,15 @@ import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { ChatRoomRoleField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
-import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
+// import { ChatRoomRoleField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
+// import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
 import MutateDB_UpdateOrder from '../../mutateDB/UpdateOrder';
 import QueryDB_GetMyOrderWithId from '../../queryDB/GetMyOrderWithId';
 import { verifyRefreshToken } from '@src/token';
-import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
-import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
+// import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+// import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
 // import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
-import { getDbMonggo } from '@src/connect/mongo';
+// import { getDbMonggo } from '@src/connect/mongo';
 import { GetMyOrderWithIdBodyField } from '@src/dataStruct/order/body';
 import { OrderField } from '@src/dataStruct/order';
 import { UpdateOrderBodyField } from '@src/dataStruct/order/body';
@@ -162,35 +162,35 @@ class Handle_UpdateOrder {
 //     return data.length > 0 ? data[0] : undefined;
 // }
 
-async function updateChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
-    const chatRommRoleSchema: ChatRoomRoleSchema = {
-        authorized_account_id: chatRoomRole.authorizedAccountId,
-        is_read: chatRoomRole.isRead,
-        is_send: chatRoomRole.isSend,
-        chat_room_id: chatRoomRole.chatRoomId,
-        zalo_oa_id: -1,
-        account_id: chatRoomRole.accountId,
-    };
+// async function updateChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
+//     const chatRommRoleSchema: ChatRoomRoleSchema = {
+//         authorized_account_id: chatRoomRole.authorizedAccountId,
+//         is_read: chatRoomRole.isRead,
+//         is_send: chatRoomRole.isSend,
+//         chat_room_id: chatRoomRole.chatRoomId,
+//         zalo_oa_id: -1,
+//         account_id: chatRoomRole.accountId,
+//     };
 
-    const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
-    if (!parsedChatRoomRole.success) {
-        console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
-    } else {
-        const db = getDbMonggo();
-        const dataParse = parsedChatRoomRole.data;
-        const col = db.collection<ChatRoomRoleSchema>('chatRoomRole');
+//     const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
+//     if (!parsedChatRoomRole.success) {
+//         console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
+//     } else {
+//         const db = getDbMonggo();
+//         const dataParse = parsedChatRoomRole.data;
+//         const col = db.collection<ChatRoomRoleSchema>('chatRoomRole');
 
-        const { zalo_oa_id, ...doc } = dataParse as any;
+//         const { zalo_oa_id, ...doc } = dataParse as any;
 
-        const data = await col.updateOne(
-            {
-                chat_room_id: chatRommRoleSchema.chat_room_id,
-                authorized_account_id: chatRommRoleSchema.authorized_account_id,
-            },
-            { $set: doc },
-            { upsert: true }
-        );
-    }
-}
+//         const data = await col.updateOne(
+//             {
+//                 chat_room_id: chatRommRoleSchema.chat_room_id,
+//                 authorized_account_id: chatRommRoleSchema.authorized_account_id,
+//             },
+//             { $set: doc },
+//             { upsert: true }
+//         );
+//     }
+// }
 
 export default Handle_UpdateOrder;

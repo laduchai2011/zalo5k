@@ -1,12 +1,12 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { PagedNoteField, NoteField } from '@src/dataStruct/note';
-import { GetNotesBodyField } from '@src/dataStruct/note/body';
-import QueryDB_GetNotes from '../../queryDB/GetNotes';
+import MutateDB_UpdateNote from '../../mutateDB/UpdateNote';
 import { verifyRefreshToken } from '@src/token';
+import { NoteField } from '@src/dataStruct/note';
+import { UpdateNoteBodyField } from '@src/dataStruct/note/body';
 
-class Handle_GetNotes {
+class Handle_UpdateNote {
     private _mssql_server = mssql_server;
 
     constructor() {
@@ -14,16 +14,16 @@ class Handle_GetNotes {
     }
 
     setup = async (
-        req: Request<Record<string, never>, unknown, GetNotesBodyField>,
+        req: Request<Record<string, never>, unknown, UpdateNoteBodyField>,
         res: Response,
         next: NextFunction
     ) => {
         const myResponse: MyResponse<NoteField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetNotes-setup)',
+            message: 'Băt đầu (Handle_UpdateNote-setup) !',
         };
 
-        const getNotesBody = req.body;
+        const updateNoteBody = req.body;
         const { refreshToken } = req.cookies;
 
         if (typeof refreshToken === 'string') {
@@ -42,9 +42,9 @@ class Handle_GetNotes {
             }
 
             const { id } = verify_refreshToken;
-            const getNotesBody_cp = { ...getNotesBody };
-            getNotesBody_cp.accountId = id;
-            res.locals.getNotesBody = getNotesBody_cp;
+            const updateNoteBody_cp = { ...updateNoteBody };
+            updateNoteBody_cp.accountId = id;
+            res.locals.updateNoteBody = updateNoteBody_cp;
             next();
             return;
         } else {
@@ -55,41 +55,40 @@ class Handle_GetNotes {
     };
 
     main = async (_: Request, res: Response) => {
-        const getNotesBody = res.locals.getNotesBody as GetNotesBodyField;
+        const updateNoteBody = res.locals.updateNoteBody as UpdateNoteBodyField;
 
-        const myResponse: MyResponse<PagedNoteField> = {
+        const myResponse: MyResponse<NoteField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetNotes-main)',
+            message: 'Băt đầu cập nhật (Handle_UpdateNote-main) !',
         };
 
-        const queryDB = new QueryDB_GetNotes();
-        queryDB.setGetNotesBody(getNotesBody);
+        const mutateDB = new MutateDB_UpdateNote();
+        mutateDB.setUpdateNoteBody(updateNoteBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
-            queryDB.set_connection_pool(connection_pool);
+            mutateDB.set_connection_pool(connection_pool);
         } else {
-            myResponse.message = 'Kết nối cơ sở dữ liệu không thành công !';
-            res.status(500).json(myResponse);
-            return;
+            console.error('Kết nối cơ sở dữ liệu không thành công !');
         }
 
         try {
-            const result = await queryDB.run();
+            const result = await mutateDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                const rows: NoteField[] = result.recordset;
-                myResponse.data = { items: rows, totalCount: result.recordsets[1][0].totalCount };
-                myResponse.message = 'Lấy ghi chú thành công !';
+                const rData = result.recordset[0];
+                myResponse.message = 'Cập nhật ghi chú thành công !';
                 myResponse.isSuccess = true;
+                myResponse.data = rData;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Lấy ghi chú KHÔNG thành công 1 !';
-                res.status(204).json(myResponse);
+                myResponse.message = 'Cập nhật ghi chú KHÔNG thành công !';
+                res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy ghi chú KHÔNG thành công 2 !';
+            console.error(error);
+            myResponse.message = 'Cập nhật ghi chú KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -97,4 +96,4 @@ class Handle_GetNotes {
     };
 }
 
-export default Handle_GetNotes;
+export default Handle_UpdateNote;

@@ -16,8 +16,7 @@ import { useCreateNoteMutation } from '@src/redux/query/noteRTK';
 const CreateNote = () => {
     const dispatch = useDispatch<AppDispatch>();
     const location = useLocation();
-
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OrderSlice.selectedOa);
+    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.NoteSlice.selectedOa);
     const [content, setContent] = useState<string>('');
     const [idInput, setIdInput] = useState<string>('');
 
@@ -105,7 +104,7 @@ const CreateNote = () => {
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.ERROR,
-                            message: 'Tạo ghi chú không thành công !',
+                            message: resData?.message ?? 'Tạo ghi chú không thành công !',
                         })
                     );
                 }

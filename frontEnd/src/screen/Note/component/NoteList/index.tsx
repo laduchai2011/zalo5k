@@ -67,7 +67,7 @@ const NoteList = () => {
     };
 
     const list_order = notes.map((item, index) => {
-        return <OneNote key={item.id} index={index + 1} />;
+        return <OneNote key={item.id} index={index + 1} data={item} />;
     });
 
     return (
