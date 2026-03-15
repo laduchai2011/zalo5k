@@ -13,4 +13,5 @@ export interface state_props {
         note?: NoteField;
         newNote?: NoteField;
     };
+    newNotes: NoteField[];
 }

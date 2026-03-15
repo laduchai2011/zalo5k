@@ -8,14 +8,26 @@
     > .main {
         width: 100%;
         @include center-of-row;
-        justify-content: flex-end;
+        justify-content: space-between;
 
-        > input {
-            box-sizing: border-box;
-            padding: 3px;
-            border: none;
-            outline: none;
-            border-bottom: 1px solid gray;
+        > div:nth-child(1) {
+            @include center-of-row;
+        }
+
+        > div:nth-child(2) {
+            @include center-of-row;
+
+            > input {
+                box-sizing: border-box;
+                padding: 3px;
+                border: none;
+                outline: none;
+                border-bottom: 1px solid gray;
+            }
+
+            > svg {
+                cursor: pointer;
+            }
         }
     }
 }

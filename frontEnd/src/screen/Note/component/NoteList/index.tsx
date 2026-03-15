@@ -1,7 +1,7 @@
 import { memo, useState, useCallback } from 'react';
 import style from './style.module.scss';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@src/redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
 import Filter from './component/Filter';
 import OneNote from './component/OneNote';
@@ -12,8 +12,7 @@ import { set_isLoading } from '@src/redux/slice/Note';
 
 const NoteList = () => {
     const dispatch = useDispatch<AppDispatch>();
-    // const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    // const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OrderSlice.selectedOa);
+    const newNotes: NoteField[] = useSelector((state: RootState) => state.NoteSlice.newNotes);
     const [filterBody, setFilterBody] = useState<GetNotesBodyField>({
         page: -1,
         size: 5,
@@ -48,7 +47,7 @@ const NoteList = () => {
 
     const handleSeeMore = () => {
         if (!hasMore || filterBody.page === -1) return;
-        const body = { ...filterBody, page: filterBody.page + 1 };
+        const body: GetNotesBodyField = { ...filterBody, page: filterBody.page + 1, offset: newNotes.length };
         dispatch(set_isLoading(true));
         getNotes(body)
             .then((res) => {

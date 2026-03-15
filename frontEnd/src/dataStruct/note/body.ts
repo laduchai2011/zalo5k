@@ -1,6 +1,7 @@
 export interface CreateNoteBodyField {
     note: string;
     chatRoomId: number;
+    zaloOaId: number;
     accountId: number;
 }
 

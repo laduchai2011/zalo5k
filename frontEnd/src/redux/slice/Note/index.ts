@@ -15,6 +15,7 @@ const initialState: state_props = {
         note: undefined,
         newNote: undefined,
     },
+    newNotes: [],
 };
 
 const NoteSlice = createSlice({
@@ -36,9 +37,22 @@ const NoteSlice = createSlice({
         setFinal_editNoteDialog: (state, action: PayloadAction<{ isShow: false; newNote: NoteField | undefined }>) => {
             state.editNoteDialog = action.payload;
         },
+        setData_addNewNote: (state, action: PayloadAction<NoteField>) => {
+            state.newNotes = [...state.newNotes, action.payload];
+        },
+        clear_newNotes: (state) => {
+            state.newNotes = [];
+        },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, set_selectedOa, set_editNoteDialog, setFinal_editNoteDialog } =
-    NoteSlice.actions;
+export const {
+    set_isLoading,
+    setData_toastMessage,
+    set_selectedOa,
+    set_editNoteDialog,
+    setFinal_editNoteDialog,
+    setData_addNewNote,
+    clear_newNotes,
+} = NoteSlice.actions;
 export default NoteSlice.reducer;

@@ -19,7 +19,7 @@ const handle_getNotes = new Handle_GetNotes();
 //     handle_getMyCustomers.main
 // );
 
-router_query_note.get('/getNotes', authentication, handle_getNotes.main);
+router_query_note.post('/getNotes', authentication, handle_getNotes.main);
 
 // router_query_myCustomer.post('/getAIsNewMessage', authentication, handle_getAIsNewMessage.main);
 

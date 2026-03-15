@@ -1,6 +1,7 @@
 ﻿ALTER PROCEDURE CreateNote
 	@note NVARCHAR(MAX),
 	@chatRoomId INT,
+	@zaloOaId INT,
 	@accountId INT
 AS
 BEGIN
@@ -11,8 +12,8 @@ BEGIN
 		DECLARE @newNoteId INT;
 
 		-- Th�m medication
-        INSERT INTO dbo.note (note, status, chatRoomId, accountId, updateTime, createTime)
-        VALUES (@note, 'normal', @chatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+        INSERT INTO dbo.note (note, status, chatRoomId, zaloOaId, accountId, updateTime, createTime)
+        VALUES (@note, 'normal', @chatRoomId, @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
 		SET @newNoteId = SCOPE_IDENTITY();
 

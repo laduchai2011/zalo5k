@@ -13,10 +13,10 @@ export function isFirstNumber(str: string): boolean {
     return isNumber;
 }
 
-// export function isNumber(str: string): boolean {
-//     const isNumber = !isNaN(Number(str));
-//     return isNumber;
-// }
+export function isNumber(str: string): boolean {
+    const isNumber = !isNaN(Number(str));
+    return isNumber;
+}
 
 // export function isPositiveInteger(str: string): boolean {
 //     const num = Number(str);
