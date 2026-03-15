@@ -29,3 +29,11 @@ BEGIN
 			AND accountId = @accountId
 END
 GO
+
+ALTER PROCEDURE GetAgentWithAgentAccountId
+	@agentAccountId INT
+AS
+BEGIN
+	 SELECT * FROM agent WHERE agentAccountId = @agentAccountId
+END
+GO

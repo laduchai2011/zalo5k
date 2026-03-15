@@ -17,7 +17,8 @@ import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
 import ReplyContainer from './component/ReplyContainer';
-import { set_repliedMessage } from '@src/redux/slice/MessageV1';
+import { set_repliedMessage, setData_toastMessage } from '@src/redux/slice/MessageV1';
+import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadAImageToZalo } from '../../handle';
 
 const InputMsg = () => {
@@ -111,9 +112,16 @@ const InputMsg = () => {
         };
 
         createMessageV1(createMessageV1Body)
-            .then(() => {
-                // const resData = res.data;
-                // console.log(111111, resData);
+            .then((res) => {
+                const resData = res.data;
+                if (!(resData?.isSuccess && resData.data)) {
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.ERROR,
+                            message: resData?.message ?? 'Gửi tin nhắn không thành công !',
+                        })
+                    );
+                }
                 setText('');
                 dispatch(set_repliedMessage(undefined));
             })
@@ -178,9 +186,16 @@ const InputMsg = () => {
             };
 
             createMessageV1(createMessageV1Body)
-                .then(() => {
-                    // const resData = res.data;
-                    // console.log(111111, resData);
+                .then((res) => {
+                    const resData = res.data;
+                    if (!(resData?.isSuccess && resData.data)) {
+                        dispatch(
+                            setData_toastMessage({
+                                type: messageType_enum.ERROR,
+                                message: resData?.message ?? 'Gửi tin nhắn không thành công !',
+                            })
+                        );
+                    }
                 })
                 .catch((err) => console.error(err));
         } catch (error) {

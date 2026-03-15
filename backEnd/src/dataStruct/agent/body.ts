@@ -20,3 +20,7 @@ export interface GetAgentsBodyField {
     agentAccountId?: number;
     accountId: number;
 }
+
+export interface GetAgentWithAgentAccountIdBodyField {
+    agentAccountId: number;
+}
