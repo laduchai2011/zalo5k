@@ -21,4 +21,7 @@ export async function ensureIndexes() {
     const col_newMessage = db.collection('newMessage');
     await col_newMessage.createIndex({ chat_room_id: 1, account_id: 1, message_id: 1 }, { unique: true });
     await col_newMessage.createIndex({ created_at: 1 }, { expireAfterSeconds: 3600 * 24 * 15 });
+
+    const col_messageAmountInDay = db.collection('messageAmountInDay');
+    await col_messageAmountInDay.createIndex({ account_id: 1, timestamp: 1 }, { unique: true });
 }

@@ -18,6 +18,6 @@ router_mutate_note.post(
     handle_createNote.main
 );
 
-router_mutate_note.post('/updateNote', authentication, handle_updateNote.setup, handle_updateNote.main);
+router_mutate_note.patch('/updateNote', authentication, handle_updateNote.setup, handle_updateNote.main);
 
 export default router_mutate_note;

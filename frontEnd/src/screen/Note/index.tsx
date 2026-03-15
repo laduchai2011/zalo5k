@@ -9,6 +9,7 @@ import Header from '@src/screen/Header';
 import CreateNote from './component/CreateNote';
 import OaList from './component/OaList';
 import NoteList from './component/NoteList';
+import EditNote from './component/EditNote';
 import { select_enum } from '@src/router/type';
 import { setData_toastMessage, clear_newNotes } from '@src/redux/slice/Note';
 
@@ -36,7 +37,7 @@ const Note = () => {
             <div>
                 <MyToastMessage />
                 <MyLoading />
-                {/* <EditOrder /> */}
+                <EditNote />
             </div>
         </div>
     );

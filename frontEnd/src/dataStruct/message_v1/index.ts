@@ -17,3 +17,9 @@ export interface SocketMessageField {
     chatRoomId: number;
     _id: string;
 }
+
+export interface MessageAmountInDayField {
+    amount: number;
+    account_id: number;
+    timestamp: Date;
+}

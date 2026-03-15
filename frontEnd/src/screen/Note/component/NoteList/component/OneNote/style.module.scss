@@ -34,4 +34,11 @@
             }
         }
     }
+
+    > .time {
+        @include center-of-row;
+        justify-content: flex-end;
+        color: gray;
+        font-style: italic;
+    }
 }

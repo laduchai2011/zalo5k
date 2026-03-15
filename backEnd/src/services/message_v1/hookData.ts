@@ -1,7 +1,14 @@
 import { consumeHookData } from '@src/messageQueue/Consumer';
 import { sendStringMessage } from '@src/messageQueue/Producer';
-import { MessageSchemaType, MessageZodSchema, NewMessageSchemaType, NewMessageZodSchema } from '@src/schema/message';
-import { NewMessageV1Field } from '@src/dataStruct/message_v1';
+import {
+    MessageSchemaType,
+    MessageZodSchema,
+    NewMessageSchemaType,
+    NewMessageZodSchema,
+    MessageAmountInDaySchema,
+    MessageAmountInDayType,
+} from '@src/schema/message';
+import { NewMessageV1Field, MessageAmountInDayField } from '@src/dataStruct/message_v1';
 import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
 import { SocketMessageField } from '@src/dataStruct/message_v1';
 import { getDbMonggo } from '@src/connect/mongo';
@@ -209,6 +216,7 @@ export function hookData() {
                 sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
             }
 
+            // thiết lập newMessage để xem tin nhắn mới chưa xem
             const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
             if (!allChatRoomRoles) {
                 return;
@@ -229,6 +237,12 @@ export function hookData() {
                     const dataNewMessageParse = parsedNewMessage.data;
                     await dbMonggo.collection<NewMessageSchemaType>('newMessage').insertOne(dataNewMessageParse);
                 }
+            }
+
+            //cập nhật số lượng tin nhắn trong ngày
+            const isOaSend = data.event_name.startsWith('oa_send');
+            if (isOaSend) {
+                updateMessageAmountInDay(reply_account_id, 1);
             }
         }
     });
@@ -559,4 +573,32 @@ function parseTimestamp(ts: string) {
     }
 
     return new Date(ts); // ISO string
+}
+
+async function updateMessageAmountInDay(account_id: number, amount: number) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const db = getDbMonggo();
+    const col = db.collection<MessageAmountInDayType>('messageAmountInDay');
+
+    const existing = await col.findOne<MessageAmountInDayField>({ account_id: account_id, timestamp: today });
+
+    if (existing) {
+        const oldAmount = existing.amount;
+        await col.updateOne({ account_id: account_id, timestamp: today }, { $set: { amount: oldAmount + 1 } });
+    } else {
+        const newMessageAmountInDay: MessageAmountInDayField = {
+            account_id: account_id,
+            timestamp: today,
+            amount: amount,
+        };
+        const parsed = MessageAmountInDaySchema.safeParse(newMessageAmountInDay);
+
+        if (!parsed.success) {
+            console.error('Invalid newMessageAmountInDay format:', parsed.error);
+        } else {
+            await col.insertOne(parsed.data);
+        }
+    }
 }
