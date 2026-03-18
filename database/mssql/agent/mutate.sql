@@ -122,4 +122,91 @@ BEGIN
 END;
 GO
 
+ALTER PROCEDURE CreateAgentPay
+	@agentId INT, 
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE accountId = @accountId AND accountType = 'admin'
+		)
+		BEGIN
+			THROW 50001, N'Không phải tài khoản admin .', 1;
+		END
+
+		IF EXISTS (
+			SELECT 1
+			FROM dbo.agentPay
+			WHERE 
+				accountId = @accountId 
+				AND agentId = @agentId
+				AND isPay = 0
+		)
+		BEGIN
+			THROW 50002, N'Đã tồn tại 1 agentPay .', 2;
+		END
+
+		
+		DECLARE @newAgentPayId INT;
+
+		-- Thêm medication
+        INSERT INTO dbo.agentPay (isPay, agentId, accountId, updateTime, createTime)
+        VALUES (0, @agentId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+
+		SET @newAgentPayId = SCOPE_IDENTITY();
+
+		SELECT * FROM dbo.agentPay WHERE id = @newAgentPayId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+CREATE PROCEDURE UpdatePaid
+	@id INT, 
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		IF NOT EXISTS (
+			SELECT 1 
+			FROM dbo.agentPay
+			WHERE 
+				accountId = @accountId
+				AND isPay = 0
+		)
+		BEGIN
+			THROW 50001, N'Chưa tồn tại 1 agentPay .', 1;
+		END
+		
+		UPDATE dbo.agentPay
+		SET isPay = 1
+		WHERE id = @id;
+
+		SELECT * FROM dbo.agentPay WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
 delete dbo.agent

@@ -3,6 +3,7 @@ import { MANAGE_AGENT } from '@src/const/text';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import MemberListDialog from './component/MemberListDialog';
+import AgentPayDialog from './component/AgentPayDialog';
 import CreateService from './component/CreateService';
 import ServiceList from './component/ServiceList';
 
@@ -18,6 +19,7 @@ const ManageAgent = () => {
                 <MyToastMessage />
                 <MyLoading />
                 <MemberListDialog />
+                <AgentPayDialog />
             </div>
         </div>
     );

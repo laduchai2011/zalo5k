@@ -36,6 +36,7 @@ export const EXIT = 'Thoát';
 export const CONTENT = 'Nội dung';
 export const TITLE = 'Tiêu đề';
 export const PAY = 'Thanh toán';
+export const CREATE_PAY = 'Tạo thanh toán';
 export const CHAT = 'Chat';
 export const MONEY = 'Tiền';
 export const FROM = 'Từ';

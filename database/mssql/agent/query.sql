@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetAgents
+﻿﻿ALTER PROCEDURE GetAgents
 	@page INT,
 	@size INT,
 	@offset INT,
@@ -35,5 +35,17 @@ ALTER PROCEDURE GetAgentWithAgentAccountId
 AS
 BEGIN
 	 SELECT * FROM agent WHERE agentAccountId = @agentAccountId
+END
+GO
+
+CREATE PROCEDURE GetLastAgentPay
+	@agentId INT,
+	@accountId INT
+AS
+BEGIN
+	SELECT TOP 1 *
+	FROM dbo.agentPay
+	WHERE agentId = @agentId AND accountId = @accountId
+	ORDER BY createTime DESC
 END
 GO

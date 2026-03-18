@@ -13,3 +13,12 @@ export interface PagedAgentField {
     items: AgentField[];
     totalCount: number;
 }
+
+export interface AgentPayField {
+    id: number;
+    isPay: boolean;
+    agentId: number;
+    accountId: number;
+    updateTime: string;
+    createTime: string;
+}

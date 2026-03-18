@@ -4,14 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { BASIC, UPGRADE, DELETE } from '@src/const/text';
 import { avatarnull } from '@src/utility/string';
-import { IoIosMore, IoMdAdd } from 'react-icons/io';
+import { IoMdAdd } from 'react-icons/io';
 import { AccountField } from '@src/dataStruct/account';
 import { AgentField } from '@src/dataStruct/agent';
 import { setIsShow_memberListDialog, set_agent_memberListDialog } from '@src/redux/slice/ManageAgent';
 import { useLazyGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/ManageAgent';
+import {
+    set_isLoading,
+    setData_toastMessage,
+    setIsShow_agentPayDialog,
+    set_agent_agentPayDialog,
+} from '@src/redux/slice/ManageAgent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useAgentAddAccountMutation, useAgentDelAccountMutation } from '@src/redux/query/agentRTK';
+import { useAgentDelAccountMutation } from '@src/redux/query/agentRTK';
 
 const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,6 +27,8 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
     const agent_MemberListDialog: AgentField | undefined = useSelector(
         (state: RootState) => state.ManageAgentSlice.memberListDialog.agent
     );
+    const [isExpiry, setIsExpiry] = useState<boolean>(true);
+    const [text, setText] = useState<string>('');
 
     const [agentDelAccount] = useAgentDelAccountMutation();
     const [getAccountWithId] = useLazyGetAccountWithIdQuery();
@@ -78,6 +85,11 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
         dispatch(set_agent_memberListDialog(data));
     };
 
+    const handleOpenUpgrade = () => {
+        dispatch(setIsShow_agentPayDialog(true));
+        dispatch(set_agent_agentPayDialog(data));
+    };
+
     const handleDelAgent = () => {
         dispatch(set_isLoading(true));
         agentDelAccount({ id: data.id, accountId: -1 })
@@ -105,18 +117,28 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
             .finally(() => dispatch(set_isLoading(false)));
     };
 
+    useEffect(() => {
+        const type = data.type;
+        if (type === 'basic') {
+            setText('Bạn đang dùng gói cơ bản, giới hạn 30 tin nhắn trong ngày');
+        }
+        if (type === 'upgrade') {
+            setText('Bạn đang dùng gói nâng cấp, số lượng tin nhắn không giới hạn');
+        }
+    }, [data]);
+
     return (
         <div className={style.parent}>
             <div className={style.header}>
                 <div>{index + 1}</div>
                 <div>
-                    <div>{BASIC}</div>
-                    <div>{UPGRADE}</div>
-                    <IoIosMore size={25} />
+                    {isExpiry && <div>{BASIC}</div>}
+                    {isExpiry && <div onClick={() => handleOpenUpgrade()}>{UPGRADE}</div>}
+                    {/* <IoIosMore size={25} /> */}
                 </div>
             </div>
             <div className={style.content}>
-                <div>Bạn đang dùng gói cơ bản, giới hạn 30 tin nhắn trong ngày</div>
+                <div>{text}</div>
             </div>
             {account && (
                 <div className={style.infor}>

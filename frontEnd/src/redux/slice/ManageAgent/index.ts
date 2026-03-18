@@ -13,6 +13,10 @@ const initialState: state_props = {
         isShow: false,
         agent: undefined,
     },
+    agentPayDialog: {
+        isShow: false,
+        agent: undefined,
+    },
 };
 
 const ManageAgentSlice = createSlice({
@@ -37,6 +41,15 @@ const ManageAgentSlice = createSlice({
         set_agent_memberListDialog: (state, action: PayloadAction<AgentField>) => {
             state.memberListDialog.agent = action.payload;
         },
+        setIsShow_agentPayDialog: (state, action: PayloadAction<boolean>) => {
+            state.agentPayDialog.isShow = action.payload;
+        },
+        set_agent_agentPayDialog: (state, action: PayloadAction<AgentField | undefined>) => {
+            state.agentPayDialog.agent = action.payload;
+        },
+        // set_agentPay_agentPayDialog: (state, action: PayloadAction<AgentPayField | undefined>) => {
+        //     state.agentPayDialog.agentPay = action.payload;
+        // },
     },
 });
 
@@ -47,5 +60,8 @@ export const {
     clear_newAgents,
     setIsShow_memberListDialog,
     set_agent_memberListDialog,
+    setIsShow_agentPayDialog,
+    set_agent_agentPayDialog,
+    // set_agentPay_agentPayDialog,
 } = ManageAgentSlice.actions;
 export default ManageAgentSlice.reducer;

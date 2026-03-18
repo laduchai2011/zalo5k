@@ -11,4 +11,9 @@ export interface state_props {
         isShow: boolean;
         agent?: AgentField;
     };
+    agentPayDialog: {
+        isShow: boolean;
+        agent?: AgentField;
+        // agentPay?: AgentPayField;
+    };
 }

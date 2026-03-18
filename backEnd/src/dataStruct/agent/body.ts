@@ -24,3 +24,18 @@ export interface GetAgentsBodyField {
 export interface GetAgentWithAgentAccountIdBodyField {
     agentAccountId: number;
 }
+
+export interface CreateAgentPayBodyField {
+    agentId: number;
+    accountId: number;
+}
+
+export interface UpdatePaidBodyField {
+    id: number;
+    accountId: number;
+}
+
+export interface GetLastAgentPayBodyField {
+    agentId: number;
+    accountId: number;
+}

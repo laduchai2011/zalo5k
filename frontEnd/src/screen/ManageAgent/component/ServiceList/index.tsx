@@ -111,7 +111,7 @@ const ServiceList = () => {
         <div className={style.parent}>
             <div className={style.search}>
                 <div>
-                    <input value={searchInput} onChange={(e) => handleSearchInput(e)} />
+                    <input value={searchInput} onChange={(e) => handleSearchInput(e)} placeholder="Id thành viên" />
                     <CiSearch onClick={() => handleSearch()} size={25} />
                 </div>
             </div>

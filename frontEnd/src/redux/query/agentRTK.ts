@@ -1,10 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AgentField, PagedAgentField } from '@src/dataStruct/agent';
+import { AgentField, PagedAgentField, AgentPayField } from '@src/dataStruct/agent';
 import {
     CreateAgentBodyField,
     AgentAddAccountBodyField,
     AgentDelAccountBodyField,
     GetAgentsBodyField,
+    GetLastAgentPayBodyField,
+    CreateAgentPayBodyField,
 } from '@src/dataStruct/agent/body';
 import { AGENT_API } from '@src/const/api/agent';
 import { MyResponse } from '@src/dataStruct/response';
@@ -12,7 +14,7 @@ import { MyResponse } from '@src/dataStruct/response';
 export const agentRTK = createApi({
     reducerPath: 'agentRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['Agents'],
+    tagTypes: ['Agents', 'AgentPay'],
     endpoints: (builder) => ({
         getAgents: builder.query<MyResponse<PagedAgentField>, GetAgentsBodyField>({
             query: (body) => ({
@@ -22,6 +24,13 @@ export const agentRTK = createApi({
             }),
             providesTags: ['Agents'],
         }),
+        getLastAgentPay: builder.query<MyResponse<AgentPayField>, GetLastAgentPayBodyField>({
+            query: (body) => ({
+                url: AGENT_API.GET_LAST_AGENT_PAY,
+                method: 'POST',
+                body,
+            }),
+        }),
         createAgent: builder.mutation<MyResponse<AgentField>, CreateAgentBodyField>({
             query: (body) => ({
                 url: AGENT_API.CREATE_AGENT,
@@ -29,6 +38,14 @@ export const agentRTK = createApi({
                 body,
             }),
             invalidatesTags: ['Agents'],
+        }),
+        createAgentPay: builder.mutation<MyResponse<AgentPayField>, CreateAgentPayBodyField>({
+            query: (body) => ({
+                url: AGENT_API.CREATE_AGENT_PAY,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['AgentPay'],
         }),
         agentAddAccount: builder.mutation<MyResponse<AgentField>, AgentAddAccountBodyField>({
             query: (body) => ({
@@ -111,5 +128,10 @@ export const agentRTK = createApi({
     }),
 });
 
-export const { useLazyGetAgentsQuery, useCreateAgentMutation, useAgentAddAccountMutation, useAgentDelAccountMutation } =
-    agentRTK;
+export const {
+    useLazyGetAgentsQuery,
+    useLazyGetLastAgentPayQuery,
+    useCreateAgentMutation,
+    useAgentAddAccountMutation,
+    useAgentDelAccountMutation,
+} = agentRTK;
