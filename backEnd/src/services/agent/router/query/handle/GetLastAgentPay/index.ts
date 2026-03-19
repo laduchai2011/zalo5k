@@ -51,8 +51,8 @@ class Handle_GetLastAgentPay {
         }
     };
 
-    main = async (req: Request<any, any, GetLastAgentPayBodyField>, res: Response) => {
-        const getLastAgentPayBody = req.body;
+    main = async (_: Request, res: Response) => {
+        const getLastAgentPayBody = res.locals.getLastAgentPayBody as GetLastAgentPayBodyField;
 
         const myResponse: MyResponse<AgentPayField> = {
             isSuccess: false,

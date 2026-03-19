@@ -38,7 +38,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetLastAgentPay
+ALTER PROCEDURE GetLastAgentPay
 	@agentId INT,
 	@accountId INT
 AS

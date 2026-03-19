@@ -30,6 +30,7 @@ export const agentRTK = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: (result, error, arg) => [{ type: 'AgentPay', id: arg.agentId }],
         }),
         createAgent: builder.mutation<MyResponse<AgentField>, CreateAgentBodyField>({
             query: (body) => ({
@@ -38,14 +39,6 @@ export const agentRTK = createApi({
                 body,
             }),
             invalidatesTags: ['Agents'],
-        }),
-        createAgentPay: builder.mutation<MyResponse<AgentPayField>, CreateAgentPayBodyField>({
-            query: (body) => ({
-                url: AGENT_API.CREATE_AGENT_PAY,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: ['AgentPay'],
         }),
         agentAddAccount: builder.mutation<MyResponse<AgentField>, AgentAddAccountBodyField>({
             query: (body) => ({
@@ -125,6 +118,14 @@ export const agentRTK = createApi({
                 }
             },
         }),
+        createAgentPay: builder.mutation<MyResponse<AgentPayField>, CreateAgentPayBodyField>({
+            query: (body) => ({
+                url: AGENT_API.CREATE_AGENT_PAY,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: (result, error, arg) => [{ type: 'AgentPay', id: arg.agentId }],
+        }),
     }),
 });
 
@@ -134,4 +135,5 @@ export const {
     useCreateAgentMutation,
     useAgentAddAccountMutation,
     useAgentDelAccountMutation,
+    useCreateAgentPayMutation,
 } = agentRTK;

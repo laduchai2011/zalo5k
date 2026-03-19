@@ -25,7 +25,7 @@ const services = (process.env.SERVICES ?? '').split(',').map((s) => s.trim());
 const app: Express = express();
 
 const isProduct = process.env.NODE_ENV === 'production';
-const port = isProduct ? process.env.PORT : 4000;
+const port = isProduct ? process.env.PORT : 7000;
 
 const apiString = isProduct ? '' : '/api';
 const prefix = getEnv() === myEnv.Dev ? '/api' : '';
@@ -65,13 +65,6 @@ app.use(`${apiString}/hello`, (req, res) => {
     res.send('hello');
 });
 
-// app.use(`${apiString}/service_image`, service_image);
-// app.use(`${apiString}/service_video`, service_video);
-// app.use(`${apiString}/service_account`, service_account);
-// app.use(`${apiString}/service_myCustomer`, service_myCustomer);
-// app.use(`${apiString}/service_message`, service_message);
-// app.use(`${apiString}/service_note`, service_note);
-
 (async () => {
     await mssql_server.init();
     await redis_server.init();
@@ -82,65 +75,9 @@ app.use(`${apiString}/hello`, (req, res) => {
 
     await connectMongo();
 
-    if (services.includes('image')) {
-        const service_image = (await import('./services/image')).default;
-        app.use(`${prefix}/service_image`, service_image);
-        const service_image_v1 = (await import('./services/image_v1')).default;
-        app.use(`${prefix}/service_image_v1`, service_image_v1);
-    }
-
-    if (services.includes('video')) {
-        const service_video = (await import('./services/video')).default;
-        app.use(`${prefix}/service_video`, service_video);
-    }
-
-    if (services.includes('account')) {
-        const service_account = (await import('@src/services/account')).default;
-        app.use(`${prefix}/service_account`, service_account);
-    }
-
-    if (services.includes('myCustomer')) {
-        const service_myCustomer = (await import('./services/myCustomer')).default;
-        app.use(`${prefix}/service_myCustomer`, service_myCustomer);
-    }
-
-    if (services.includes('message')) {
-        const service_message = (await import('./services/message')).default;
-        const service_message_v1 = (await import('./services/message_v1')).default;
-        app.use(`${prefix}/service_message`, service_message);
-        app.use(`${prefix}/service_message_v1`, service_message_v1);
-        const hookData = (await import('./services/message_v1/hookData')).hookData;
-        hookData();
-    }
-
-    if (services.includes('note')) {
-        const service_note = (await import('@src/services/note')).default;
-        app.use(`${prefix}/service_note`, service_note);
-    }
-
-    if (services.includes('zalo')) {
-        const service_zalo = (await import('@src/services/zalo')).default;
-        app.use(`${prefix}/service_zalo`, service_zalo);
-    }
-
-    if (services.includes('chatSession')) {
-        const service_chatSession = (await import('@src/services/chatSession')).default;
-        app.use(`${prefix}/service_chatSession`, service_chatSession);
-    }
-
-    if (services.includes('chatRoom')) {
-        const service_chatRoom = (await import('@src/services/chatRoom')).default;
-        app.use(`${prefix}/service_chatRoom`, service_chatRoom);
-    }
-
-    if (services.includes('order')) {
-        const service_order = (await import('@src/services/order')).default;
-        app.use(`${prefix}/service_order`, service_order);
-    }
-
-    if (services.includes('agent')) {
-        const service_agent = (await import('@src/services/agent')).default;
-        app.use(`${prefix}/service_agent`, service_agent);
+    if (services.includes('webhook')) {
+        const service_webhook = (await import('./services/webhook')).default;
+        app.use(`${prefix}/service_webhook`, service_webhook);
     }
 })();
 
