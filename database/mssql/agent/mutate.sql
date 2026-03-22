@@ -173,7 +173,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE UpdateAgentPaid
+ALTER PROCEDURE UpdateAgentPaid
 	@id INT
 AS
 BEGIN
@@ -197,7 +197,7 @@ BEGIN
 		DECLARE @agentId INT;
 		SELECT @agentId = agentId FROM dbo.agentPay WHERE id = @id;
 		UPDATE dbo.agent
-		SET expiry = SYSDATETIMEOFFSET(), type = 'upgrade'
+		SET expiry = DATEADD(MONTH, 1, SYSDATETIMEOFFSET()), type = 'upgrade'
 		WHERE id = @agentId;
 
 		SELECT * FROM dbo.agentPay WHERE id = @id;

@@ -1,4 +1,16 @@
-﻿﻿ALTER PROCEDURE GetAgents
+﻿CREATE PROCEDURE GetAgentWithId
+    @id INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.agent
+	WHERE 
+		status = 'normal' 
+		AND id = @id
+END
+GO
+
+ALTER PROCEDURE GetAgents
 	@page INT,
 	@size INT,
 	@offset INT,

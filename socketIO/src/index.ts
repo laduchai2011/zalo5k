@@ -27,14 +27,16 @@ const io = new Server(httpServer, {
 
 consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
     const socketMsg = JSON.parse(msg) as SocketMessageField;
+    const allChatRoomRole = socketMsg.allChatRoomRoles;
     io.to(socketMsg.chatRoomId.toString()).emit('socketMessage', socketMsg);
-    io.to('allRoom').emit('socketMessageAllRoom', socketMsg);
+    for (let i: number = 0; i < allChatRoomRole.length; i++) {
+        io.to(allChatRoomRole[i].authorizedAccountId.toString()).emit('socketMessageAllRoom', socketMsg);
+    }
 });
 
 consumeStringMessage('agentPay_dev', (data) => {
-    console.log('consumeStringMessage', data);
     const agentPay = JSON.parse(data) as AgentPayField;
-    io.to(agentPay.accountId.toString()).emit('agentPay', data);
+    io.to(agentPay.accountId.toString()).emit('agentPay', agentPay);
 });
 
 // chuan bi bo

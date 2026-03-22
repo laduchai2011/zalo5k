@@ -87,18 +87,10 @@ const User: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSche
                 .catch((err) => console.error(err));
         };
 
-        // socket.on('connect', onConnect);
         socket.on('socketMessageAllRoom', onSocketMessage);
-
-        // nếu socket đã connect sẵn từ trước thì join luôn
-        // if (socket.connected) {
-        //     onConnect();
-        // }
 
         return () => {
             socket.off('socketMessageAllRoom', onSocketMessage);
-            // socket.emit('leaveRoom', chatRoomId);
-            // socket.off('connect', onConnect);
         };
     }, [chatRoomRoleSchema.chat_room_id, getMessageWithId, getLastMessage, handleGetAllNewMessages]);
 

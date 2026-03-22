@@ -208,9 +208,14 @@ export function hookData() {
                     .collection<MessageSchemaType>('lastMessage')
                     .updateOne({ chat_room_id: doc.chat_room_id }, { $set: doc }, { upsert: true });
 
+                const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
+                if (!allChatRoomRoles) {
+                    return;
+                }
                 const socketMsg: SocketMessageField = {
                     chatRoomId: doc.chat_room_id,
                     _id: kq_message.insertedId.toString(),
+                    allChatRoomRoles: allChatRoomRoles
                 };
 
                 sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));

@@ -14,8 +14,12 @@ import { MyResponse } from '@src/dataStruct/response';
 export const agentRTK = createApi({
     reducerPath: 'agentRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['Agents', 'AgentPay'],
+    tagTypes: ['Agent', 'Agents', 'AgentPay'],
     endpoints: (builder) => ({
+        getAgentWithId: builder.query<MyResponse<AgentField>, { id: number }>({
+            query: ({ id }) => `${AGENT_API.GET_AGENT_WITH_ID}?id=${id}`,
+            providesTags: (result, error, arg) => [{ type: 'Agent', id: arg.id }],
+        }),
         getAgents: builder.query<MyResponse<PagedAgentField>, GetAgentsBodyField>({
             query: (body) => ({
                 url: AGENT_API.GET_AGENTS,
@@ -130,6 +134,7 @@ export const agentRTK = createApi({
 });
 
 export const {
+    useLazyGetAgentWithIdQuery,
     useLazyGetAgentsQuery,
     useLazyGetLastAgentPayQuery,
     useCreateAgentMutation,

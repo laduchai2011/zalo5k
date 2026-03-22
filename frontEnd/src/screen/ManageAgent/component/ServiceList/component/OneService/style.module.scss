@@ -50,10 +50,16 @@
     > .content {
         box-sizing: border-box;
         padding: 10px;
+    }
 
-        > div {
-            color: gray;
-        }
+    > .expiry {
+        @include center-of-row;
+        justify-content: flex-end;
+        font-size: 0.9rem;
+        font-style: italic;
+        box-sizing: border-box;
+        padding: 5px;
+        color: gray;
     }
 
     > .infor {

@@ -26,11 +26,6 @@ const RoomList = () => {
 
     useEffect(() => {
         const socket = getSocket();
-        // const chatRoomId = chatRoomRole.chat_room_id;
-
-        const onConnect = () => {
-            socket.emit('joinRoom', 'allRoom');
-        };
 
         const onSocketMessageAllRoom = (socketMsg: SocketMessageField) => {
             const chatRoomId = socketMsg.chatRoomId;
@@ -38,8 +33,12 @@ const RoomList = () => {
             setTimeout(() => {
                 setChatRoomRoleSchemas((prev) => {
                     const index = prev.findIndex((item) => item.chat_room_id === chatRoomId);
-                    if (index <= 0) {
+                    if (index < 0) {
                         setSocketMsg(socketMsg);
+                        return prev;
+                    }
+
+                    if (index === 0) {
                         return prev;
                     }
 
@@ -52,18 +51,10 @@ const RoomList = () => {
             }, 10);
         };
 
-        socket.on('connect', onConnect);
         socket.on('socketMessageAllRoom', onSocketMessageAllRoom);
-
-        // nếu socket đã connect sẵn từ trước thì join luôn
-        if (socket.connected) {
-            onConnect();
-        }
 
         return () => {
             socket.off('socketMessageAllRoom', onSocketMessageAllRoom);
-            socket.emit('leaveRoom', 'allRoom');
-            socket.off('connect', onConnect);
         };
     }, []);
 

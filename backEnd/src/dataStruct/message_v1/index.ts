@@ -1,4 +1,5 @@
 import { HookDataSchema } from '@src/dataStruct/zalo/hookData';
+import { ChatRoomRoleField } from '../chatRoom';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MessageV1Field<T> extends HookDataSchema<T> {}
@@ -16,6 +17,7 @@ export interface PagedMessageV1Field<T> {
 export interface SocketMessageField {
     chatRoomId: number;
     _id: string;
+    allChatRoomRoles: ChatRoomRoleField[];
 }
 
 export interface MessageAmountInDayField {
