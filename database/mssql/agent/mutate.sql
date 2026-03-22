@@ -173,9 +173,8 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE UpdatePaid
-	@id INT, 
-	@accountId INT
+CREATE PROCEDURE UpdateAgentPaid
+	@id INT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -185,9 +184,7 @@ BEGIN
 		IF NOT EXISTS (
 			SELECT 1 
 			FROM dbo.agentPay
-			WHERE 
-				accountId = @accountId
-				AND isPay = 0
+			WHERE isPay = 0
 		)
 		BEGIN
 			THROW 50001, N'Chưa tồn tại 1 agentPay .', 1;
@@ -196,6 +193,12 @@ BEGIN
 		UPDATE dbo.agentPay
 		SET isPay = 1
 		WHERE id = @id;
+
+		DECLARE @agentId INT;
+		SELECT @agentId = agentId FROM dbo.agentPay WHERE id = @id;
+		UPDATE dbo.agent
+		SET expiry = SYSDATETIMEOFFSET(), type = 'upgrade'
+		WHERE id = @agentId;
 
 		SELECT * FROM dbo.agentPay WHERE id = @id;
 
@@ -209,4 +212,4 @@ BEGIN
 END
 GO
 
-delete dbo.agent
+delete dbo.agentPay

@@ -27,7 +27,6 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
     const agent_MemberListDialog: AgentField | undefined = useSelector(
         (state: RootState) => state.ManageAgentSlice.memberListDialog.agent
     );
-    const [isExpiry, setIsExpiry] = useState<boolean>(true);
     const [text, setText] = useState<string>('');
 
     const [agentDelAccount] = useAgentDelAccountMutation();
@@ -132,8 +131,8 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
             <div className={style.header}>
                 <div>{index + 1}</div>
                 <div>
-                    {isExpiry && <div>{BASIC}</div>}
-                    {isExpiry && <div onClick={() => handleOpenUpgrade()}>{UPGRADE}</div>}
+                    {data.type === 'basic' && <div>{BASIC}</div>}
+                    {data.type === 'basic' && <div onClick={() => handleOpenUpgrade()}>{UPGRADE}</div>}
                     {/* <IoIosMore size={25} /> */}
                 </div>
             </div>

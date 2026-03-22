@@ -7,13 +7,38 @@ import { AppDispatch, RootState } from '@src/redux';
 import { set_account, set_accountInformation, set_myAdmin, set_zaloApp } from '@src/redux/slice/App';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
+import { getSocket } from '@src/socketIo';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
     const accountInformation: AccountInformationField | undefined = useSelector(
         (state: RootState) => state.AppSlice.accountInformation
     );
+    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
+
+    useEffect(() => {
+        if (!account) return;
+
+        const socket = getSocket();
+        const room = account.id.toString();
+
+        const onConnect = () => {
+            socket.emit('joinRoom', room);
+        };
+
+        socket.on('connect', onConnect);
+
+        // nếu socket đã connect sẵn từ trước thì join luôn
+        if (socket.connected) {
+            onConnect();
+        }
+
+        return () => {
+            socket.emit('leaveRoom', room);
+            socket.off('connect', onConnect);
+        };
+    }, [account]);
 
     useEffect(() => {
         const myId = sessionStorage.getItem('myId');

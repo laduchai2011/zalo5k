@@ -74,6 +74,7 @@ sudo apt install python3-certbot-nginx
 -cài chứng chỉ
 sudo certbot certonly --webroot -w /root/nginx/html -d 5kaquarium.com -d www.5kaquarium.com
 sudo certbot certonly --webroot -d zalowebhookdev.5kaquarium.com
+sudo certbot certonly --webroot -d sepaywebhookdev.5kaquarium.com
 sudo certbot --nginx -d 5kaquarium.com -d www.5kaquarium.com
 
 - vị trí chứng chỉ
@@ -82,7 +83,7 @@ sudo certbot --nginx -d 5kaquarium.com -d www.5kaquarium.com
 
 
 docker run -d --name nginx_server --network network_zalo_5kaquarium -v ~/nginx/conf:/etc/nginx/conf.d -v /var/www/certbot:/var/www/certbot -p 80:80 nginx
-docker run --rm -v /etc/letsencrypt:/etc/letsencrypt -v /var/www/certbot:/var/www/certbot certbot/certbot certonly --webroot -w /var/www/certbot -d socketapp.5kaquarium.com --non-interactive --agree-tos -m laduchai20111995@gmail.com
+docker run --rm -v /etc/letsencrypt:/etc/letsencrypt -v /var/www/certbot:/var/www/certbot certbot/certbot certonly --webroot -w /var/www/certbot -d sepaywebhookdev.5kaquarium.com --non-interactive --agree-tos -m laduchai20111995@gmail.com
 
 
 
@@ -239,3 +240,5 @@ server {
     }
 }
 
+1.docker run -d --name nginx_server --network network_zalo_5kaquarium -p 80:80 -p 443:443 -v /root/nginx/conf:/etc/nginx/conf.d -v /etc/letsencrypt:/etc/letsencrypt:ro -v /var/www/certbot:/var/www/certbot nginx
+2.docker run --rm -v /etc/letsencrypt:/etc/letsencrypt -v /var/www/certbot:/var/www/certbot certbot/certbot certonly --webroot -w /var/www/certbot -d sepaywebhookdev.5kaquarium.com --non-interactive --agree-tos -m laduchai20111995@gmail.com

@@ -17,7 +17,6 @@ const AgentPayDialog = () => {
     const agent: AgentField | undefined = useSelector(
         (state: RootState) => state.ManageAgentSlice.agentPayDialog.agent
     );
-    const [isExpiry, setIsExpiry] = useState<boolean>(true);
     const [agentPay, setAgentPay] = useState<AgentPayField | undefined>(undefined);
     const [qrCode, setQrCode] = useState<string>('');
     const moneyAmount = 10000;
@@ -47,7 +46,7 @@ const AgentPayDialog = () => {
 
     useEffect(() => {
         if (!agentPay) return;
-        const des = agentPay.id;
+        const des = `ztksPayjagentPayj${agentPay.id}`;
         setQrCode(`https://qr.sepay.vn/img?acc=VQRQAHJHB9302&bank=MBBank&amount=${moneyAmount}&des=${des}`);
     }, [agentPay]);
 
@@ -73,11 +72,9 @@ const AgentPayDialog = () => {
                 })
                 .finally(() => {
                     dispatch(set_isLoading(false));
-                    setIsExpiry(true);
                 });
         } else {
             setTimeout(() => {
-                setIsExpiry(false);
                 setAgentPay(undefined);
                 setQrCode('');
             }, 500);
@@ -137,23 +134,23 @@ const AgentPayDialog = () => {
                 <div className={style.header}>
                     <div>{PAY}</div>
                 </div>
-                {agentPay && !agentPay?.isPay && (
+                {agent?.type !== 'upgrade' && !agentPay?.isPay && (
                     <div className={style.qrContainer}>
                         <div>Quét mã để thanh toán</div>
                         <div>{qrCode.length > 0 && <img src={qrCode} alt="qrCode" />}</div>
                     </div>
                 )}
-                {agentPay && !agentPay?.isPay && (
+                {agent?.type !== 'upgrade' && !agentPay?.isPay && (
                     <div className={style.contentContainer}>
                         <div>{formatMoney(moneyAmount.toString())}</div>
                     </div>
                 )}
-                {!isExpiry && (
+                {agent?.type === 'upgrade' && (
                     <div className={style.text}>
                         <div>Bạn đang dùng gói nâng cấp</div>
                     </div>
                 )}
-                {isExpiry && !agentPay && (
+                {agent?.type !== 'upgrade' && !agentPay && (
                     <div className={style.btnContainer}>
                         <div onClick={() => handleCreateAgentPay()}>{CREATE_PAY}</div>
                     </div>

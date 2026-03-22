@@ -30,9 +30,8 @@ export interface CreateAgentPayBodyField {
     accountId: number;
 }
 
-export interface UpdatePaidBodyField {
+export interface UpdateAgentPaidBodyField {
     id: number;
-    accountId: number;
 }
 
 export interface GetLastAgentPayBodyField {

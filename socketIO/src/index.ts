@@ -7,6 +7,7 @@ import { MessageZaloField } from './messageQueue/type';
 import process from 'process';
 import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
 import { SocketMessageField } from './dataStruct/message_v1';
+import { AgentPayField } from './dataStruct/agent';
 
 dotenv.config();
 
@@ -30,6 +31,13 @@ consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
     io.to('allRoom').emit('socketMessageAllRoom', socketMsg);
 });
 
+consumeStringMessage('agentPay_dev', (data) => {
+    console.log('consumeStringMessage', data);
+    const agentPay = JSON.parse(data) as AgentPayField;
+    io.to(agentPay.accountId.toString()).emit('agentPay', data);
+});
+
+// chuan bi bo
 consumeMessage(customerSend_sendToMember, (data) => {
     const room = data.accountId.toString() + data.data.sender.id;
     const myRoom = data.accountId.toString();
