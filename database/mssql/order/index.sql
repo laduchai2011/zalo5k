@@ -24,3 +24,17 @@ CREATE NONCLUSTERED INDEX idx_zaloOa_id ON [order](zaloOaId);
 GO
 CREATE NONCLUSTERED INDEX idx_account_id ON [order](accountId);
 GO
+
+CREATE TABLE orderStatus (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	type NVARCHAR(255) NOT NULL,
+	content NVARCHAR(255) NOT NULL,
+    orderId INT NOT NULL, 
+    updateTime DATETIMEOFFSET(7) NOT NULL,
+    createTime DATETIMEOFFSET(7) NOT NULL,
+
+    CONSTRAINT FK_orderStatus_Account FOREIGN KEY (orderId) REFERENCES [order](id)
+);
+GO
+CREATE NONCLUSTERED INDEX idx_order_id ON orderStatus(orderId);
+GO

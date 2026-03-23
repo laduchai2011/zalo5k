@@ -2,13 +2,15 @@ import { memo, FC, useState, useRef, useEffect } from 'react';
 import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { PHONE_NUMBER, CONTENT, TITLE, PAY, CHAT } from '@src/const/text';
+import { PHONE_NUMBER, CONTENT, TITLE, PAY, CHAT, FREEDOM, DEFAULT } from '@src/const/text';
 import { CiEdit } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
-import { set_editOrderDialog, setIsShow_payDialog } from '@src/redux/slice/Order';
+import { IoAddCircle } from 'react-icons/io5';
+import { set_editOrderDialog, setIsShow_payDialog, set_addOrderStatusDialog } from '@src/redux/slice/Order';
 import { OrderField } from '@src/dataStruct/order';
 import { formatMoney } from '@src/utility/string';
 import { timeAgoSmart } from '@src/utility/time';
+import { orderStatus_enum, orderStatus_type } from '@src/screen/Order/type';
 
 const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +48,10 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
         dispatch(setIsShow_payDialog(true));
     };
 
+    const handleOpenOrderStatus = (option: orderStatus_type) => {
+        dispatch(set_addOrderStatusDialog({ isShow: true, order: order, defaultOption: option }));
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.index}>
@@ -77,6 +83,30 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                 <div>{formatMoney(order.money)}</div>
                 <div ref={payText_element}>{payText}</div>
                 <div>{!order.isPay && <button onClick={() => handleOpenPay()}>{PAY}</button>}</div>
+            </div>
+            <div className={style.status}>
+                <div>
+                    <div>
+                        <div>{FREEDOM}</div>
+                        <IoAddCircle
+                            onClick={() => handleOpenOrderStatus(orderStatus_enum.FREEDOM)}
+                            size={20}
+                            color="greenyellow"
+                        />
+                    </div>
+                    <div>
+                        <div>{DEFAULT}</div>
+                        <IoAddCircle
+                            onClick={() => handleOpenOrderStatus(orderStatus_enum.DEFAULT)}
+                            size={20}
+                            color="greenyellow"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <div>{FREEDOM}</div>
+                    <div>{DEFAULT}</div>
+                </div>
             </div>
             <div className={style.time}>{timeAgoSmart(data.createTime)}</div>
         </div>

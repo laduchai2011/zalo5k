@@ -55,3 +55,11 @@ BEGIN
 	SELECT * FROM dbo.[order] WHERE id = @id AND accountId = @accountId
 END
 GO
+
+ALTER PROCEDURE GetAllOrderStatus
+	@orderId INT
+AS
+BEGIN
+	SELECT * FROM dbo.orderStatus WHERE orderId = @orderId ORDER BY id DESC
+END
+GO

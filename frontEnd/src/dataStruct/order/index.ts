@@ -18,3 +18,12 @@ export interface PagedOrderField {
     items: OrderField[];
     totalCount: number;
 }
+
+export interface OrderStatusField {
+    id: number;
+    type: string;
+    content: string;
+    ordertId: number;
+    updateTime: string;
+    createTime: string;
+}

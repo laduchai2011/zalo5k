@@ -35,3 +35,14 @@ export interface GetMyOrderWithIdBodyField {
     id: number;
     accountId: number;
 }
+
+export interface CreateOrderStatusBodyField {
+    type: string;
+    content: string;
+    orderId: number;
+    accountId: number;
+}
+
+export interface GetAllOrderStatusBodyField {
+    orderId: number;
+}

@@ -133,6 +133,40 @@
         }
     }
 
+    > .status {
+        box-sizing: border-box;
+        padding: 5px;
+
+        > div:nth-child(1) {
+            @include center-of-row;
+
+            > div {
+                width: 50%;
+                box-sizing: border-box;
+                padding: 5px;
+                @include center-of-row;
+                justify-content: space-around;
+                border: 1px solid gray;
+
+                > svg {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        > div:not(:nth-child(1)) {
+            @include center-of-row;
+
+            > div {
+                width: 50%;
+                box-sizing: border-box;
+                padding: 5px;
+                @include center-of-rectangle;
+                border: 1px solid gray;
+            }
+        }
+    }
+
     > .time {
         @include center-of-row;
         justify-content: flex-end;
