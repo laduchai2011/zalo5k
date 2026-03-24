@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import style from './style.module.scss';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { MESSAGE } from '@src/const/text';
@@ -16,15 +16,23 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { getSocket } from '@src/socketIo';
-// import { SocketMessageField } from '@src/dataStruct/message_v1';
+import { route_enum } from '@src/router/type';
 
 const Message1 = () => {
+    const navigate = useNavigate();
+    const myId = sessionStorage.getItem('myId');
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
     const accountInformation: AccountInformationField | undefined = useSelector(
         (state: RootState) => state.AppSlice.accountInformation
     );
     const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
+
+    useEffect(() => {
+        if (myId === null) {
+            navigate(route_enum.SIGNIN);
+        }
+    }, [navigate, myId]);
 
     useEffect(() => {
         if (!id) return;

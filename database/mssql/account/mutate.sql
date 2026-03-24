@@ -19,7 +19,7 @@ GO
 
 EXEC Signup N'laduchai1', N'passladuchai', N'0901234567', N'Hải', N'Lã';
 
-
+-- bo
 CREATE PROCEDURE CreateMember
 	@userName NVARCHAR(100),
 	@password NVARCHAR(100),
@@ -56,7 +56,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE AddMemberV1
+CREATE PROCEDURE AddMemberV1
 	@addedById INT,
 	@accountId INT
 AS
@@ -127,7 +127,7 @@ END
 GO
 
 
-ALTER PROCEDURE CreateReplyAccount
+CREATE PROCEDURE CreateReplyAccount
 	@authorizedAccountId NVARCHAR(255),
 	@chatRoomId INT,
 	@accountId INT
@@ -195,7 +195,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CreateAccountReceiveMessage
+CREATE PROCEDURE CreateAccountReceiveMessage
 	@accountIdReceiveMessage INT = NULL,
 	@zaloOaId INT,
 	@accountId INT
@@ -238,7 +238,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateAccountReceiveMessage
+CREATE PROCEDURE UpdateAccountReceiveMessage
 	@accountIdReceiveMessage INT = NULL,
 	@zaloOaId INT,
 	@accountId INT

@@ -47,6 +47,18 @@
             > div {
                 @include center-of-rectangle;
                 text-align: center;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px 0;
+
+                > img {
+                    width: 80%;
+                    object-fit: contain;
+                }
+            }
+
+            > .money {
+                color: red;
             }
         }
     }

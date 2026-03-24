@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateChatRoom
+﻿CREATE PROCEDURE CreateChatRoom
 	@userIdByApp NVARCHAR(255),
 	@zaloOaId INT,
 	@accountId INT
@@ -37,7 +37,7 @@ GO
 DELETE FROM dbo.chatRoom
 GO
 
-ALTER PROCEDURE UpdateSetupChatRoomRole
+CREATE PROCEDURE UpdateSetupChatRoomRole
 	@id INT,
 	@backGroundColor NVARCHAR(255),
 	@isRead BIT,

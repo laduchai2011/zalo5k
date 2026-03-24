@@ -19,6 +19,12 @@ const Signout = () => {
     const [signout] = useSignoutMutation();
 
     useEffect(() => {
+        if (myId === null) {
+            navigate(route_enum.SIGNIN);
+        }
+    }, [navigate, myId]);
+
+    useEffect(() => {
         if (!overlay_element.current) return;
         const overlayElement = overlay_element.current;
 

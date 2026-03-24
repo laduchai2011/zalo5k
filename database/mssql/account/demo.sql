@@ -12,9 +12,9 @@ INSERT INTO
     )
 VALUES
     (
-        'thuyhang',
-        'thuyhangxinhgai',
-        '0984867461',
+        'admin',
+        'admin',
+        '1234567890',
         'Thuy',
         'Hang',
         NULL,
@@ -33,8 +33,8 @@ INSERT INTO
 VALUES
     (
         1,
-        'member',
-        5
+        'admin',
+        1
     );
 
 

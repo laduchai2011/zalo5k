@@ -15,26 +15,34 @@ export interface state_props {
     };
     payDialog: {
         isShow: boolean;
+        order?: OrderField;
     };
     addOrderStatusDialog: {
         isShow: boolean;
         order?: OrderField;
         newOrderStatus?: OrderStatusField;
-        defaultOption?: orderStatus_type;
+        defaultOrderStatusType?: orderStatusType_type;
     };
 }
 
-export enum orderStatus_enum {
+export enum orderStatusType_enum {
     FREEDOM = 'freedom',
     DEFAULT = 'default',
 }
 
-export type orderStatus_type = orderStatus_enum.FREEDOM | orderStatus_enum.DEFAULT;
+export type orderStatusType_type = orderStatusType_enum.FREEDOM | orderStatusType_enum.DEFAULT;
 
-export enum defaultSelections {
+export enum defaultContents {
     NOT_PAY = 'not_pay',
     PAID = 'paid',
     NOT_SEND = 'not_send',
     SENT = 'sent',
     RETURN = 'return',
 }
+
+export type defaultContent_type =
+    | defaultContents.NOT_PAY
+    | defaultContents.PAID
+    | defaultContents.NOT_SEND
+    | defaultContents.SENT
+    | defaultContents.RETURN;

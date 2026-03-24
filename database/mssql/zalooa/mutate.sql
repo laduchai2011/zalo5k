@@ -23,7 +23,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateRefreshTokenOfZaloOa
+CREATE PROCEDURE UpdateRefreshTokenOfZaloOa
 	@refreshToken NVARCHAR(MAX),
 	@zaloOaId INT
 AS

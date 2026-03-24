@@ -32,6 +32,8 @@ GO
 CREATE NONCLUSTERED INDEX idx_addedById ON accountInformation(addedById);
 GO
 
+
+-- bo
 CREATE TABLE accountReceiveMessage (
     accountIdReceiveMessage INT,
 	zaloOaId INT NOT NULL,

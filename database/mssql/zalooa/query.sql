@@ -17,7 +17,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetZaloOaListWith2Fk
+CREATE PROCEDURE GetZaloOaListWith2Fk
 	@page INT,
     @size INT,
 	@zaloAppId INT,
@@ -62,7 +62,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetZaloOaWithId
+CREATE PROCEDURE GetZaloOaWithId
 	@id INT,
 	@accountId INT
 AS
@@ -76,7 +76,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE CheckZaloAppWithAppId
+CREATE PROCEDURE CheckZaloAppWithAppId
     @appId NVARCHAR(255)
 AS
 BEGIN

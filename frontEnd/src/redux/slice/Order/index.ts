@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { state_props, orderStatus_enum, orderStatus_type } from '@src/screen/Order/type';
+import { state_props, orderStatusType_type } from '@src/screen/Order/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { OrderField, OrderStatusField } from '@src/dataStruct/order';
@@ -17,12 +17,13 @@ const initialState: state_props = {
     },
     payDialog: {
         isShow: false,
+        order: undefined,
     },
     addOrderStatusDialog: {
         isShow: false,
         order: undefined,
         newOrderStatus: undefined,
-        defaultOption: undefined,
+        defaultOrderStatusType: undefined,
     },
 };
 
@@ -51,12 +52,15 @@ const OrderSlice = createSlice({
         setIsShow_payDialog: (state, action: PayloadAction<boolean>) => {
             state.payDialog.isShow = action.payload;
         },
+        setOrder_payDialog: (state, action: PayloadAction<OrderField | undefined>) => {
+            state.payDialog.order = action.payload;
+        },
         set_addOrderStatusDialog: (
             state,
             action: PayloadAction<{
                 isShow: boolean;
                 order?: OrderField;
-                defaultOption?: orderStatus_type;
+                defaultOrderStatusType?: orderStatusType_type;
             }>
         ) => {
             state.addOrderStatusDialog = action.payload;
@@ -77,6 +81,7 @@ export const {
     set_editOrderDialog,
     setFinal_editOrderDialog,
     setIsShow_payDialog,
+    setOrder_payDialog,
     set_addOrderStatusDialog,
     setFinal_addOrderStatusDialog,
 } = OrderSlice.actions;

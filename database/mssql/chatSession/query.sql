@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetChatSessionsWithAccountId
+﻿CREATE PROCEDURE GetChatSessionsWithAccountId
 	@page INT,
     @size INT,
 	@zaloOaId INT,
@@ -29,7 +29,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE UserTakeSessionToChat
+CREATE PROCEDURE UserTakeSessionToChat
 	@code NVARCHAR(255),
 	@zaloOaId INT
 AS

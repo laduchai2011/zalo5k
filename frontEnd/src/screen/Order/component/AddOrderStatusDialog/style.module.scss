@@ -119,6 +119,25 @@
                         }
                     }
                 }
+
+                > .freedomSelection {
+                    box-sizing: border-box;
+                    padding: 5px 0;
+
+                    > div {
+                        @include center-of-rectangle;
+                        box-sizing: border-box;
+                        padding: 5px 0;
+                    }
+
+                    > div:nth-child(2) {
+                        > input {
+                            min-width: 70%;
+                            border: none;
+                            outline: none;
+                        }
+                    }
+                }
             }
         }
 

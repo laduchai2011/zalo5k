@@ -136,6 +136,7 @@
     > .status {
         box-sizing: border-box;
         padding: 5px;
+        border: 1px solid gray;
 
         > div:nth-child(1) {
             @include center-of-row;
@@ -146,7 +147,7 @@
                 padding: 5px;
                 @include center-of-row;
                 justify-content: space-around;
-                border: 1px solid gray;
+                border-bottom: 1px solid gray;
 
                 > svg {
                     cursor: pointer;
@@ -162,7 +163,6 @@
                 box-sizing: border-box;
                 padding: 5px;
                 @include center-of-rectangle;
-                border: 1px solid gray;
             }
         }
     }

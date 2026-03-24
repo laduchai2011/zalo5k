@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateOrder
+﻿CREATE PROCEDURE CreateOrder
 	@uuid NVARCHAR(255),
 	@label NVARCHAR(255),
 	@content NVARCHAR(MAX),
@@ -45,7 +45,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateOrder
+CREATE PROCEDURE UpdateOrder
 	@id INT,
 	@label NVARCHAR(255),
 	@content NVARCHAR(MAX),
@@ -94,7 +94,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CreateOrderStatus
+CREATE PROCEDURE CreateOrderStatus
 	@type NVARCHAR(255),
 	@content NVARCHAR(255),
     @orderId INT,
@@ -127,6 +127,32 @@ BEGIN
 		SET @newOrderStatusId = SCOPE_IDENTITY();
 
 		SELECT * FROM dbo.orderStatus WHERE id = @newOrderStatusId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE UpdateOrderPaid
+	@id INT,
+	@money BIGINT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+        UPDATE dbo.[order]
+		SET isPay = 1
+		WHERE status = 'normal' AND id = @id
+
+		SELECT * FROM dbo.[order] WHERE id = @id AND @money >= money;
 
 		COMMIT TRANSACTION;
 	END TRY

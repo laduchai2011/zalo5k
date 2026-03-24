@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE UserTakeRoomToChat
+﻿CREATE PROCEDURE UserTakeRoomToChat
 	@userIdByApp NVARCHAR(255),
 	@zaloOaId INT
 AS

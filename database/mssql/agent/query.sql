@@ -10,7 +10,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetAgents
+CREATE PROCEDURE GetAgents
 	@page INT,
 	@size INT,
 	@offset INT,
@@ -42,7 +42,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetAgentWithAgentAccountId
+CREATE PROCEDURE GetAgentWithAgentAccountId
 	@agentAccountId INT
 AS
 BEGIN
@@ -50,7 +50,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetLastAgentPay
+CREATE PROCEDURE GetLastAgentPay
 	@agentId INT,
 	@accountId INT
 AS

@@ -3,8 +3,8 @@ import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import {
     PROFILE,
-    MEMBER_RECEIVE_MESSAGE,
-    MANAGE_MEMBERS,
+    // MEMBER_RECEIVE_MESSAGE,
+    // MANAGE_MEMBERS,
     SIGNOUT,
     OA,
     ACCOUNT_RECEIVE_MESSAGE,
@@ -21,20 +21,13 @@ const Profile = () => {
     const [account, setAccount] = useState<AccountField | null>(null);
     const [accountInformation, setAccountInformation] = useState<AccountInformationField | null>(null);
     const [accountType, setAccountType] = useState<accountType_type>(accountType_enum.MEMBER);
+    const myId = sessionStorage.getItem('myId');
 
-    // const accountStorage = sessionStorage.getItem('account');
-    // let account: AccountField | null = accountStorage ? JSON.parse(accountStorage) : null;
-
-    // const accountInformationStorage = sessionStorage.getItem('accountInformation');
-    // let accountInformation: AccountInformationField | null = accountInformationStorage ? JSON.parse(accountInformationStorage) : null;
-
-    // let accountType: accountType_type = accountType_enum.MEMBER
-    // if (accountInformation?.accountType === accountType_enum.ADMIN) {
-    //     accountType = accountType_enum.ADMIN;
-    // }
-    // if (accountInformation?.accountType === accountType_enum.MEMBER) {
-    //     accountType = accountType_enum.MEMBER;
-    // }
+    useEffect(() => {
+        if (myId === null) {
+            navigate(route_enum.SIGNIN);
+        }
+    }, [navigate, myId]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -63,13 +56,13 @@ const Profile = () => {
         }
     }, [accountInformation]);
 
-    const goToMemberReceiveMessage = () => {
-        navigate(route_enum.MEMBER_RECEIVE_MESSAGE);
-    };
+    // const goToMemberReceiveMessage = () => {
+    //     navigate(route_enum.MEMBER_RECEIVE_MESSAGE);
+    // };
 
-    const goToManageMembers = () => {
-        navigate(route_enum.MANAGE_MEMBERS);
-    };
+    // const goToManageMembers = () => {
+    //     navigate(route_enum.MANAGE_MEMBERS);
+    // };
 
     const goToOa = () => {
         navigate(route_enum.OA);
@@ -101,12 +94,12 @@ const Profile = () => {
                         <div className={style.name}>{`${account?.firstName} ${account?.lastName}`}</div>
                         <div className={style.admin}>{accountType}</div>
                     </div>
-                    <div className={style.option} onClick={() => goToMemberReceiveMessage()}>
+                    {/* <div className={style.option} onClick={() => goToMemberReceiveMessage()}>
                         {MEMBER_RECEIVE_MESSAGE}
                     </div>
                     <div className={style.option} onClick={() => goToManageMembers()}>
                         {MANAGE_MEMBERS}
-                    </div>
+                    </div> */}
                     <div className={style.option} onClick={() => goToOa()}>
                         {OA}
                     </div>

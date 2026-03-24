@@ -23,7 +23,7 @@ export interface OrderStatusField {
     id: number;
     type: string;
     content: string;
-    ordertId: number;
+    orderId: number;
     updateTime: string;
     createTime: string;
 }

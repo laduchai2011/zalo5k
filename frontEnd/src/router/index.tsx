@@ -9,8 +9,8 @@ import Message1 from '@src/screen/Message1';
 import SupportRoom from '@src/screen/SupportRoom';
 import Note from '@src/screen/Note';
 import Profile from '@src/screen/Profile';
-import MemberReceiveMessage from '@src/screen/MemberReceiveMessage';
-import ManageMembers from '@src/screen/ManageMembers';
+// import MemberReceiveMessage from '@src/screen/MemberReceiveMessage';
+// import ManageMembers from '@src/screen/ManageMembers';
 import NotFoundPage from '@src/screen/NotFoundPage';
 import Oa from '@src/screen/Oa';
 import OaSetting from '@src/screen/OaSetting';
@@ -30,8 +30,8 @@ const router = createBrowserRouter(
         { path: route_enum.SUPPORT_ROOM, element: <SupportRoom /> },
         { path: route_enum.NOTE, element: <Note /> },
         { path: route_enum.PROFILE, element: <Profile /> },
-        { path: route_enum.MEMBER_RECEIVE_MESSAGE, element: <MemberReceiveMessage /> },
-        { path: route_enum.MANAGE_MEMBERS, element: <ManageMembers /> },
+        // { path: route_enum.MEMBER_RECEIVE_MESSAGE, element: <MemberReceiveMessage /> },
+        // { path: route_enum.MANAGE_MEMBERS, element: <ManageMembers /> },
         { path: route_enum.OA, element: <Oa /> },
         { path: route_enum.OA_SETTING + '/:id', element: <OaSetting /> },
         { path: route_enum.ORDER, element: <Order /> },

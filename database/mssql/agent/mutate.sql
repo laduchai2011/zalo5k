@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateAgent
+﻿CREATE PROCEDURE CreateAgent
 	@accountId INT
 AS
 BEGIN
@@ -35,7 +35,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE AgentAddAccount
+CREATE PROCEDURE AgentAddAccount
 	@id INT,
 	@agentAccountId INT = NULL,
 	@accountId INT
@@ -122,7 +122,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CreateAgentPay
+CREATE PROCEDURE CreateAgentPay
 	@agentId INT, 
 	@accountId INT
 AS
@@ -173,7 +173,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE UpdateAgentPaid
+CREATE PROCEDURE UpdateAgentPaid
 	@id INT
 AS
 BEGIN

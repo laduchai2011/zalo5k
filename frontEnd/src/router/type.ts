@@ -75,8 +75,8 @@ export enum route_enum {
     SUPPORT_ROOM = '/support_room',
     NOTE = '/note',
     PROFILE = '/profile',
-    MEMBER_RECEIVE_MESSAGE = '/member_receive_message',
-    MANAGE_MEMBERS = '/manage_members',
+    // MEMBER_RECEIVE_MESSAGE = '/member_receive_message',
+    // MANAGE_MEMBERS = '/manage_members',
     OA = '/oa',
     OA_SETTING = '/oa_setting',
     ORDER = '/order',
@@ -93,8 +93,8 @@ export type routed_type =
     | route_enum.MESSAGE1
     | route_enum.SUPPORT_ROOM
     | route_enum.NOTE
-    | route_enum.MEMBER_RECEIVE_MESSAGE
-    | route_enum.MANAGE_MEMBERS
+    // | route_enum.MEMBER_RECEIVE_MESSAGE
+    // | route_enum.MANAGE_MEMBERS
     | route_enum.PROFILE
     | route_enum.OA
     | route_enum.OA_SETTING

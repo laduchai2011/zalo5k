@@ -10,7 +10,7 @@
 GO
 
 
-ALTER PROCEDURE GetMembers
+CREATE PROCEDURE GetMembers
 	@page INT,
     @size INT,
 	@searchedAccountId INT = NULL,
@@ -101,7 +101,7 @@ GO
 
 
 --  WITH chatRoomRole
-ALTER PROCEDURE GetReplyAccounts
+CREATE PROCEDURE GetReplyAccounts
 	@page INT,
 	@size INT,
     @chatRoomId INT
@@ -131,7 +131,7 @@ BEGIN
 END
 GO 
 
-ALTER PROCEDURE GetNotReplyAccounts
+CREATE PROCEDURE GetNotReplyAccounts
 	@page INT,
 	@size INT,
     @chatRoomId INT,
@@ -182,7 +182,7 @@ BEGIN
 	END
 GO 
 
-ALTER PROCEDURE GetAccountReceiveMessage
+CREATE PROCEDURE GetAccountReceiveMessage
 	@zaloOaId INT,
     @accountId INT
 AS

@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateNote
+﻿CREATE PROCEDURE CreateNote
 	@note NVARCHAR(MAX),
 	@chatRoomId INT,
 	@zaloOaId INT,

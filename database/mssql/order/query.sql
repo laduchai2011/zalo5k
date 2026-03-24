@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetOrders
+﻿CREATE PROCEDURE GetOrders
 	@page INT,
     @size INT,
 	@uuid NVARCHAR(255) = NULL,
@@ -56,7 +56,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetAllOrderStatus
+CREATE PROCEDURE GetAllOrderStatus
 	@orderId INT
 AS
 BEGIN

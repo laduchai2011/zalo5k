@@ -24,7 +24,8 @@ class MutateDB_CreateOrderStatus {
                     .input('type', sql.NVarChar(255), this._createOrderStatusBody.type)
                     .input('content', sql.NVarChar(255), this._createOrderStatusBody.content)
                     .input('orderId', sql.Int, this._createOrderStatusBody.orderId)
-                    .execute('CreateOrder');
+                    .input('accountId', sql.Int, this._createOrderStatusBody.accountId)
+                    .execute('CreateOrderStatus');
 
                 return result;
             } catch (error) {

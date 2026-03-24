@@ -83,8 +83,8 @@ app.use(`${apiString}/hello`, (req, res) => {
     await connectMongo();
 
     if (services.includes('image')) {
-        const service_image = (await import('./services/image')).default;
-        app.use(`${prefix}/service_image`, service_image);
+        // const service_image = (await import('./services/image')).default;
+        // app.use(`${prefix}/service_image`, service_image);
         const service_image_v1 = (await import('./services/image_v1')).default;
         app.use(`${prefix}/service_image_v1`, service_image_v1);
     }
@@ -99,15 +99,15 @@ app.use(`${apiString}/hello`, (req, res) => {
         app.use(`${prefix}/service_account`, service_account);
     }
 
-    if (services.includes('myCustomer')) {
-        const service_myCustomer = (await import('./services/myCustomer')).default;
-        app.use(`${prefix}/service_myCustomer`, service_myCustomer);
-    }
+    // if (services.includes('myCustomer')) {
+    //     const service_myCustomer = (await import('./services/myCustomer')).default;
+    //     app.use(`${prefix}/service_myCustomer`, service_myCustomer);
+    // }
 
     if (services.includes('message')) {
-        const service_message = (await import('./services/message')).default;
+        // const service_message = (await import('./services/message')).default;
         const service_message_v1 = (await import('./services/message_v1')).default;
-        app.use(`${prefix}/service_message`, service_message);
+        // app.use(`${prefix}/service_message`, service_message);
         app.use(`${prefix}/service_message_v1`, service_message_v1);
         const hookData = (await import('./services/message_v1/hookData')).hookData;
         hookData();

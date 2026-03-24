@@ -1,4 +1,4 @@
-ALTER PROCEDURE GetACacheRedisWithKey
+CREATE PROCEDURE GetACacheRedisWithKey
 	@key NVARCHAR(255)
 AS
 BEGIN

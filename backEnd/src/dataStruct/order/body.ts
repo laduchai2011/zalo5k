@@ -46,3 +46,7 @@ export interface CreateOrderStatusBodyField {
 export interface GetAllOrderStatusBodyField {
     orderId: number;
 }
+
+export interface UpdateOrderPaidBodyField {
+    id: number;
+}
