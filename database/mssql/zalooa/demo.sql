@@ -1,11 +1,11 @@
 INSERT INTO dbo.zaloApp (label, appId, appName, appSecret, status, accountId, updateTime, createTime)
 VALUES ('5k aquarium', '2474292114893114248', '5k aquarium', '7XFkowzBCeRBRGqDhUkL', 'normal', 1, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
-INSERT INTO dbo.zaloOa (label, oaId, oaName, oaSecret, refreshToken, status, zaloAppId, accountId, updateTime, createTime)
-VALUES ('5k aquarium (OA)', '2018793888801741529', '5kcacanh', 'iRf70Tagp3qpjVYuYWld', '', 'normal', 3, 1, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+INSERT INTO dbo.zaloOa (label, oaId, oaName, oaSecret, status, zaloAppId, accountId, updateTime, createTime)
+VALUES ('5k aquarium (OA)', '2018793888801741529', '5kcacanh', 'iRf70Tagp3qpjVYuYWld', 'normal', 1, 1, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
 INSERT INTO dbo.zaloOaToken (refreshToken, zaloOaId)
-VALUES ('eBn2R9q_6XsbkK5XbpSO6AoqG6IUBMrqqwDVSPzxU4txgL5Ff6ryVPltKKJQ4GnfavDBGgn-56NfZHracrW-IFYN432hLKedyOPq9x07BnhvWZyWjmCT1j3U7GEo728xx_uEGwSQLs3Bb0fOzKzOQhohNNhJA7H2jzjmVk8yN7oIn797pZfUIPFTSqduEbTteVn8Pyu644wByYrDvI84DRlQ9pJI1dKKY8bIBxjuUoNVl789v6nL2RQKHGlvUsKKWPixQyfk7cBuiprBXpPYQhdULs_6FdnkX-XZVlaLHs-xasL-vsD7GwdZOcByR5aIj9K64FXt7XEBcKSDo49c0PEGEmNeOIWOWAKmDSvW44sDZY1EmL0pSgdV2ddBC5baay5uMA1EN7BBcWPZX1mwMz7b665F2hTgI9ub6X0', 4)
+VALUES ('g5ib3vqc73kjNYO2bouUFgHJ9mUUD7z-pL0i6AnJQs6NIYiPft5FHfHN3WNUQs97xcGAEPv7E5NLUL0_dWGJLjSFKncYCW4jmX9UUOmyFm7zD5T-aKyF1_HCRq-pI38WvcXoVuDFBZtHDdDTwauQ0ezDTsFPT4uYwtCfUTjCKmMTJX1dw3Hz0uOhE3xJLtTKa4Oc1jbNV46FLnihvYfeLgiR9Mpx0aWbl2W17OeBMdc_DoiH_ZLcUBTB3oE7M6DsiKGkF85UJ6VHRWWdiK9HNVfTE3UWBN1nxbKEHBbnKdlTRs0zdMmVPTfrPLkQKbqSwrCKF9jpVaBfG1mOY4zJ8y1j7ak3IIO5u4bzIwvD5px6KdHwa4uLE_L9RaQXCI87wa5wIvnyFoJ_LbzWpMW71O9IHNfN0aaB3Puy73O', 2)
 
 UPDATE dbo.zaloOaToken WITH (ROWLOCK)
 SET refreshToken = 'dFkA5rDyOqAP_eaQMNHXHv3pY1zGRY8BnhcNLmiuEqgR_ODg1pfWIyZCxtDv46TSkCVrMdKuTbFxqTuBRIue1kRwbrncFnvxmSMDOc0I14t8pPLaT0m_IiIDdc5q32fkeOoIJpL66K6BXeLiHNONNykpc4bASXjI-eoNP5PoOK_ecDr2FLvF6FQxrZ1fMruwsj39EbiWTXJE-jfA3dfULho7xGiMPtqAdRhe8rPk1XpRdvuMPsesBFczX7L5EZXLz_cRScGeS2hAsfyyHZO6VSJnk5DQCW5SajkqGmKF34ALYfXq965sMhU5vGKCUGWlkf-d43Hx63E-dQrhF5m7QPw1ip8iTIqybhN5A5bEJ130hjmMIKLqEUBFt3XH37DXmehGL7C1Hd7PtDXlM5TDJlQGsHBuizjiK6PZJm'
