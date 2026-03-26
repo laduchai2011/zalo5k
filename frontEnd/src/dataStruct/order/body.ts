@@ -36,6 +36,10 @@ export interface GetMyOrderWithIdBodyField {
     accountId: number;
 }
 
+export interface GetOrderWithIdBodyField {
+    id: number;
+}
+
 export interface CreateOrderStatusBodyField {
     type: string;
     content: string;
@@ -49,4 +53,5 @@ export interface GetAllOrderStatusBodyField {
 
 export interface UpdateOrderPaidBodyField {
     id: number;
+    money: number;
 }

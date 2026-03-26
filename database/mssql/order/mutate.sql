@@ -138,7 +138,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE UpdateOrderPaid
+ALTER PROCEDURE UpdateOrderPaid
 	@id INT,
 	@money BIGINT
 AS
@@ -150,9 +150,9 @@ BEGIN
 
         UPDATE dbo.[order]
 		SET isPay = 1
-		WHERE status = 'normal' AND id = @id
+		WHERE status = 'normal' AND id = @id AND @money >= money;
 
-		SELECT * FROM dbo.[order] WHERE id = @id AND @money >= money;
+		SELECT * FROM dbo.[order] WHERE id = @id;
 
 		COMMIT TRANSACTION;
 	END TRY

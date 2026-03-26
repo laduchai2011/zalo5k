@@ -52,7 +52,15 @@ CREATE PROCEDURE GetMyOrderWithId
 	@accountId INT
 AS
 BEGIN
-	SELECT * FROM dbo.[order] WHERE id = @id AND accountId = @accountId
+	SELECT * FROM dbo.[order] WHERE status = 'normal' AND id = @id AND accountId = @accountId
+END
+GO
+
+CREATE PROCEDURE GetOrderWithId
+	@id INT
+AS
+BEGIN
+	SELECT * FROM dbo.[order] WHERE status = 'normal' AND id = @id;
 END
 GO
 

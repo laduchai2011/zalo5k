@@ -39,12 +39,13 @@ import { useLazyGetAllOrderStatusQuery } from '@src/redux/query/orderRTK';
 const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const newOrder: OrderField | undefined = useSelector(
+    const newOrderEdit: OrderField | undefined = useSelector(
         (state: RootState) => state.OrderSlice.editOrderDialog.newOrder
     );
     const newOrderStatus: OrderStatusField | undefined = useSelector(
         (state: RootState) => state.OrderSlice.addOrderStatusDialog.newOrderStatus
     );
+    const newOrderPaid: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.payDialog.newOrder);
     const payText_element = useRef<HTMLDivElement | null>(null);
     const [order, setOrder] = useState<OrderField>(data);
     const [payText, setPayText] = useState<string>('Chưa thanh toán');
@@ -65,11 +66,26 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     }, [order]);
 
     useEffect(() => {
-        if (!newOrder) return;
-        if (newOrder.id === order.id) {
-            setOrder(newOrder);
-        }
-    }, [newOrder, order]);
+        if (!newOrderEdit) return;
+        setOrder((prev) => {
+            if (newOrderEdit.id === prev.id) {
+                return newOrderEdit;
+            } else {
+                return prev;
+            }
+        });
+    }, [newOrderEdit]);
+
+    useEffect(() => {
+        if (!newOrderPaid) return;
+        setOrder((prev) => {
+            if (newOrderPaid.id === prev.id) {
+                return newOrderPaid;
+            } else {
+                return prev;
+            }
+        });
+    }, [newOrderPaid]);
 
     useEffect(() => {
         if (!newOrderStatus) return;

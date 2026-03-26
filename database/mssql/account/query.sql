@@ -179,7 +179,7 @@ BEGIN
 		a.status = 'normal'
 		AND ai.addedById = @addedById
 		AND crr.id IS NULL;
-	END
+END
 GO 
 
 CREATE PROCEDURE GetAccountReceiveMessage

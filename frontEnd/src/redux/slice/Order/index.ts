@@ -10,6 +10,9 @@ const initialState: state_props = {
         data: { type: undefined, message: '' },
     },
     selectedOa: undefined,
+    createOrder: {
+        newOrder: undefined,
+    },
     editOrderDialog: {
         isShow: false,
         order: undefined,
@@ -18,6 +21,7 @@ const initialState: state_props = {
     payDialog: {
         isShow: false,
         order: undefined,
+        newOrder: undefined,
     },
     addOrderStatusDialog: {
         isShow: false,
@@ -40,6 +44,9 @@ const OrderSlice = createSlice({
         set_selectedOa: (state, action: PayloadAction<ZaloOaField>) => {
             state.selectedOa = action.payload;
         },
+        setNewOrder_createOrder: (state, action: PayloadAction<OrderField | undefined>) => {
+            state.createOrder.newOrder = action.payload;
+        },
         set_editOrderDialog: (state, action: PayloadAction<{ isShow: boolean; order: OrderField | undefined }>) => {
             state.editOrderDialog = action.payload;
         },
@@ -54,6 +61,9 @@ const OrderSlice = createSlice({
         },
         setOrder_payDialog: (state, action: PayloadAction<OrderField | undefined>) => {
             state.payDialog.order = action.payload;
+        },
+        setNewOrder_payDialog: (state, action: PayloadAction<OrderField | undefined>) => {
+            state.payDialog.newOrder = action.payload;
         },
         set_addOrderStatusDialog: (
             state,
@@ -78,10 +88,12 @@ export const {
     set_isLoading,
     setData_toastMessage,
     set_selectedOa,
+    setNewOrder_createOrder,
     set_editOrderDialog,
     setFinal_editOrderDialog,
     setIsShow_payDialog,
     setOrder_payDialog,
+    setNewOrder_payDialog,
     set_addOrderStatusDialog,
     setFinal_addOrderStatusDialog,
 } = OrderSlice.actions;

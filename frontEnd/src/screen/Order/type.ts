@@ -8,6 +8,9 @@ export interface state_props {
         data: ToastMessage_Data_Props;
     };
     selectedOa?: ZaloOaField;
+    createOrder: {
+        newOrder?: OrderField;
+    };
     editOrderDialog: {
         isShow: boolean;
         order?: OrderField;
@@ -16,6 +19,7 @@ export interface state_props {
     payDialog: {
         isShow: boolean;
         order?: OrderField;
+        newOrder?: OrderField;
     };
     addOrderStatusDialog: {
         isShow: boolean;

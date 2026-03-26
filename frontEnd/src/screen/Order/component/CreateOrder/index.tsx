@@ -6,7 +6,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { CREATE_ORDER, TITLE } from '@src/const/text';
 import { useCreateOrderMutation } from '@src/redux/query/orderRTK';
 import { CreateOrderBodyField } from '@src/dataStruct/order/body';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Order';
+import { setData_toastMessage, set_isLoading, setNewOrder_createOrder } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const CreateOrder = () => {
@@ -18,7 +18,7 @@ const CreateOrder = () => {
     const [isShowIcon, setIsShowIcon] = useState(false);
     const [chatRoomId, setChatRoomId] = useState('');
     const [title, setTitle] = useState('');
-    const [createOrderMutation] = useCreateOrderMutation();
+    const [createOrder] = useCreateOrderMutation();
 
     const handleHBtn = () => {
         setIsShowParent(true);
@@ -86,10 +86,11 @@ const CreateOrder = () => {
             accountId: -1,
         };
         dispatch(set_isLoading(true));
-        createOrderMutation(body)
+        createOrder(body)
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
+                    dispatch(setNewOrder_createOrder(resData.data));
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.SUCCESS,

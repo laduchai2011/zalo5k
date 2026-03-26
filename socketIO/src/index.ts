@@ -8,6 +8,7 @@ import process from 'process';
 import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
 import { SocketMessageField } from './dataStruct/message_v1';
 import { AgentPayField } from './dataStruct/agent';
+import { OrderField } from './dataStruct/order';
 
 dotenv.config();
 
@@ -37,6 +38,11 @@ consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
 consumeStringMessage('agentPay_dev', (data) => {
     const agentPay = JSON.parse(data) as AgentPayField;
     io.to(agentPay.accountId.toString()).emit('agentPay', agentPay);
+});
+
+consumeStringMessage('orderPay_dev', (data) => {
+    const order = JSON.parse(data) as OrderField;
+    io.to(order.accountId.toString()).emit('orderPay', order);
 });
 
 // chuan bi bo

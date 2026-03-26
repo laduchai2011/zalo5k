@@ -23,7 +23,7 @@ services:
 
     volumes:
       # - /root/sql_data:/var/opt/mssql
-      - sql_data:/var/opt/mssql
+      - ./sql_data:/var/opt/mssql
 
     deploy:
       resources:

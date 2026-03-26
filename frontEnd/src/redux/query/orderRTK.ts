@@ -6,6 +6,7 @@ import {
     UpdateOrderBodyField,
     CreateOrderStatusBodyField,
     GetAllOrderStatusBodyField,
+    GetOrderWithIdBodyField,
 } from '@src/dataStruct/order/body';
 import { ORDER_API } from '@src/const/api/order';
 import { MyResponse } from '@src/dataStruct/response';
@@ -21,6 +22,7 @@ export const orderRTK = createApi({
                 method: 'POST',
                 body,
             }),
+            keepUnusedDataFor: 15,
             providesTags: ['Orders'], // dùng nếu muốn refetch sau khi xóa/sửa
         }),
         getAllOrderStatus: builder.query<MyResponse<OrderStatusField[]>, GetAllOrderStatusBodyField>({
@@ -30,6 +32,10 @@ export const orderRTK = createApi({
                 body,
             }),
             providesTags: ['Orders'], // dùng nếu muốn refetch sau khi xóa/sửa
+        }),
+        getOrderWithId: builder.query<MyResponse<OrderField>, { id: number }>({
+            query: ({ id }) => `${ORDER_API.GET_ORDER_WITH_ID}?id=${id}`,
+            // keepUnusedDataFor: 15,
         }),
         createOrder: builder.mutation<MyResponse<OrderField>, CreateOrderBodyField>({
             query: (body) => ({
@@ -92,6 +98,7 @@ export const orderRTK = createApi({
 export const {
     useLazyGetOrdersQuery,
     useLazyGetAllOrderStatusQuery,
+    useLazyGetOrderWithIdQuery,
     useCreateOrderMutation,
     useUpdateOrderMutation,
     useCreateOrderStatusMutation,
