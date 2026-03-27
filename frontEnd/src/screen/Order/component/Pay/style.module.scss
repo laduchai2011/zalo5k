@@ -57,6 +57,17 @@
                 }
             }
 
+            > .sendQr {
+                color: blue;
+                font-size: 0.9rem;
+                cursor: pointer;
+                user-select: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
             > .money {
                 color: red;
             }

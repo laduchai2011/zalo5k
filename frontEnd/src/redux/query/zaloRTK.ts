@@ -51,5 +51,6 @@ export const {
     useGetZaloOaListWith2FkQuery,
     useLazyGetZaloOaListWith2FkQuery,
     useGetZaloOaWithIdQuery,
+    useLazyGetZaloOaWithIdQuery,
     useGetZaloUserQuery,
 } = zaloRTK;

@@ -12,7 +12,7 @@ export interface AccountField {
 }
 
 export interface AccountInformationField {
-    addedById: number;
+    addedById: number | null;
     accountType: string;
     accountId: number;
 }

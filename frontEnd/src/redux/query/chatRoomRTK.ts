@@ -48,6 +48,7 @@ export const chatRoomRTK = createApi({
 });
 
 export const {
+    useLazyGetChatRoomsWithIdQuery,
     useGetChatRoomsWithIdQuery,
     useGetChatRoomRoleWithCridAaidQuery,
     useLazyGetChatRoomsMongoQuery,
